@@ -157,6 +157,8 @@ function info = mbdyn_solver_run(mbdyn_filename, every_or_options = 1, showAll =
       silent_flag = "";
     endif
 
+    mbdyn_path_init();
+    
     if (f_run_mbdyn)
       run_command(sprintf("%s %s %s -f \"%s\" %s %s", ...
                           mbdyn_command, ...
@@ -186,7 +188,7 @@ total_cpu=0.;\
 END {\
 printf(\"%d\t%d\t%d\t%g\t%g\\n\", total_steps, total_iter, total_jac, total_err, total_cpu);\
 };";
-
+      
       [status, output] = shell(sprintf("exec awk -F ' ' '%s' '%s'", cmd, mbdyn_convert_path(logfile)), true, "sync");
 
       if (status == 0 && numel(output))

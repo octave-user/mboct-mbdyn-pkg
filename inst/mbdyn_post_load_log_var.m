@@ -45,6 +45,8 @@ function var = mbdyn_post_load_log_var(mbdyn_filename, variable_name, format, da
 		    variable_name, ...
 		    mbdyn_convert_path(mbdyn_post_output_filename(mbdyn_filename, ".log")));
 
+  mbdyn_path_init();
+  
   [status, output] = shell(command, true, "sync");
 
   if (status ~= 0)

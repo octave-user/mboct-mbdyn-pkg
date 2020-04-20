@@ -49,6 +49,8 @@ function mbdyn_post_abs_to_rel(ref_node, abs_mov_file, rel_mov_file, ref_only, i
   if (~ischar(rel_mov_file))
     print_usage();
   endif
+
+  mbdyn_path_init();
   
   command = sprintf("exec awk -f abs2rel.awk -v RefNode=%d -v RefOnly=%d -v InputMode=%s -v OutputMode=%s '%s.mov' > '%s.mov'", ...
 		    ref_node, ...

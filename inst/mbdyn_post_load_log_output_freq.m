@@ -28,6 +28,8 @@ function f = mbdyn_post_load_log_output_freq(mbdyn_filename)
   
   command = sprintf("exec awk -F ' ' '/output frequency:/ {print $3}' '%s.log'", mbdyn_convert_path(mbdyn_filename));
 
+  mbdyn_path_init();
+  
   [status, output] = shell(command, true, "sync");
 
   if (status ~= 0)

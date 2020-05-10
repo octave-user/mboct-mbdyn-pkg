@@ -139,13 +139,15 @@ function mbdyn_pre_write_fem_data(fem_filename, Mred, Dred, Sred, Tred, X0, ured
     endif
   endif
 
-  [fd, msg] = fopen(fem_filename, "wt");
-
-  if (fd == -1)
-    error("could not open file \"%s\": %s", fem_filename, msg);
-  endif
-
+  fd = -1;
+  
   unwind_protect
+    [fd, msg] = fopen(fem_filename, "wt");
+
+    if (fd == -1)
+      error("could not open file \"%s\": %s", fem_filename, msg);
+    endif
+
     REVISION = "REV0";
     NODE = columns(X0);
     NORMAL = columns(Tred);
@@ -306,6 +308,8 @@ function mbdyn_pre_write_fem_data(fem_filename, Mred, Dred, Sred, Tred, X0, ured
       fprintf(fd, "**\n");
     endif
   unwind_protect_cleanup
-    fclose(fd);
+    if (fd ~= -1)
+      fclose(fd);
+    endif
   end_unwind_protect
 endfunction

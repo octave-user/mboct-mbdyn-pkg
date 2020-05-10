@@ -115,7 +115,7 @@ function mbdyn_pre_beam_write_bodies(beam, output_file, options)
     if (ischar(output_file))
       owns_fd = true;
 
-      [fout,msg] = fopen(output_file, options.open_mode);
+      [fout, msg] = fopen(output_file, options.open_mode);
 
       if (fout == -1)
         error("could not open file \"%s\": %s", output_file,msg);
@@ -327,7 +327,9 @@ endfunction
 %! fputs(fd, "        string,\"F1 * ( (Time <= final_time ) * ( Time - initial_time ) / ( final_time - initial_time ) + ( Time > final_time ) )\";\n");
 %! fputs(fd, "end: elements;\n");
 %! unwind_protect_cleanup
-%! fclose(fd);
+%!   if (fd ~= -1)
+%!     fclose(fd);
+%!   endif
 %! end_unwind_protect
 %! options_run.output_file = input_file;
 %! mbdyn_solver_run(input_file, options_run);
@@ -391,11 +393,11 @@ endfunction
 %! param.rho = 7850;
 %! param.number_of_elements = 50;
 %! interpolation_points = 10;
+%! unwind_protect
 %! [fd, input_file] = mkstemp(fullfile(tempdir(), "mbdyn_pre_beam_write_bodies_XXXXXX"));
 %! if (fd == -1)
 %!   error("failed to open temporary file");
 %! endif
-%! unwind_protect
 %! options_pre.reference_frame = "ref_id_beam";
 %! options_pre.first_reference_frame_number = "ref_id_1";
 %! options_pre.first_node_number = "node_id_1";
@@ -550,7 +552,9 @@ endfunction
 %! fputs(fd, "        string,\"F1 * ( (Time <= final_time ) * ( Time - initial_time ) / ( final_time - initial_time ) + ( Time > final_time ) )\";\n");
 %! fputs(fd, "end: elements;\n");
 %! unwind_protect_cleanup
-%! fclose(fd);
+%!   if (fd ~= -1)
+%!     fclose(fd);
+%!   endif
 %! end_unwind_protect
 %! options_run.output_file = input_file;
 %! mbdyn_solver_run(input_file, options_run);

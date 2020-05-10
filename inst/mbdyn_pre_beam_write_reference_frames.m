@@ -71,8 +71,9 @@ function mbdyn_pre_beam_write_reference_frames(beam, output_file, options)
 
   unwind_protect
     if (ischar(output_file))
-      [fout,msg] = fopen(output_file, options.open_mode);
       owns_fd = true;
+      
+      [fout, msg] = fopen(output_file, options.open_mode);     
 
       if (fout == -1)
         error("could not open file \"%s\": %s", output_file,msg);

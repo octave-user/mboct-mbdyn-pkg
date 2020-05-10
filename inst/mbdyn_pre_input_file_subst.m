@@ -38,13 +38,13 @@ function mbdyn_pre_input_file_subst(mbdyn_filename, log_filename, output_filenam
   fout = -1;
 
   unwind_protect
-    [fout, msg] = fopen(output_filename,"wt");
+    [fout, msg] = fopen(output_filename, "wt");
 
     if (fout == -1)
-      error("could not open file \"%s\": %s",output_filename,msg);
+      error("could not open file \"%s\": %s", output_filename,msg);
     endif
 
-    parse_mbdyn_input_file(mbdyn_filename,vars,fout,verbose);
+    parse_mbdyn_input_file(mbdyn_filename, vars, fout,verbose);
   unwind_protect_cleanup
     if (fout ~= -1)
       fclose(fout);

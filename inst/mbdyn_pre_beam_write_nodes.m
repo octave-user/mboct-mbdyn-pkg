@@ -85,7 +85,7 @@ function mbdyn_pre_beam_write_nodes(beam, output_file, options)
     if (ischar(output_file))
       owns_fd = true;
 
-      [fout,msg] = fopen(output_file, options.open_mode);
+      [fout, msg] = fopen(output_file, options.open_mode);
 
       if (fout == -1)
         error("could not open file \"%s\": %s", output_file,msg);

@@ -32,11 +32,11 @@ function mbdyn_post_print_eig(modal, log_dat, varargin)
 
   if (length(varargin) >= 1)
     if (ischar(varargin{1}))
+      owns_fd = true;
       [fd, msg] = fopen(varargin{1}, "wt");
       if (fd == -1)
         error("failed to open file \"%s\": %s", varargin{1}, msg);
       endif
-      owns_fd = true;
     else
       fd = varargin{1};
     endif

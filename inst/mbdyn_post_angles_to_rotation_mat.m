@@ -25,9 +25,13 @@
 ##
 ## @end deftypefn
 
-function R = mbdyn_post_angles_to_rotation_mat(node_id, res, log_dat)
-  if (nargin ~= 3 || nargout > 1)
+function R = mbdyn_post_angles_to_rotation_mat(node_id, res, log_dat, idx_t)
+  if (nargin < 3 || nargin > 4 || nargout > 1)
     print_usage();
+  endif
+
+  if (nargin < 4)
+    idx_t = 1:numel(res.t);
   endif
   
   R = cell(1, numel(node_id));
@@ -47,7 +51,7 @@ function R = mbdyn_post_angles_to_rotation_mat(node_id, res, log_dat)
     
     orientation_description = log_dat.nodes(node_idx_log).orientation_description;
     
-    Phi = res.trajectory{node_idx}(:, 4:6).';
+    Phi = res.trajectory{node_idx}(idx_t, 4:6).';
     
     switch(orientation_description)
       case "euler123"
@@ -77,6 +81,7 @@ endfunction
 %!         @rotation_matrix_to_rotation_vector};
 %! res.node_id = 1:numel(orient);
 %! for i=1:numel(orient)
+%!   res.t = 1:N;
 %!   res.trajectory{i} = [zeros(N, 3), (2 * rand(N, 3) - 1) * 0.5 * pi];
 %!   log_dat.nodes(i).label = i;
 %!   log_dat.nodes(i).orientation_description = orient{i};
@@ -85,6 +90,31 @@ endfunction
 %! for i=1:numel(R)
 %!   Phi = feval(func{i}, R{i}).';
 %!   assert(Phi, res.trajectory{i}(:, 4:6), sqrt(eps) * pi);
+%! endfor
+%! unwind_protect_cleanup
+%! rand("state", state);
+%! end_unwind_protect
+
+%!test
+%! state = rand("state");
+%! unwind_protect
+%! rand("seed", 0);
+%! N = 10;
+%! orient = {"euler123", "euler321", "phi"};
+%! func = {@rotation_matrix_to_euler123, ...
+%!         @rotation_matrix_to_euler321, ...
+%!         @rotation_matrix_to_rotation_vector};
+%! res.node_id = 1:numel(orient);
+%! for i=1:numel(orient)
+%!   res.t = 1:N;
+%!   res.trajectory{i} = [zeros(N, 3), (2 * rand(N, 3) - 1) * 0.5 * pi];
+%!   log_dat.nodes(i).label = i;
+%!   log_dat.nodes(i).orientation_description = orient{i};
+%! endfor
+%! R = mbdyn_post_angles_to_rotation_mat(res.node_id, res, log_dat, 1:2:N);
+%! for i=1:numel(R)
+%!   Phi = feval(func{i}, R{i}).';
+%!   assert(Phi, res.trajectory{i}(1:2:N, 4:6), sqrt(eps) * pi);
 %! endfor
 %! unwind_protect_cleanup
 %! rand("state", state);

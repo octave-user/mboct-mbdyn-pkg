@@ -362,7 +362,7 @@ endfunction
 %! fd = -1;
 %! unwind_protect
 %!   unwind_protect
-%!     [fd, fname] = mkstemp(fullfile(tempdir(), "mbean_pre_beam_write_beams_XXXXXX"));
+%!     [fd, fname] = mkstemp(fullfile(tempdir(), "mbdyn_pre_beam_write_beams_XXXXXX"));
 %!     if (fd == -1)
 %!       error("failed to open temporary file");
 %!     endif
@@ -639,7 +639,7 @@ endfunction
 %! fd = -1;
 %! unwind_protect
 %!   unwind_protect
-%!     [fd, fname] = mkstemp(fullfile(tempdir(), "mbean_pre_beam_write_beams_XXXXXX"));
+%!     [fd, fname] = mkstemp(fullfile(tempdir(), "mbdyn_pre_beam_write_beams_XXXXXX"));
 %!     if (fd == -1)
 %!       error("failed to open temporary file");
 %!     endif
@@ -741,7 +741,7 @@ endfunction
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
-%!     files = dir([fname, ".*"]);
+%!     files = dir([fname, "*"]);
 %!     for i=1:numel(files)
 %!       unlink(fullfile(files(i).folder, files(i).name));
 %!     endfor

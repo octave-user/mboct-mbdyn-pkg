@@ -8,4 +8,4 @@ Description: This package belongs to a suite of packages which can be used for p
              It contains interfaces to Multibody Dynamics software MBDyn (www.mbdyn.org).
 License: GPLv3
 Categories: Simulation, Pre-processing, Post-processing
-Depends: octave (>=4.0.0), mboct-octave-pkg (>=0.1.0), mboct-numerical-pkg (>=0.1.0), mbdyn_util_oct
+Depends: octave (>=4.0.0), mboct-octave-pkg (>=0.1.0), mboct-numerical-pkg (>=0.1.0), mbdyn_util_oct, nurbs (>=1.3)

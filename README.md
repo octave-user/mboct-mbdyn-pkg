@@ -1,9 +1,21 @@
 # mboct-mbdyn-pkg<sup>&copy;</sup>
-**mboct-mbdyn-pkg** belongs to a suite of packages which can be used for pre- and postprocessing of MBDyn models (https://www.mbdyn.org) with GNU-Octave (http://www.gnu.org/software/octave/).
+**mboct-mbdyn-pkg** belongs to a suite of packages which can be used for pre- and postprocessing of MBDyn models (https://www.mbdyn.org) with GNU-Octave (http://www.gnu.org/software/octave/). This package provides interfaces between the multibody dynamics software MBDyn and the GNU Octave programming language.
+
+# List of features
+  - Generate MBDyn input files for arbitrary curved beam structures represented by Non-Uniform Rational B-Splines (NURBS).
+  - Generate MBDyn input files for modal elements based on Finite Element models.
+  - Run the multibody dynamics solver MBDyn.  
+  - Load output files from MBDyn.
+  - Compute inertia properties of groups of several rigid and flexible bodies.
+  - Compute frequency response functions of linearized equations of motion.
+  - Scale elastic deformations of flexible bodies for post-processing.
+  - Do post-processing of elastohydrodynamic bearing data from MBDyn.
 
 Copyright<sup>&copy;</sup> 2019-2020
 
 [Reinhard](mailto:octave-user@a1.net)
+
+# Installation
 
 ## GNU Octave installation
   - Follow the instructions on (http://www.gnu.org/software/octave/) to install GNU Octave.  

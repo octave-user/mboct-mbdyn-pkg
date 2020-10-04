@@ -37,12 +37,7 @@ function R = mbdyn_post_angles_to_rotation_mat(node_id, res, log_dat, idx_t)
   R = cell(1, numel(node_id));
   
   for i=1:numel(node_id)
-    node_idx = find(node_id(i) == res.node_id);
-    
-    if (numel(node_idx) ~= 1)
-      error("node_id=%d not found in result", node_id(i));
-    endif
-
+    node_idx = find(node_id(i) == res.node_id);   
     node_idx_log = find([log_dat.nodes.label] == node_id(i));
 
     if (numel(node_idx_log) ~= 1)
@@ -50,22 +45,27 @@ function R = mbdyn_post_angles_to_rotation_mat(node_id, res, log_dat, idx_t)
     endif
     
     orientation_description = log_dat.nodes(node_idx_log).orientation_description;
-    
-    Phi = res.trajectory{node_idx}(idx_t, 4:6).';
-    
-    switch(orientation_description)
-      case "euler123"
-        Rij = euler123_to_rotation_matrix(Phi);
-      case "euler313"
-        Rij  = euler313_to_rotation_matrix(Phi);
-      case "euler321"
-        Rij  = euler321_to_rotation_matrix(Phi);
-      case "phi"
-        Rij  = rotation_vector_to_rotation_matrix(Phi);
-      otherwise
-        error("orientation_description = \"%s\" not supported", log_dat.nodes(node_idx).orientation_description);
-    endswitch
 
+    if (isempty(node_idx))      
+      warning("node_id=%d not found in result", node_id(i));
+      Rij = repmat(log_dat.nodes(node_idx_log).R0, [1, 1, numel(idx_t)]);
+    else
+      Phi = res.trajectory{node_idx}(idx_t, 4:6).';
+      
+      switch(orientation_description)
+	case "euler123"
+          Rij = euler123_to_rotation_matrix(Phi);
+	case "euler313"
+          Rij  = euler313_to_rotation_matrix(Phi);
+	case "euler321"
+          Rij  = euler321_to_rotation_matrix(Phi);
+	case "phi"
+          Rij  = rotation_vector_to_rotation_matrix(Phi);
+	otherwise
+          error("orientation_description = \"%s\" not supported", log_dat.nodes(node_idx).orientation_description);
+      endswitch
+    endif
+    
     R{i} = Rij;
   endfor
 endfunction

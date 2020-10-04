@@ -124,31 +124,40 @@ function mbdyn_pre_beam_write_bodies(beam, output_file, options)
       fout = output_file;
     endif
 
-    start_node = 1;
-    end_node = columns(beam.Xn);
-
-    if (isfield(options, "start_node"))
-      ++start_node;
-    endif
-
-    if (isfield(options, "end_node"))
-      --end_node;
-    endif
-
-    for i=start_node:end_node
+    for i=1:columns(beam.Xn)
       fprintf(fout, "\n# curved beam: body #%d\n", i);
       fprintf(fout, "body: %s + %d + %d - 1,", options.first_body_number, i, options.id_offset);
-      fprintf(fout, "%s + %d + %d - 1,\n", options.first_node_number, i, options.id_offset);
+
+      node_label = [];
+      
+      switch (i)
+	case 1
+	  if (isfield(options, "start_node"))
+	    node_label = options.start_node;
+	  endif
+	case columns(beam.Xn)
+	  if (isfield(options, "end_node"))
+	    node_label = options.end_node;
+	  endif
+	otherwise
+      endswitch
+
+      if (isempty(node_label))
+	node_label = sprintf("%s + %d + %d - 1", options.first_node_number, i, options.id_offset);
+      endif
+      
+      fprintf(fout, "%s,\n", node_label);
+      
       fprintf(fout, "\t# mass\n");
       fprintf(fout, "\t%s * %s * %.16g,\n", options.rho, options.A, beam.bodies(i).ds);
       fprintf(fout, "\t# relative center of mass\n");
-      fprintf(fout, "\treference, node, null,\n");
+      fprintf(fout, "\treference, %s + %d + %d - 1, null,\n", options.first_reference_frame_number, i, options.id_offset);
       fprintf(fout, "\t# inertia matrix\n");
       fprintf(fout, "\tdiag,  %s * %s * %.16g,\n", options.rho, options.Ip, beam.bodies(i).ds);
       fprintf(fout, "\t       %s * %s * %.16g,\n", options.rho, options.Iy, beam.bodies(i).ds);
       fprintf(fout, "\t       %s * %s * %.16g,\n", options.rho, options.Iz, beam.bodies(i).ds);
       fprintf(fout, "\t# orientation of the inertia tensor\n");
-      fprintf(fout, "\tinertial, reference, %s + %d + %d - 1, eye,\n", options.first_reference_frame_number, i, options.id_offset);
+      fprintf(fout, "\torientation, reference, %s + %d + %d - 1, eye,\n", options.first_reference_frame_number, i, options.id_offset);
       fprintf(fout, "\toutput, %s;\n", options.output_flag);
     endfor
   unwind_protect_cleanup

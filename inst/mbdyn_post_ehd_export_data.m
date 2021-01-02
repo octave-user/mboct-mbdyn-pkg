@@ -108,14 +108,14 @@ function filenames = mbdyn_post_ehd_export_data(mesh, res, outputfile, idx_t, op
 
         if (isfield(res.bearings(i).columns, "w1_n"))
           w1 = options.deformation_scale * res.bearings(i).columns.w1_n(idx_t(k), :);
-	  w1 -= mesh.bearings(i).A * (mesh.bearings(i).A \ w1);
+	  w1 -= (mesh.bearings(i).A * (mesh.bearings(i).A \ w1(:))).';
         else
           w1 = zeros(1, numel(mesh.bearings(i).nodeidx));
         endif
 
         if (isfield(res.bearings(i).columns, "w2_n"))
           w2 = options.deformation_scale * res.bearings(i).columns.w2_n(idx_t(k), :);
-	  w2 -= mesh.bearings(i).A * (mesh.bearings(i).A \ w2);
+	  w2 -= (mesh.bearings(i).A * (mesh.bearings(i).A \ w2(:))).';
         else
           w2 = zeros(1, numel(mesh.bearings(i).nodeidx));
         endif

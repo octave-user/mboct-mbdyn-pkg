@@ -94,8 +94,14 @@ function mesh = mbdyn_post_ehd_create_mesh(log_dat)
     mesh.bearings(i).Xn = [(0.5 * dm) * cos(mesh.bearings(i).Phi);
 			   (0.5 * dm) * sin(mesh.bearings(i).Phi);
 			   mesh.bearings(i).z];
+
+    mesh.bearings(i).A = [cos(mesh.bearings(i).Phi), ...
+			  sin(mesh.bearings(i).Phi), ...
+			  -mesh.bearings(i).z * sin(mesh.bearings(i).Phi), ...
+			  mesh.bearings(i).z * cos(mesh.bearings(i).Phi)];
     
     X = R0 * (Rb * mesh.bearings(i).Xn + ob) + X0;
+    
     mesh.nodes(mesh.noffset(i) + (1:numel(mesh.bearings(i).nodeidx)), :) = X.';
   endfor
 

@@ -248,7 +248,7 @@ function bearings = mbdyn_post_ehd_load_output(mbdyn_filename, log_dat, options)
                   tri_grid = delaunay(x{l}(1, :), x{l}(2, :));
 
                   for k=1:rows(z)
-                    zi(:, :, k) = griddata_prepared(x{l}(1, :), x{l}(2, :), z(k, :), bearings(i).xi, bearings(i).zi, tri_grid, "linear/nearest");
+                    zi(:, :, k) = griddata_prepared(x{l}(1, :), x{l}(2, :), z(k, :), bearings(i).xi, bearings(i).zi, tri_grid);
 
                     if (any(any(isnan(zi(:, :, k)))))
                       idx_row = ones(1, size(zi, 1), "int32");

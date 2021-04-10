@@ -115,13 +115,17 @@ function [log_dat] = mbdyn_post_load_log(mbdyn_filename, options)
     iBearing = 0;
     iModal = 0;
     iJoint = 0;
-    log_dat.nodes = struct()([]);
+
+    empty_cell = cell(0, 0);
+    log_dat.nodes = struct("label", empty_cell, "X0", empty_cell, "R0", empty_cell, ...
+                           "Phi0", empty_cell, "orientation_description", empty_cell);
     log_dat.vars = struct();
     log_dat.dof_info = struct();
-    log_dat.beams2 = struct()([]);
-    log_dat.beams3 = struct()([]);
-    log_dat.bearings = struct()([]);
-    log_dat.joints = struct()([]);
+    log_dat.beams2 = struct("label", empty_cell, "nodes", empty_cell);
+    log_dat.beams3 = struct("label", empty_cell, "nodes", empty_cell);
+    log_dat.bearings = struct("label", empty_cell, "type", empty_cell, "B", empty_cell, ...
+                              "d", empty_cell, "eta", empty_cell);
+    log_dat.joints = struct("label", empty_cell, "type", empty_cell, "nodes", empty_cell);
 
     iLine = 0;
 

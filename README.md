@@ -11,11 +11,40 @@
   - Scale elastic deformations of flexible bodies for post-processing.
   - Do post-processing of elastohydrodynamic bearing data from MBDyn.
 
-Copyright<sup>&copy;</sup> 2019-2020
+Copyright<sup>&copy;</sup> 2019-2021
 
 [Reinhard](mailto:octave-user@a1.net)
 
 # Installation
+  The following code is an example how mboct-mbdyn-pkg can be installed on an Ubuntu system:
+  
+  `sudo apt-get install octave liboctave-dev libsuitesparse-dev libarpack2-dev libmumps-seq-dev libmetis-dev octave-nurbs libmkl-full-dev`
+
+  `git clone -b develop https://public.gitlab.polimi.it/DAER/mbdyn.git`
+      
+  `pushd mbdyn`
+      
+  `./bootstrap.sh`
+
+  `./configure --with-static-modules --enable-octave --enable-sparse_autodiff --enable-autodiff --disable-Werror CXXFLAGS="-O3 -Wall -march=native" CPPFLAGS=-I/usr/include/suitesparse --with-arpack --with-umfpack --without-metis`
+      
+  `make -j4`
+
+  `sudo make install`
+
+  `popd`
+
+  `git clone -b master https://github.com/octave-user/mboct-octave-pkg.git`
+       
+  `make -C mboct-octave-pkg install_local`
+           
+  `git clone -b master https://github.com/octave-user/mboct-numerical-pkg.git`
+       
+  `make -C mboct-numerical-pkg install_local`
+
+  `git clone -b master https://github.com/octave-user/mboct-mbdyn-pkg.git`
+       
+  `make -C mboct-mbdyn-pkg install_local`
 
 ## GNU Octave installation
   - Follow the instructions on (http://www.gnu.org/software/octave/) to install GNU Octave.  

@@ -11,7 +11,7 @@
   - Scale elastic deformations of flexible bodies for post-processing.
   - Do post-processing of elastohydrodynamic bearing data from MBDyn.
 
-Copyright<sup>&copy;</sup> 2019-2020
+Copyright<sup>&copy;</sup> 2019-2021
 
 [Reinhard](mailto:octave-user@a1.net)
 

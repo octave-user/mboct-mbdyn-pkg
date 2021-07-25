@@ -193,14 +193,14 @@ function mbdyn_pre_write_fem_data(fem_filename, Mred, Dred, Sred, Tred, X0, ured
 
     for i=1:columns(Tred)
       fprintf(fd, "**    NORMAL MODE SHAPE #  %d\n", i);
-      fprintf(fd, "%e %e %e %e %e %e\n", Tred(:, i));
+      fprintf(fd, "%.16e %.16e %.16e %.16e %.16e %.16e\n", Tred(:, i));
     endfor
 
     fprintf(fd, "**\n");
     fprintf(fd, "** RECORD GROUP 9, MODAL MASS MATRIX\n");
 
     for i=1:rows(Mred)
-      fprintf(fd, "%e ", Mred(i, :));
+      fprintf(fd, "%.16e ", Mred(i, :));
       fprintf(fd, "\n");
     endfor
 
@@ -208,7 +208,7 @@ function mbdyn_pre_write_fem_data(fem_filename, Mred, Dred, Sred, Tred, X0, ured
     fprintf(fd, "** RECORD GROUP 10, MODAL STIFFNESS MATRIX\n");
 
     for i=1:rows(Sred)
-      fprintf(fd, "%e ", Sred(i, :));
+      fprintf(fd, "%.16e ", Sred(i, :));
       fprintf(fd, "\n");
     endfor
 
@@ -216,15 +216,15 @@ function mbdyn_pre_write_fem_data(fem_filename, Mred, Dred, Sred, Tred, X0, ured
 
     if (nargin >= 8 && numel(diagM) > 0)
       fprintf(fd, "** RECORD GROUP 11, DIAGONAL OF LUMPED MASS MATRIX\n");
-      fprintf(fd, "%e %e %e %e %e %e\n", diagM);
+      fprintf(fd, "%.16e %.16e %.16e %.16e %.16e %.16e\n", diagM);
       fprintf(fd, "**\n");
     endif
 
     if (nargin >= 11 && numel(Jgc) > 0)
       fprintf(fd, "** RECORD GROUP 12, RIGID BODY INERTIA MATRIX\n");
-      fprintf(fd, "%e\n", m);
-      fprintf(fd, "%e %e %e\n", Xgc);
-      fprintf(fd, "%e %e %e\n", Jgc.');
+      fprintf(fd, "%.16e\n", m);
+      fprintf(fd, "%.16e %.16e %.16e\n", Xgc);
+      fprintf(fd, "%.16e %.16e %.16e\n", Jgc.');
       fprintf(fd, "**\n");
     endif
 
@@ -233,7 +233,7 @@ function mbdyn_pre_write_fem_data(fem_filename, Mred, Dred, Sred, Tred, X0, ured
       fprintf(fd, "** RECORD GROUP 13, MODAL DAMPING MATRIX\n");
 
       for i=1:rows(Dred)
-        fprintf(fd, "%e ", Dred(i, :));
+        fprintf(fd, "%.16e ", Dred(i, :));
         fprintf(fd, "\n");
       endfor
 
@@ -245,7 +245,7 @@ function mbdyn_pre_write_fem_data(fem_filename, Mred, Dred, Sred, Tred, X0, ured
       fprintf(fd, "** RECORD GROUP 14, INVARIANT 3\n");
 
       for i=1:rows(Inv3)
-        fprintf(fd, "%e ", Inv3(i,:));
+        fprintf(fd, "%.16e ", Inv3(i,:));
         fprintf(fd, "\n");
       endfor
 
@@ -257,7 +257,7 @@ function mbdyn_pre_write_fem_data(fem_filename, Mred, Dred, Sred, Tred, X0, ured
       fprintf(fd, "** RECORD GROUP 15, INVARIANT 4\n");
 
       for i=1:rows(Inv4)
-        fprintf(fd, "%e ", Inv4(i, :));
+        fprintf(fd, "%.16e ", Inv4(i, :));
         fprintf(fd, "\n");
       endfor
 
@@ -270,7 +270,7 @@ function mbdyn_pre_write_fem_data(fem_filename, Mred, Dred, Sred, Tred, X0, ured
 
       for i=1:rows(Inv8)
         for j=1:size(Inv8, 3)
-          fprintf(fd, "%e ", Inv8(i, :,  j));
+          fprintf(fd, "%.16e ", Inv8(i, :,  j));
         endfor
         fprintf(fd, "\n");
       endfor
@@ -284,7 +284,7 @@ function mbdyn_pre_write_fem_data(fem_filename, Mred, Dred, Sred, Tred, X0, ured
 
       for i=1:rows(Inv5)
         for j=1:size(Inv5, 3)
-          fprintf(fd, "%e ", Inv5(i, :, j));
+          fprintf(fd, "%.16e ", Inv5(i, :, j));
         endfor
         fprintf(fd, "\n");
       endfor
@@ -299,7 +299,7 @@ function mbdyn_pre_write_fem_data(fem_filename, Mred, Dred, Sred, Tred, X0, ured
       for i=1:rows(Inv9)
         for j=1:size(Inv9, 3)
           for k=1:size(Inv9, 4)
-            fprintf(fd, "%e ", Inv9(i, :, j, k));
+            fprintf(fd, "%.16e ", Inv9(i, :, j, k));
           endfor
         endfor
         fprintf(fd, "\n");

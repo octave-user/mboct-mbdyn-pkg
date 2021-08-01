@@ -2,7 +2,7 @@
 
 name: CI
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
@@ -53,23 +53,22 @@ jobs:
            git clone -b master https://github.com/octave-user/mboct-octave-pkg.git && \
            pushd mboct-octave-pkg && \
            make install_local && popd
-           
+
       - name: Install mboct-numerical-pkg
         run: |
            git clone -b master https://github.com/octave-user/mboct-numerical-pkg.git && \
            pushd mboct-numerical-pkg && \
            make install_local && popd
-           
+
       - name: Create distribution
         run: make -C $GITHUB_WORKSPACE dist
-        
+
       - name: Install the package
         run: make -C $GITHUB_WORKSPACE install_local
-        
+
       - name: Run all tests
         run: |
-             make -C $GITHUB_WORKSPACE check_installed >& fntests.out
-             awk -F ' ' 'BEGIN{ failed=9999; } /^  FAIL/{ failed = $2; } END { if (failed != 0) exit 1; }' fntests.out
+             make -C $GITHUB_WORKSPACE CXXFLAGS="-Ofast -Wall -march=native" check_installed >& fntests.out
              cat ${GITHUB_WORKSPACE}/fntests.log
-             tail -n 12 fntests.out
-             
+             tail -n 14 fntests.out
+             awk -F ' ' 'BEGIN{ failed=9999; } /^  FAIL\>/{ failed = $2; } END { if (failed != 0) exit 1; }' fntests.out

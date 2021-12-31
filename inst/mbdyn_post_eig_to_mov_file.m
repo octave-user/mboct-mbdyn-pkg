@@ -77,13 +77,26 @@ function mode_index = mbdyn_post_eig_to_mov_file(input_file, output_filename_tem
     modal = mbdyn_post_load_output_eig(input_file);
   endif
 
-  mode_index = [];
-
-  dof_index = repmat(dof_info.struct_node_dofs, 1, 6);
+  node_idx_modal = zeros(numel(nodes), 1, "int32");
+  
+  for i=1:numel(nodes)
+    node_idx_modal_i = find(nodes(i).label == modal.labels);
+    
+    if (isempty(node_idx_modal_i))
+      node_idx_modal(i) = -1;
+    else
+      node_idx_modal(i) = node_idx_modal_i;
+    endif
+  endfor
+  
+  dof_index = repmat(modal.idx, 1, 6);
 
   for i=1:6
-    dof_index((i - 1) * length(dof_info.struct_node_dofs) + (1:length(dof_info.struct_node_dofs))) += i;
+    dof_index((i - 1) * length(modal.idx) + (1:length(modal.idx))) += i;
   endfor
+
+  mode_index = zeros(columns(modal.VR), 1, "int32");
+  mode_num = int32(0);  
 
   for k=1:length(options.mode_index)
     if (options.mode_index(k) < 1 || options.mode_index(k) > columns(modal.VR))
@@ -94,82 +107,119 @@ function mode_index = mbdyn_post_eig_to_mov_file(input_file, output_filename_tem
     norm_VR_struct = max(abs(modal.VR(dof_index, options.mode_index(k))));
 
     if (norm_VR_struct >= options.tolerance_lambda * norm_VR)
-      mode_index(end + 1) = options.mode_index(k);
+      mode_index(++mode_num) = options.mode_index(k);
     endif
   endfor
 
-  if (length(mode_index) == 0)
+  if (mode_num == 0)
     return;
   endif
 
+  mode_index = mode_index(1:mode_num);
+  
   for k=1:length(mode_index)
     output_filename = sprintf(output_filename_template, mode_index(k));
 
-    fid = -1;
+    [out_dir, out_name, out_ext] = fileparts(output_filename);
 
+    out_filename = fullfile(out_dir, [out_name, ".out"]);
+
+    fd_mov = -1;
+    fd_out = -1;
+    
     unwind_protect
-      [fid, msg] = fopen(output_filename, "wt");
+      [fd_mov, msg] = fopen(output_filename, "wt");
 
-      if (fid == -1)
+      if (fd_mov == -1)
         error("could not open file \"%s\": %s", output_filename, msg);
       endif
 
+      [fd_out, msg] = fopen(out_filename, "wt");
+
+      if (fd_out == -1)
+        error("failed to open file \"%s\": %s", out_filename, msg);
+      endif
+
+      fprintf(fd_out, "# Derivatives solution step at time 0 performed in 0 iterations with 0 error\n");
+      fprintf(fd_out, "# Key for lines starting with \"Step\":\n");
+      fprintf(fd_out, "# Step Time TStep NIter ResErr SolErr SolConv Out\n");
+      
       if (options.verbose)
         fprintf(stderr, "mode_index=%d file=\"%s\"\n", mode_index(k), output_filename);
       endif
 
-      norm_VR = max(abs(modal.VR(dof_index(1:3 * length(dof_info.struct_node_dofs)), mode_index(k))));
+      norm_VR = max(abs(modal.VR(dof_index(1:3 * length(modal.idx)), mode_index(k))));
 
       lambda = modal.lambda(mode_index(k));
 
-      for i=1:options.frames
-        phase = 2 * pi * (i - 1) * options.periods / (options.frames - 1);
-        for j=1:length(dof_info.struct_node_labels)
-          fprintf(fid, "%d ", dof_info.struct_node_labels(j));
+      phase = 2 * pi * ((1:options.frames) - 1) * options.periods / (options.frames - 1);
+      
+      for i=1:numel(phase)
+        omega = 2 * pi * modal.f(mode_index(k));
+        
+        fprintf(fd_out, "Step %d %e %e %d %e %e %d %d\n", i - 1, phase(i) / omega, (phase(2) - phase(1)) / omega, 0, 0, 0, 0, 1);
+        
+        for j=1:numel(nodes)
+          fprintf(fd_mov, "%d ", nodes(j).label);
 
-          idx = dof_info.struct_node_dofs(j);
-          VR = modal.VR(idx + (1:6), mode_index(k)) / norm_VR;
+          if (node_idx_modal(j) > 0)
+            assert(modal.labels(node_idx_modal(j)) == nodes(j).label);
+            
+            idx = modal.idx(node_idx_modal(j));                      
 
-          dX = options.scale * real(VR * exp(1j * phase));
-          XP = options.scale * real(lambda * VR * exp(1j * phase));
+            VR = modal.VR(idx + (1:6), mode_index(k)) / norm_VR;
+          
+            dX = options.scale * real(VR * exp(1j * phase(i)));
+            XP = options.scale * real(lambda * VR * exp(1j * phase(i)));
 
-          X = modal.X0((j - 1) * 6 + (1:3)) + dX(1:3);
-          Phi = modal.X0((j - 1) * 6 + (4:6)) + dX(4:6);
+            X = modal.X0((node_idx_modal(j) - 1) * 6 + (1:3)) + dX(1:3);
+            Phi = modal.X0((node_idx_modal(j) - 1) * 6 + (4:6)) + dX(4:6);
+            R = rotation_vector_to_rotation_matrix(Phi);
+          else
+            X = nodes(j).X0;
+            Phi = nodes(j).Phi0;
+            R = nodes(j).R0;
+            XP = zeros(6, 1);
+          endif
 
-          fprintf(fid, "%e ", X);
+          fprintf(fd_mov, "%e ", X);
 
-          od = nodes(find(node_labels == dof_info.struct_node_labels(j))).orientation_description;
+          od = nodes(j).orientation_description;
 
           switch (od)
             case "euler123"
-              R = rotation_vector_to_rotation_matrix(Phi);
               Phi = rotation_matrix_to_euler123(R);
-              fprintf(fid, "%e ", Phi * 180 / pi);
+              fprintf(fd_mov, "%e ", Phi * 180 / pi);
             case "euler313"
-              R = rotation_vector_to_rotation_matrix(Phi);
               Phi = rotation_matrix_to_euler313(R);
-              fprintf(fid, "%e ", Phi * 180 / pi);
+              fprintf(fd_mov, "%e ", Phi * 180 / pi);
             case "euler321"
-              R = rotation_vector_to_rotation_matrix(Phi);
               Phi = rotation_matrix_to_euler321(R);
-              fprintf(fid, "%e ", Phi * 180 / pi);
+              fprintf(fd_mov, "%e ", Phi * 180 / pi);
             case "phi"
-              fprintf(fid, "%e ", Phi);
+              fprintf(fd_mov, "%e ", Phi);
             case "mat"
-              R = rotation_vector_to_rotation_matrix(Phi);
-              fprintf(fid, "%e ", R.');
+              fprintf(fd_mov, "%e ", R.');
             otherwise
               error("orientation description \"%s\" not supported!",od);
           endswitch
 
-          fprintf(fid, "%e ", XP);
-          fprintf(fid, "\n");
+          fprintf(fd_mov, "%e ", XP);
+          fprintf(fd_mov, "\n");
         endfor
       endfor
     unwind_protect_cleanup
-      if (fid ~= -1)
-        fclose(fid);
+      if (fd_mov ~= -1)
+        fclose(fd_mov);
       endif
+      
+      fd_mov = -1;
+
+      if (fd_out ~= -1)
+        fclose(fd_out);
+      endif
+      
+      fd_out = -1;
     end_unwind_protect
 
     if (isfield(options, "f_run_mbdyn2easyanim") && options.f_run_mbdyn2easyanim)
@@ -268,12 +318,13 @@ endfunction
 %!     fputs(fd, "          parameter, 0.01, use lapack, balance, permute;\n");
 %!     fputs(fd, " end: initial value;\n");
 %!     fputs(fd, " begin: control data;\n");
-%!     fputs(fd, "     structural nodes: 1;\n");
+%!     fputs(fd, "     structural nodes: 2;\n");
 %!     fputs(fd, "     genels: 4;\n");
 %!     fputs(fd, "     joints: 1;\n");
 %!     fputs(fd, " end: control data;\n");
 %!     fputs(fd, " begin: nodes;\n");
 %!     fputs(fd, "         structural: 1, static, null, eye, null, null;\n");
+%!     fputs(fd, "         structural: 2, dummy, 1, offset, null, eye;\n");
 %!     fputs(fd, " end: nodes;\n");
 %!     fputs(fd, " begin: elements;\n");
 %!     fputs(fd, "         genel: 1, spring support, 1, structural, 1, algebraic, linear viscoelastic generic, s1, d1;\n");

@@ -370,7 +370,7 @@ function [X, shape] = mbdyn_pre_beam_helical_shape(options)
 
   if (~isfield(options, "N"))
     if (~isfield(options, "N_coil"))
-      options.N_coil = 200;
+      options.N_coil = 3600;
     endif
 
     options.N = options.N_coil * abs(options.Phi(end) - options.Phi(1)) / (2 * pi );
@@ -446,7 +446,7 @@ endfunction
 %! options.z = options.L * [ 0; 0.05; 0.95; 1 ];
 %! options.z_D = options.L * [ 0; 0.5; 1 ];
 %! options.Phi = 2 * pi * n * [ 0; 0.2; 0.8; 1 ];
-%! options.N = 20;
+%! options.N = 3600;
 %! options.interpolation = 'linear';
 %! options.interpolation_D = 'spline';
 %! [X, shape] = mbdyn_pre_beam_helical_shape(options);
@@ -476,7 +476,7 @@ endfunction
 %! grid on;
 %! grid minor on;
 %! title('helical beam shape');
-%! set(gca(), "DataAspectRatio",[1,1,1]);
+%! daspect(ones(1,3));
 
 %!test
 %! close all;
@@ -486,7 +486,7 @@ endfunction
 %! options.ni = 2;
 %! options.L = 30e-3;
 %! options.D = Di + options.d;
-%! options.N = 20;
+%! options.N = 3600;
 %! options.type = "inactive coils, const pitch, const diameter";
 %! number_of_elements_per_coil = 7;
 %! N = ceil(number_of_elements_per_coil*options.na + 2 * options.ni);
@@ -518,7 +518,7 @@ endfunction
 %! grid on;
 %! grid minor on;
 %! title('helical beam shape');
-%! set(gca(), "DataAspectRatio",[1,1,1]);
+%! daspect(ones(1,3));
 
 %!test
 %! close all;
@@ -528,7 +528,7 @@ endfunction
 %! options.ni = 3-270/360;
 %! options.L = 30e-3;
 %! options.D = Di + options.d;
-%! options.N = 20;
+%! options.N = 3600;
 %! options.N_begin = 10;
 %! options.N_end = 10;
 %! options.type = "const pitch, const diameter";
@@ -562,7 +562,7 @@ endfunction
 %! grid on;
 %! grid minor on;
 %! title('helical beam shape');
-%! set(gca(), "DataAspectRatio",[1,1,1]);
+%! daspect(ones(1,3));
 
 %!test
 %! close all;
@@ -603,7 +603,7 @@ endfunction
 %! grid on;
 %! grid minor on;
 %! title('helical beam shape');
-%! set(gca(), "DataAspectRatio",[1,1,1]);
+%! daspect(ones(1, 3));
 
 %!test
 %! close all;
@@ -652,7 +652,7 @@ endfunction
 %! grid on;
 %! grid minor on;
 %! title('helical beam shape');
-%! set(gca(), "DataAspectRatio",[1,1,1]);
+%! daspect(ones(1, 3));
 
 %!test
 %! close all;
@@ -705,7 +705,7 @@ endfunction
 %! grid on;
 %! grid minor on;
 %! title('helical beam shape');
-%! set(gca(), "DataAspectRatio",[1,1,1]);
+%! daspect(ones(1, 3));
 
 %!test
 %! close all;
@@ -715,7 +715,7 @@ endfunction
 %! spring.na = 4.6;
 %! spring.ni = 2.7;
 %! spring.z_D = [ -spring.d; 0; 6.5e-3; spring.L - 6.5e-3; spring.L; spring.L + spring.d ];
-%! spring.N = int32(50);
+%! spring.N = int32(3600);
 %! spring.interpolation_D = 'linear';
 %! spring.type = "inactive coils, const pitch, variable diameter";
 %! spring.ground_surface = 340 * pi / 180;  # angle of ground area at each side
@@ -744,7 +744,7 @@ endfunction
 %! grid on;
 %! grid minor on;
 %! title('helical beam shape');
-%! set(gca(), "DataAspectRatio",[1,1,1]);
+%! daspect(ones(1, 3));
 
 %!demo
 %! close all;
@@ -754,7 +754,7 @@ endfunction
 %! spring.na = 4.6;
 %! spring.ni = 2.7;
 %! spring.z_D = [ -spring.d; 0; 6.5e-3; spring.L - 6.5e-3; spring.L; spring.L + spring.d ];
-%! spring.N = int32(50);
+%! spring.N = int32(3600);
 %! spring.interpolation_D = 'linear';
 %! spring.type = "inactive coils, const pitch, variable diameter";
 %! spring.ground_surface = 340 * pi / 180;  # angle of ground area at each side
@@ -776,10 +776,11 @@ endfunction
 %! ylabel('D [m]');
 %! title('coil diameter versus height');
 %! figure("visible","off");
-%! plot(X(1,:), X(3,:));
+%! plot3(X(1,:), X(2, :), X(3,:));
 %! xlabel('x [m]');
+%! ylabel('y [m]');
 %! zlabel('z [m]');
 %! grid on;
 %! grid minor on;
 %! title('helical beam shape');
-%! set(gca(), "DataAspectRatio", [1, 1, 1]);
+%! daspect(ones(1, 3));

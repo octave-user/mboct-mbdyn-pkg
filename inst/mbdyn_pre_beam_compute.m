@@ -159,11 +159,7 @@ function t = mbdyn_curved_beam_parameters(beam, s)
 endfunction
 
 function s = mbdyn_curved_beam_length_vector(beam, t)
-  s = zeros(1, columns(t));
-
-  for i=2:length(t)
-    s(i) = s(i-1) + mbdyn_curved_beam_segment_length(beam,t(i-1),t(i));
-  endfor
+  s = cumtrapz(t, mbdyn_curved_beam_segment_length_ds(beam, t));
 endfunction
 
 function s = mbdyn_curved_beam_segment_length(beam, t0=0, t1=1)
@@ -206,7 +202,7 @@ endfunction
 %! X = [ 1,2,3,4;
 %!       0,3,0,0;
 %!       0,4,0,0 ];
-%! beam = mbdyn_pre_beam_compute(X, N, 15);
+%! beam = mbdyn_pre_beam_compute(X, N, 40);
 %! norm_dXn = norm(beam.Xn(:,2:end) - beam.Xn(:,1:end-1), 2, 'cols');
 %! f = max(abs(1 - norm_dXn/mean(norm_dXn)));
 %! assert(f < 1e-2);
@@ -428,8 +424,8 @@ endfunction
 
 %!demo
 %! f_print_input_file = false;
-%! F = 10;
-%! d = 1e-3;
+%! F = 8;
+%! d = 1.3e-3;
 %! A = d^2 * pi / 4.;
 %! Ay = 9. / 10. * A;
 %! Az = Ay;
@@ -440,10 +436,10 @@ endfunction
 %! G = 81500e6;
 %! rho = 7850;
 %! D = 10e-3;
-%! L = 1e-3;
-%! n = 1;
-%! N = n * 7;
-%! Phi = linspace(0, 2 * pi * n, n * 36);
+%! L = 5e-3;
+%! n = 5;
+%! N = n * 21;
+%! Phi = linspace(0, 2 * pi * n, n * 3600);
 %! X = [0.5 * D * cos(Phi);
 %!      0.5 * D * sin(Phi);
 %!      linspace(0, L, numel(Phi))];
@@ -528,26 +524,35 @@ endfunction
 %!   options.verbose = false;
 %!   options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
-%!   [t, trajectory, deformation] = mbdyn_post_load_output_struct(options.output_file);
-%!   log_dat = mbdyn_post_load_log(fname);
-%!   bodies = mbdyn_post_load_log_body(fname);
+%!   [res.t, ...
+%!    res.trajectory, ...
+%!    res.deformation, ...
+%!    res.velocity, ...
+%!    res.acceleration, ...
+%!    res.node_id, ...
+%!    res.force, ...
+%!    res.force_id, ...
+%!    res.force_node_id, ...
+%!    res.orientation_description] = mbdyn_post_load_output_struct(options.output_file);
+%!   res.log_dat = mbdyn_post_load_log(fname);
+%!   res.bodies = mbdyn_post_load_log_body(fname);
 %!   tol = 1e-5;
-%!   for i=1:numel(log_dat.nodes)
-%!     assert(log_dat.nodes(i).X0, beam.Xn(:, i), tol);
-%!     assert(log_dat.nodes(i).R0, beam.Rn(:, :, i), tol);
+%!   for i=1:numel(res.log_dat.nodes)
+%!     assert(res.log_dat.nodes(i).X0, beam.Xn(:, i), tol);
+%!     assert(res.log_dat.nodes(i).R0, beam.Rn(:, :, i), tol);
 %!   endfor
-%!   for i=1:numel(log_dat.beams3)
+%!   for i=1:numel(res.log_dat.beams3)
 %!     for j=1:3
-%!       assert(log_dat.beams3(i).nodes(j).label, int32(beam.beams(i).nidx(j)));
+%!       assert(res.log_dat.beams3(i).nodes(j).label, int32(beam.beams(i).nidx(j)));
 %!     endfor
 %!   endfor
-%!   for i=1:numel(bodies)
-%!     assert(bodies(i).node, int32(i));
+%!   for i=1:numel(res.bodies)
+%!     assert(res.bodies(i).node, int32(i));
 %!   endfor
 %!   R = G * d^4 / (8 * n * D^3);
 %!   wref = -F / R;
 %!   tol = 1e-2;
-%!   assert(deformation{end}(end, 3), wref, tol * abs(wref));
+%!   assert(res.deformation{end}(end, 3), wref, tol * abs(wref));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);

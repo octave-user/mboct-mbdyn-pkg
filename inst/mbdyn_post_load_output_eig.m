@@ -129,6 +129,10 @@ function modal = mbdyn_post_load_output_eig(mbdyn_output_file, options, index)
   if (1 == exist("idx", "var"))
     modal.idx = idx;
   endif
+
+  if (1 == exist("labels", "var"))
+    modal.labels = labels;
+  endif
   
   if (1 == exist("VR", "var"))
     modal.VR = VR(:, idx_f);

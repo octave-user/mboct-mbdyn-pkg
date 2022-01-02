@@ -180,7 +180,7 @@ endfunction
 %! l = 5000e-3;
 %! param.rho = 7850;
 %! param.number_of_elements = 50;
-%! interpolation_points = 10;
+%! interpolation_points = 1000;
 %! [fd, input_file] = mkstemp(fullfile(tempdir(), "mbdyn_pre_beam_write_bodies_XXXXXX"));
 %! if (fd == -1)
 %!   error("failed to open temporary file");
@@ -277,7 +277,7 @@ endfunction
 %! fputs(fd, "    max iterations: 10;\n");
 %! fputs(fd, "    derivatives coefficient: 1e-8;\n");
 %! fputs(fd, "    derivatives max iterations: 10;\n");
-%! fputs(fd, "    derivatives tolerance: 1e-6;\n");
+%! fputs(fd, "    derivatives tolerance: 1e-5;\n");
 %! fputs(fd, "    tolerance: 1e-5;\n");
 %! fputs(fd, "    eigenanalysis: initial_time,\n");
 %! fputs(fd, "    suffix format, \"%02d\",\n");

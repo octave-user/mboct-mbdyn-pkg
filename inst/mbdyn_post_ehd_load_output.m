@@ -98,7 +98,9 @@ function bearings = mbdyn_post_ehd_load_output(mbdyn_filename, log_dat, options)
   usr_filename = mbdyn_post_output_filename(mbdyn_filename, ".usr");
   input_mov_file = mbdyn_post_output_filename(mbdyn_filename, ".mov");
 
-  bearings = struct()([]);
+  empty_cell = cell(1, length(log_dat.bearings));
+  
+  bearings = struct("label", empty_cell, "type", empty_cell, "cylindrical", empty_cell);
 
   for i=1:length(log_dat.bearings)
     bearings(i).label = log_dat.bearings(i).label;

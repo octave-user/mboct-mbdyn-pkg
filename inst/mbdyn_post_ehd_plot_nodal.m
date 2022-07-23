@@ -497,7 +497,6 @@ endfunction
 %!     fputs(fd, "        max iterations: 30;\n");
 %!     fputs(fd, "        tolerance: 1e-10, test, minmax;\n");
 %!     fputs(fd, "        linear solver: umfpack, map, colamd, scale, row max column max, always, max iterations, 100;\n");
-%!     fputs(fd, "        nonlinear solver: line search, default solver options, heavy nonlinear, divergence check, no;\n");
 %!     fputs(fd, "        enforce constraint equations: constraint violations, scale factor, 1e5;\n");
 %!     fputs(fd, "        threads: assembly, 1;\n");
 %!     fputs(fd, "        method: bdf;\n");
@@ -506,8 +505,19 @@ endfunction
 %!     fputs(fd, "        derivatives max iterations: 10;\n");
 %!     fputs(fd, "        derivatives coefficient: 110;\n");
 %!     fputs(fd, "        output: iterations, solver condition number, stat, yes;\n");
+%!     fputs(fd, "        nonlinear solver: nox,\n");
+%!     fputs(fd, "             jacobian operator, newton,\n");
+%!     fputs(fd, "             solver, line search based,\n");
+%!     fputs(fd, "             forcing term, type 2,\n");
+%!     fputs(fd, "             direction, newton,\n");
+%!     fputs(fd, "             weighted rms absolute tolerance, 0.,\n");
+%!     fputs(fd, "             weighted rms relative tolerance, 0.,\n");
+%!     fputs(fd, "             linear solver, gmres,\n");
+%!     fputs(fd, "             linear solver max iterations, 100,\n");
+%!     fputs(fd, "             krylov subspace size, 100;\n");
 %!     fputs(fd, "end: initial value;\n");
 %!     fputs(fd, "begin: control data;\n");
+%!     fputs(fd, "    use automatic differentiation;\n");
 %!     fputs(fd, "    skip initial joint assembly;\n");
 %!     fputs(fd, "    output meter: closest next, t1 - 0.5 * dt, forever, const, dt;\n");
 %!     fputs(fd, "    use: loadable elements, in assembly;\n");

@@ -485,16 +485,16 @@ function [log_dat] = mbdyn_post_load_log(mbdyn_filename, options)
 		  endfor
 		endfor
 
-		mesh_id = int32(data(++idx));
+		mesh_id = uint32(data(++idx));
 
-		switch (bitand(mesh_id, 0x1))
+		switch (bitand(mesh_id, uint32(0x1)))
 		  case 1
 		    ## cylindrical rigid body bearing
 		    log_dat.bearings(iBearing).cylindrical.d = data(++idx);
 		    log_dat.bearings(iBearing).cylindrical.D = data(++idx);
 		    log_dat.bearings(iBearing).cylindrical.B = data(++idx);
 
-		    switch (bitand(mesh_id, 0xF0))
+		    switch (bitand(mesh_id, uint32(0xF0)))
 		      case 0x10
 			log_dat.bearings(iBearing).cylindrical.dm = log_dat.bearings(iBearing).cylindrical.d;
 			log_dat.bearings(iBearing).cylindrical.mesh_pos = "journal";

@@ -39,7 +39,7 @@
 ##
 ## @end deftypefn
 
-function [node_id, trajectory, velocity, acceleration, orientation_description, deformation] = mbdyn_post_load_output_mov(mbdyn_filename, filter_node_id, append_rows, append_columns, auto_resize_rows)  
+function [node_id, trajectory, velocity, acceleration, orientation_description, deformation] = mbdyn_post_load_output_mov(mbdyn_filename, filter_node_id, append_rows, append_columns, auto_resize_rows)
   if (nargin < 1 || nargout > 6)
     print_usage();
   endif
@@ -59,126 +59,100 @@ function [node_id, trajectory, velocity, acceleration, orientation_description, 
   if (nargin < 5)
     auto_resize_rows = true;
   endif
-  
+
   if (~ischar(mbdyn_filename))
     error("mbdyn_filename must be a string!");
   endif
-  
+
   if (~isscalar(append_rows))
     error("append_rows must be a scalar!");
   endif
-  
+
   mov_filename = mbdyn_post_output_filename(mbdyn_filename, ".mov");
   log_filename = mbdyn_post_output_filename(mbdyn_filename, ".log");
-  
+
   column_count = 0;
-  
+
   if (nargout >= 2)
     column_count = 6;
   endif
-  
+
   if (nargout >= 3)
     column_count = 12;
   endif
-  
+
   nodes = mbdyn_post_load_log_node(log_filename);
-  
+
   node_labels = [nodes.label];
-  
+
   [node_id, data] = mbdyn_post_load_output(mov_filename, column_count, filter_node_id, append_rows, append_columns, 1, auto_resize_rows);
-  
+
   node_label_idx = zeros(1,length(node_id));
-  
+
   for i=1:length(node_id)
     node_label_idx_i = find(node_id(i) == node_labels);
-    
+
     if (length(node_label_idx_i) == 1)
       node_label_idx(i) = node_label_idx_i;
     else
       error("node_id %d not found in file \"%s\"!", node_id(i), log_filename);
     endif
   endfor
-  
+
   orientation_description = { nodes(node_label_idx).orientation_description };
 
   if (length(data) == 0)
     if (nargout >= 2)
       trajectory = {};
     endif
-    
+
     if (nargout >=  3)
       velocity = {};
     endif
-    
+
     if (nargout >= 4)
       acceleration = {};
     endif
-    
+
     if (nargout >= 6)
       deformation = {};
     endif
   else
     for i=1:length(data)
       if (nargout >= 2)
-	switch (orientation_description{i})
-	  case {"euler123", "euler313", "euler321", "phi"}
-	    trajectory{i} = data{i}(:, 1:6);
-	    
-	    if (nargout >=  3)
-              velocity{i} = data{i}(:, 7:12);
-	    endif
-	    
-	    if (nargout >= 4)
-              if (columns(data{i}) >= 18)
-		acceleration{i} = data{i}(:, 13:18);
-              else
-		acceleration{i} = zeros(rows(data{i}), 0);
-              endif
-	    endif
-	    
-            switch (orientation_description{i})
-              case {"euler123", "euler321", "euler313"}
-                trajectory{i}(:,4:6) *= pi / 180; % euler angles are output in degrees
-              case "phi"
-		## rotation vectors are already in radians
-            endswitch
-	  case "none"
-	    trajectory{i} = data{i}(:, 1:3);
-	    
-	    if (nargout >=  3)
-              velocity{i} = data{i}(:,4:6);
-	    endif
-	    
-	    if (nargout >= 4)
-              if (columns(data{i}) >= 9)
-		acceleration{i} = data{i}(:, 7:9);
-              else
-		acceleration{i} = zeros(rows(data{i}), 0);
-              endif
-	    endif
-	  otherwise
-            error("orientation_description{%d} \"%s\" not supported!", i, orientation_description{i});
-	endswitch
+        trajectory{i} = data{i}(:, 1:6);
+
+        if (nargout >=  3)
+          velocity{i} = data{i}(:, 7:12);
+        endif
+
+        if (nargout >= 4)
+          if (columns(data{i}) >= 18)
+            acceleration{i} = data{i}(:, 13:18);
+          else
+            acceleration{i} = zeros(rows(data{i}), 0);
+          endif
+        endif
+
+        switch (orientation_description{i})
+          case {"euler123", "euler321", "euler313"}
+            trajectory{i}(:,4:6) *= pi / 180; % euler angles are output in degrees
+          case "phi"
+            ## rotation vectors are already in radians
+        endswitch
       endif
-      
+
       if (nargout >= 6)
-	node_idx_i = find(node_id(i) == [nodes.label]);
+        node_idx_i = find(node_id(i) == [nodes.label]);
 
-	if (length(node_idx_i) ~= 1)
-	  error("node_id(%d)=%d must appear exactly one times in the .log file!",i,node_id(i));
-	endif
+        if (length(node_idx_i) ~= 1)
+          error("node_id(%d)=%d must appear exactly one times in the .log file!",i,node_id(i));
+        endif
 
-	switch (orientation_description{i})
-	  case {"euler123", "euler321", "euler313", "phi"}
-            deformation{i} = trajectory{i} - repmat([nodes(node_idx_i).X0.', ...
-						     nodes(node_idx_i).Phi0.'], ...
-						    rows(trajectory{i}),1);
-	  case "none"
-            deformation{i} = trajectory{i} - repmat(nodes(node_idx_i).X0.', ...
-						    rows(trajectory{i}),1);
-	  otherwise
-	    error("orientation description \"%s\" not supported", orientation_description{i});
-	endswitch
+        deformation{i} = trajectory{i} - repmat([nodes(node_idx_i).X0.', ...
+                                                 nodes(node_idx_i).Phi0.'], ...
+                                                rows(trajectory{i}),1);
+
       endif
     endfor
   endif

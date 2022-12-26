@@ -200,8 +200,8 @@ function [log_dat] = mbdyn_post_load_log(mbdyn_filename, options)
 		      error("while reading logfile \"%s\": \"%s\"", log_filename, line);
 		    endif
 		    orientation_description = "none";
-		    R0 = [];
-		    Phi0 = [];
+		    R0 = eye(3);
+		    Phi0 = zeros(3, 1);
 		  otherwise
 		    error("orientation %s is not implemented!",orientation_description);
 		endswitch

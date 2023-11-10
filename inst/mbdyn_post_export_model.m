@@ -39,7 +39,7 @@ function [mesh, sol] = mbdyn_post_export_model(res, idx_t)
   num_aux_nodes = int32(0);
 
   for i=1:numel(elem_types_mb)
-    num_aux_nodes += elem_node_num * numel(getfield(res.log_dat, elem_types_mb{i}));
+    num_aux_nodes += elem_node_num(i) * numel(getfield(res.log_dat, elem_types_mb{i}));
   endfor
 
   mesh.nodes = zeros(numel(res.log_dat.nodes) + num_aux_nodes, 6);

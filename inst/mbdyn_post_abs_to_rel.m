@@ -1,4 +1,4 @@
-## Copyright (C) 2011(-2020) Reinhard <octave-user@a1.net>
+## Copyright (C) 2011(-2023) Reinhard <octave-user@a1.net>
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -68,6 +68,7 @@ function mbdyn_post_abs_to_rel(ref_node, abs_mov_file, rel_mov_file, ref_only, i
 endfunction
   
 %!test
+%! ## TEST1
 %! fd = -1;
 %! unwind_protect
 %!   unwind_protect
@@ -94,7 +95,7 @@ endfunction
 %!     fputs(fd, "         tolerance: 1.e-6;\n");
 %!     fputs(fd, "         threads: assembly, 1;\n");
 %!     fputs(fd, "         derivatives max iterations: 10;\n");
-%!     fputs(fd, "         derivatives coefficient: auto;\n");
+%!     fputs(fd, "         derivatives coefficient: 1e-3;\n");
 %!     fputs(fd, "         nonlinear solver: nox, modified, 10,\n");
 %!     fputs(fd, "             keep jacobian matrix,\n");
 %!     fputs(fd, "             inner iterations before assembly, 6,\n");
@@ -107,6 +108,7 @@ endfunction
 %!     fputs(fd, "             linear solver, gmres,\n");
 %!     fputs(fd, "             linear solver max iterations, 12,\n");
 %!     fputs(fd, "             krylov subspace size, 12;\n");
+%!     fputs(fd, "             output: iterations;\n");
 %!     fputs(fd, " end: initial value;\n");
 %!     fputs(fd, " begin: control data;\n");
 %!     fputs(fd, "     use automatic differentiation;\n");
@@ -144,8 +146,8 @@ endfunction
 %!     fputs(fd, " begin: elements;\n");
 %!     fputs(fd, "         body: 1, 1, m1, 0.1, 0.2, 0.3, diag, 1.1, 1.2, 1.3;\n");
 %!     fputs(fd, "         body: 2, 2, m2, 0.01, 0.02, 0.03, diag, 2.1, 2.2, 2.3;\n");
-%!     fputs(fd, "         force: 1, absolute, 1, position, 10.1, 10.2, 10.3, 1., 0., 0., const, F1;\n");
-%!     fputs(fd, "         force: 2, absolute, 2, position, 20.1, 20.2, 20.3, 0., 1., 0., const, F2;\n");
+%!     fputs(fd, "         force: 1, absolute, 1, position, 10.1, 10.2, 10.3, 1., 0., 0., mult, time, const, F1;\n");
+%!     fputs(fd, "         force: 2, absolute, 2, position, 20.1, 20.2, 20.3, 0., 1., 0., mult, time, const, F2;\n");
 %!     fputs(fd, "         joint: 1, total joint,\n");
 %!     fputs(fd, "                   1,\n");
 %!     fputs(fd, "                    position, reference, 1, null,\n");
@@ -193,6 +195,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
+%! ## TEST2
 %! fd = -1;
 %! unwind_protect
 %!   unwind_protect
@@ -219,7 +222,7 @@ endfunction
 %!     fputs(fd, "         tolerance: 1.e-6;\n");
 %!     fputs(fd, "         threads: assembly, 1;\n");
 %!     fputs(fd, "         derivatives max iterations: 10;\n");
-%!     fputs(fd, "         derivatives coefficient: auto;\n");
+%!     fputs(fd, "         derivatives coefficient: 1e-3;\n");
 %!     fputs(fd, "         nonlinear solver: nox, modified, 10,\n");
 %!     fputs(fd, "             keep jacobian matrix,\n");
 %!     fputs(fd, "             inner iterations before assembly, 6,\n");
@@ -232,6 +235,7 @@ endfunction
 %!     fputs(fd, "             linear solver, gmres,\n");
 %!     fputs(fd, "             linear solver max iterations, 12,\n");
 %!     fputs(fd, "             krylov subspace size, 12;\n");
+%!     fputs(fd, "             output: iterations;\n");
 %!     fputs(fd, " end: initial value;\n");
 %!     fputs(fd, " begin: control data;\n");
 %!     fputs(fd, "     output meter: closest next, 0, forever, const, 1e-2;\n");
@@ -268,8 +272,8 @@ endfunction
 %!     fputs(fd, " begin: elements;\n");
 %!     fputs(fd, "         body: 1, 1, m1, 0.1, 0.2, 0.3, diag, 1.1, 1.2, 1.3;\n");
 %!     fputs(fd, "         body: 2, 2, m2, 0.01, 0.02, 0.03, diag, 2.1, 2.2, 2.3;\n");
-%!     fputs(fd, "         force: 1, absolute, 1, position, 10.1, 10.2, 10.3, 1., 0., 0., const, F1;\n");
-%!     fputs(fd, "         force: 2, absolute, 2, position, 20.1, 20.2, 20.3, 0., 1., 0., const, F2;\n");
+%!     fputs(fd, "         force: 1, absolute, 1, position, 10.1, 10.2, 10.3, 1., 0., 0., mult, time, const, F1;\n");
+%!     fputs(fd, "         force: 2, absolute, 2, position, 20.1, 20.2, 20.3, 0., 1., 0., mult, time, const, F2;\n");
 %!     fputs(fd, "         joint: 1, total joint,\n");
 %!     fputs(fd, "                   1,\n");
 %!     fputs(fd, "                    position, reference, 1, null,\n");
@@ -317,6 +321,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
+%! ## TEST3
 %! fd = -1;
 %! unwind_protect
 %!   unwind_protect
@@ -343,8 +348,9 @@ endfunction
 %!     fputs(fd, "         tolerance: 1.e-6;\n");
 %!     fputs(fd, "         threads: assembly, 1;\n");
 %!     fputs(fd, "         derivatives max iterations: 10;\n");
-%!     fputs(fd, "         derivatives coefficient: auto;\n");
+%!     fputs(fd, "         derivatives coefficient: 1e-3;\n");
 %!     fputs(fd, "         nonlinear solver: line search, default solver options, heavy nonlinear, divergence check, no;\n");
+%!     fputs(fd, "         output: iterations;\n");
 %!     fputs(fd, " end: initial value;\n");
 %!     fputs(fd, " begin: control data;\n");
 %!     fputs(fd, "     output meter: closest next, 0, forever, const, 1e-2;\n");
@@ -381,8 +387,8 @@ endfunction
 %!     fputs(fd, " begin: elements;\n");
 %!     fputs(fd, "         body: 1, 1, m1, 0.1, 0.2, 0.3, diag, 1.1, 1.2, 1.3;\n");
 %!     fputs(fd, "         body: 2, 2, m2, 0.01, 0.02, 0.03, diag, 2.1, 2.2, 2.3;\n");
-%!     fputs(fd, "         force: 1, absolute, 1, position, 10.1, 10.2, 10.3, 1., 0., 0., const, F1;\n");
-%!     fputs(fd, "         force: 2, absolute, 2, position, 20.1, 20.2, 20.3, 0., 1., 0., const, F2;\n");
+%!     fputs(fd, "         force: 1, absolute, 1, position, 10.1, 10.2, 10.3, 1., 0., 0., mult, time, const, F1;\n");
+%!     fputs(fd, "         force: 2, absolute, 2, position, 20.1, 20.2, 20.3, 0., 1., 0., mult, time, const, F2;\n");
 %!     fputs(fd, "         joint: 1, total joint,\n");
 %!     fputs(fd, "                   1,\n");
 %!     fputs(fd, "                    position, reference, 1, null,\n");
@@ -430,6 +436,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
+%! ## TEST4
 %! fd = -1;
 %! unwind_protect
 %!   unwind_protect
@@ -478,8 +485,8 @@ endfunction
 %!  fputs(fd, "        tolerance: 1e-6, test, norm, 1e-3, test, norm;\n");
 %!  fputs(fd, "        derivatives tolerance: 1e-3, 0;\n");
 %!  fputs(fd, "        derivatives max iterations: 20;\n");
-%!  fputs(fd, "        derivatives coefficient: auto, max iterations, 3;\n");
-%!  fputs(fd, "    output: iterations, CPU time, solver condition number, stat, yes;\n");
+%!  fputs(fd, "        derivatives coefficient: 1e-3;\n");
+%!  fputs(fd, "        output: iterations, CPU time, solver condition number, stat, yes;\n");
 %!  fputs(fd, "end: initial value;\n");
 %!  fputs(fd, "begin: control data;\n");
 %!  fputs(fd, "       tolerance: 1e-10;\n");
@@ -566,6 +573,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
+%! ## TEST5
 %! fd = -1;
 %! unwind_protect
 %!   unwind_protect
@@ -615,8 +623,8 @@ endfunction
 %!  fputs(fd, "        tolerance: 1e-6, test, norm, 1e-3, test, norm;\n");
 %!  fputs(fd, "        derivatives tolerance: 1e-3, 0;\n");
 %!  fputs(fd, "        derivatives max iterations: 20;\n");
-%!  fputs(fd, "        derivatives coefficient: auto, max iterations, 3;\n");
-%!  fputs(fd, "    output: iterations, CPU time, solver condition number, stat, yes;\n");
+%!  fputs(fd, "        derivatives coefficient: 1e-3;\n");
+%!  fputs(fd, "        output: iterations, CPU time, solver condition number, stat, yes;\n");
 %!  fputs(fd, "end: initial value;\n");
 %!  fputs(fd, "begin: control data;\n");
 %!  fputs(fd, "       tolerance: 1e-10;\n");
@@ -703,6 +711,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
+%! ## TEST6
 %! fd = -1;
 %! unwind_protect
 %!   unwind_protect
@@ -751,8 +760,8 @@ endfunction
 %!  fputs(fd, "        tolerance: 1e-6, test, norm, 1e-3, test, norm;\n");
 %!  fputs(fd, "        derivatives tolerance: 1e-3, 0;\n");
 %!  fputs(fd, "        derivatives max iterations: 20;\n");
-%!  fputs(fd, "        derivatives coefficient: auto, max iterations, 3;\n");
-%!  fputs(fd, "    output: iterations, CPU time, solver condition number, stat, yes;\n");
+%!  fputs(fd, "        derivatives coefficient: 1e-3;\n");
+%!  fputs(fd, "        output: iterations, CPU time, solver condition number, stat, yes;\n");
 %!  fputs(fd, "end: initial value;\n");
 %!  fputs(fd, "begin: control data;\n");
 %!  fputs(fd, "       tolerance: 1e-10;\n");
@@ -839,6 +848,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
+%! ## TEST7
 %! fd = -1;
 %! unwind_protect
 %!   unwind_protect
@@ -890,8 +900,8 @@ endfunction
 %!  fputs(fd, "        tolerance: 1e-6, test, norm, 1e-3, test, norm;\n");
 %!  fputs(fd, "        derivatives tolerance: 1e-3, 0;\n");
 %!  fputs(fd, "        derivatives max iterations: 20;\n");
-%!  fputs(fd, "        derivatives coefficient: auto, max iterations, 3;\n");
-%!  fputs(fd, "    output: iterations, CPU time, solver condition number, stat, yes;\n");
+%!  fputs(fd, "        derivatives coefficient: 1e-3;\n");
+%!  fputs(fd, "        output: iterations, CPU time, solver condition number, stat, yes;\n");
 %!  fputs(fd, "end: initial value;\n");
 %!  fputs(fd, "begin: control data;\n");
 %!  fputs(fd, "       tolerance: 1e-10;\n");
@@ -978,6 +988,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
+%! ## TEST8
 %! fd = -1;
 %! unwind_protect
 %!   unwind_protect
@@ -1027,8 +1038,8 @@ endfunction
 %!  fputs(fd, "        tolerance: 1e-6, test, norm, 1e-3, test, norm;\n");
 %!  fputs(fd, "        derivatives tolerance: 1e-3, 0;\n");
 %!  fputs(fd, "        derivatives max iterations: 20;\n");
-%!  fputs(fd, "        derivatives coefficient: auto, max iterations, 3;\n");
-%!  fputs(fd, "    output: iterations, CPU time, solver condition number, stat, yes;\n");
+%!  fputs(fd, "        derivatives coefficient: 1e-3;\n");
+%!  fputs(fd, "        output: iterations, CPU time, solver condition number, stat, yes;\n");
 %!  fputs(fd, "end: initial value;\n");
 %!  fputs(fd, "begin: control data;\n");
 %!  fputs(fd, "       tolerance: 1e-10;\n");
@@ -1115,6 +1126,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
+%! ## TEST9
 %! fd = -1;
 %! unwind_protect
 %!   unwind_protect
@@ -1164,8 +1176,8 @@ endfunction
 %!  fputs(fd, "        tolerance: 1e-6, test, norm, 1e-3, test, norm;\n");
 %!  fputs(fd, "        derivatives tolerance: 1e-3, 0;\n");
 %!  fputs(fd, "        derivatives max iterations: 20;\n");
-%!  fputs(fd, "        derivatives coefficient: auto, max iterations, 3;\n");
-%!  fputs(fd, "    output: iterations, CPU time, solver condition number, stat, yes;\n");
+%!  fputs(fd, "        derivatives coefficient: 1e-3;\n");
+%!  fputs(fd, "        output: iterations, CPU time, solver condition number, stat, yes;\n");
 %!  fputs(fd, "end: initial value;\n");
 %!  fputs(fd, "begin: control data;\n");
 %!  fputs(fd, "       tolerance: 1e-10;\n");
@@ -1252,6 +1264,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
+%! ## TEST10
 %! fd = -1;
 %! unwind_protect
 %!   unwind_protect
@@ -1301,8 +1314,8 @@ endfunction
 %!  fputs(fd, "        tolerance: 1e-6, test, norm, 1e-3, test, norm;\n");
 %!  fputs(fd, "        derivatives tolerance: 1e-3, 0;\n");
 %!  fputs(fd, "        derivatives max iterations: 20;\n");
-%!  fputs(fd, "        derivatives coefficient: auto, max iterations, 3;\n");
-%!  fputs(fd, "    output: iterations, CPU time, solver condition number, stat, yes;\n");
+%!  fputs(fd, "        derivatives coefficient: 1e-3;\n");
+%!  fputs(fd, "        output: iterations, CPU time, solver condition number, stat, yes;\n");
 %!  fputs(fd, "end: initial value;\n");
 %!  fputs(fd, "begin: control data;\n");
 %!  fputs(fd, "       tolerance: 1e-10;\n");
@@ -1389,6 +1402,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
+%! ## TEST11
 %! fd = -1;
 %! unwind_protect
 %!   unwind_protect
@@ -1436,10 +1450,10 @@ endfunction
 %!  fputs(fd, "        minimum step, 1e-12,\n");
 %!  fputs(fd, "        use preconditioner as solver, no;\n");
 %!  fputs(fd, "        tolerance: 1e-6, test, norm, 1e-3, test, norm;\n");
-%!  fputs(fd, "        derivatives tolerance: 1e-3, 0;\n");
-%!  fputs(fd, "        derivatives max iterations: 20;\n");
-%!  fputs(fd, "        derivatives coefficient: auto, max iterations, 3;\n");
-%!  fputs(fd, "    output: iterations, CPU time, solver condition number, stat, yes;\n");
+%!  fputs(fd, "        derivatives tolerance: 1e-4, 1e-4;\n");
+%!  fputs(fd, "        derivatives max iterations: 3000;\n");
+%!  fputs(fd, "        derivatives coefficient: 1e-4;\n");
+%!  fputs(fd, "        output: iterations, CPU time, solver condition number, stat, yes;\n");
 %!  fputs(fd, "end: initial value;\n");
 %!  fputs(fd, "begin: control data;\n");
 %!  fputs(fd, "       tolerance: 1e-10;\n");
@@ -1512,6 +1526,7 @@ endfunction
 %!   if (~options.verbose)
 %!     options.logfile = [fname, ".stdout"];
 %!   endif
+%!   # options.mbdyn_command = "valgrind mbdyn";
 %!   mbdyn_solver_run(fname, options);
 %!   log_dat = mbdyn_post_load_log(options.output_file);
 %!   [t, trajectory, deformation, velocity, acceleration, node_id] = mbdyn_post_load_output_struct(options.output_file);
@@ -1526,6 +1541,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
+%! ## TEST12
 %! fd = -1;
 %! unwind_protect
 %!   unwind_protect
@@ -1575,8 +1591,8 @@ endfunction
 %!  fputs(fd, "        tolerance: 1e-6, test, norm, 1e-3, test, norm;\n");
 %!  fputs(fd, "        derivatives tolerance: 1e-3, 0;\n");
 %!  fputs(fd, "        derivatives max iterations: 20;\n");
-%!  fputs(fd, "        derivatives coefficient: auto, max iterations, 3;\n");
-%!  fputs(fd, "    output: iterations, CPU time, solver condition number, stat, yes;\n");
+%!  fputs(fd, "        derivatives coefficient: 1e-3;\n");
+%!  fputs(fd, "        output: iterations, CPU time, solver condition number, stat, yes;\n");
 %!  fputs(fd, "end: initial value;\n");
 %!  fputs(fd, "begin: control data;\n");
 %!  fputs(fd, "       tolerance: 1e-10;\n");
@@ -1663,6 +1679,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
+%! ## TEST13
 %! fd = -1;
 %! unwind_protect
 %!   unwind_protect
@@ -1710,7 +1727,7 @@ endfunction
 %!     fputs(fd, "        tolerance: 1e-6, test, norm, 1e-3, test, norm;\n");
 %!     fputs(fd, "        derivatives tolerance: 1e-3, 0;\n");
 %!     fputs(fd, "        derivatives max iterations: 20;\n");
-%!     fputs(fd, "        derivatives coefficient: auto, max iterations, 3;\n");
+%!     fputs(fd, "        derivatives coefficient: 1e-3;\n");
 %!     fputs(fd, "        output: iterations, CPU time, solver condition number, stat, yes;\n");
 %!     fputs(fd, "end: initial value;\n");
 %!     fputs(fd, "begin: control data;\n");
@@ -1799,6 +1816,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
+%! ## TEST14
 %! fd = -1;
 %! unwind_protect
 %!   unwind_protect
@@ -1846,7 +1864,7 @@ endfunction
 %!     fputs(fd, "        tolerance: 1e-6, test, norm, 1e-3, test, norm;\n");
 %!     fputs(fd, "        derivatives tolerance: 1e-3, 0;\n");
 %!     fputs(fd, "        derivatives max iterations: 20;\n");
-%!     fputs(fd, "        derivatives coefficient: auto, max iterations, 3;\n");
+%!     fputs(fd, "        derivatives coefficient: 1e-3;\n");
 %!     fputs(fd, "        output: iterations, CPU time, solver condition number, stat, yes;\n");
 %!     fputs(fd, "end: initial value;\n");
 %!     fputs(fd, "begin: control data;\n");
@@ -1934,6 +1952,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
+%! ## TEST15
 %! fd = -1;
 %! unwind_protect
 %!   unwind_protect
@@ -1981,7 +2000,7 @@ endfunction
 %!     fputs(fd, "        tolerance: 1e-6, test, norm, 1e-3, test, norm;\n");
 %!     fputs(fd, "        derivatives tolerance: 1e-3, 0;\n");
 %!     fputs(fd, "        derivatives max iterations: 20;\n");
-%!     fputs(fd, "        derivatives coefficient: auto, max iterations, 3;\n");
+%!     fputs(fd, "        derivatives coefficient: 1e-3;\n");
 %!     fputs(fd, "        output: iterations, CPU time, solver condition number, stat, yes;\n");
 %!     fputs(fd, "end: initial value;\n");
 %!     fputs(fd, "begin: control data;\n");
@@ -2069,6 +2088,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
+%! ## TEST16
 %! fd = -1;
 %! unwind_protect
 %!   unwind_protect
@@ -2116,7 +2136,7 @@ endfunction
 %!     fputs(fd, "        tolerance: 1e-6, test, norm, 1e-3, test, norm;\n");
 %!     fputs(fd, "        derivatives tolerance: 1e-3, 0;\n");
 %!     fputs(fd, "        derivatives max iterations: 20;\n");
-%!     fputs(fd, "        derivatives coefficient: auto, max iterations, 3;\n");
+%!     fputs(fd, "        derivatives coefficient: 1e-3;\n");
 %!     fputs(fd, "        output: iterations, CPU time, solver condition number, stat, yes;\n");
 %!     fputs(fd, "end: initial value;\n");
 %!     fputs(fd, "begin: control data;\n");
@@ -2205,6 +2225,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
+%! ## TEST17
 %! fd = -1;
 %! unwind_protect
 %!   unwind_protect
@@ -2253,7 +2274,7 @@ endfunction
 %!     fputs(fd, "        tolerance: 1e-6, test, norm, 1e-3, test, norm;\n");
 %!     fputs(fd, "        derivatives tolerance: 1e-3, 0;\n");
 %!     fputs(fd, "        derivatives max iterations: 20;\n");
-%!     fputs(fd, "        derivatives coefficient: auto, max iterations, 3;\n");
+%!     fputs(fd, "        derivatives coefficient: 1e-6;\n");
 %!     fputs(fd, "        output: iterations, CPU time, solver condition number, stat, yes;\n");
 %!     fputs(fd, "end: initial value;\n");
 %!     fputs(fd, "begin: control data;\n");
@@ -2328,6 +2349,7 @@ endfunction
 %!   if (~options.verbose)
 %!     options.logfile = [fname, ".stdout"];
 %!   endif
+%!   options.mbdyn_command = "mbdyn";
 %!   mbdyn_solver_run(fname, options);
 %!   log_dat = mbdyn_post_load_log(options.output_file);
 %!   [t, trajectory, deformation, velocity, acceleration, node_id] = mbdyn_post_load_output_struct(options.output_file);
@@ -2368,7 +2390,8 @@ endfunction
 %!     fputs(fd, "         tolerance: 1.e-6;\n");
 %!     fputs(fd, "         threads: assembly, 1;\n");
 %!     fputs(fd, "         derivatives max iterations: 10;\n");
-%!     fputs(fd, "         derivatives coefficient: auto;\n");
+%!     fputs(fd, "         derivatives coefficient: 1e-3;\n");
+%!     fputs(fd, "         output: iterations;\n");
 %!     fputs(fd, " end: initial value;\n");
 %!     fputs(fd, " begin: control data;\n");
 %!     fputs(fd, "     use automatic differentiation;\n");
@@ -2406,8 +2429,8 @@ endfunction
 %!     fputs(fd, " begin: elements;\n");
 %!     fputs(fd, "         body: 1, 1, m1, 0.1, 0.2, 0.3, diag, 1.1, 1.2, 1.3;\n");
 %!     fputs(fd, "         body: 2, 2, m2, 0.01, 0.02, 0.03, diag, 2.1, 2.2, 2.3;\n");
-%!     fputs(fd, "         force: 1, absolute, 1, position, 10.1, 10.2, 10.3, 1., 0., 0., const, F1;\n");
-%!     fputs(fd, "         force: 2, absolute, 2, position, 20.1, 20.2, 20.3, 0., 1., 0., const, F2;\n");
+%!     fputs(fd, "         force: 1, absolute, 1, position, 10.1, 10.2, 10.3, 1., 0., 0., mult, time, const, F1;\n");
+%!     fputs(fd, "         force: 2, absolute, 2, position, 20.1, 20.2, 20.3, 0., 1., 0., mult, time, const, F2;\n");
 %!     fputs(fd, "         joint: 1, total joint,\n");
 %!     fputs(fd, "                   1,\n");
 %!     fputs(fd, "                    position, reference, 1, null,\n");

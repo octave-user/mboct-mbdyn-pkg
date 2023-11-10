@@ -630,10 +630,10 @@ endfunction
 %!   assert(w_1, wref_1, tol * max(abs(wref_1)));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
-%!     unlink(fname);
+%!     [~] = unlink(fname);
 %!     files = dir([fname, ".*"]);
 %!     for i=1:numel(files)
-%!       unlink(fullfile(files(i).folder, files(i).name));
+%!       [~] = unlink(fullfile(files(i).folder, files(i).name));
 %!     endfor
 %!   endif
 %! end_unwind_protect

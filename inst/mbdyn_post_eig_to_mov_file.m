@@ -200,6 +200,8 @@ function mode_index = mbdyn_post_eig_to_mov_file(input_file, output_filename_tem
               fprintf(fd_mov, "%e ", Phi);
             case "mat"
               fprintf(fd_mov, "%e ", R.');
+            case "none"
+              ## must be ignored
             otherwise
               error("orientation description \"%s\" not supported!",od);
           endswitch

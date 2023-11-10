@@ -53,7 +53,7 @@ function mbdyn_pre_input_file_copy(input_files, working_directory, input_directo
     new_file = make_absolute_filename(fullfile(working_directory, input_file_i));
 
     if (~strcmp(old_file, new_file))
-      unlink(new_file);
+      [~] = unlink(new_file);
 
       if (fcopy || ~isunix())
         [err, msg] = copyfile(old_file, new_file);

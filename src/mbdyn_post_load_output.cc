@@ -641,6 +641,10 @@ DEFUN_DLD(mbdyn_post_load_output, args, nargout,
 
                 is >> val;
 
+                if (is.eof()) {
+                     break;
+                }
+
                 if (is.fail())
                 {
                     // replace inf and nan with NAN

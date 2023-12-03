@@ -41,7 +41,7 @@ jobs:
         run: |
            hg clone https://www.octave.org/hg/octave octave
            pushd octave
-           hg checkout stable
+           hg checkout release-8-4-0
            popd
 
       # Runs a single command using the runners shell

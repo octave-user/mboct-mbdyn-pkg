@@ -166,7 +166,7 @@ endfunction
 %!     endif
 %!   end_unwind_protect
 %!   options.output_file = fname;
-%!   options.verbose = false;
+%!   options.verbose = true;
 %!   if (~options.verbose)
 %!     options.logfile = [fname, ".stdout"];
 %!   endif
@@ -292,7 +292,7 @@ endfunction
 %!     endif
 %!   end_unwind_protect
 %!   options.output_file = fname;
-%!   options.verbose = false;
+%!   options.verbose = true;
 %!   if (~options.verbose)
 %!     options.logfile = [fname, ".stdout"];
 %!   endif
@@ -407,7 +407,7 @@ endfunction
 %!     endif
 %!   end_unwind_protect
 %!   options.output_file = fname;
-%!   options.verbose = false;
+%!   options.verbose = true;
 %!   if (~options.verbose)
 %!     options.logfile = [fname, ".stdout"];
 %!   endif
@@ -555,7 +555,7 @@ endfunction
 %!     endif
 %!   end_unwind_protect
 %!   options.output_file = fname;
-%!   options.verbose = false;
+%!   options.verbose = true;
 %!   if (~options.verbose)
 %!     options.logfile = [fname, ".stdout"];
 %!   endif
@@ -693,7 +693,7 @@ endfunction
 %!     endif
 %!   end_unwind_protect
 %!   options.output_file = fname;
-%!   options.verbose = false;
+%!   options.verbose = true;
 %!   if (~options.verbose)
 %!     options.logfile = [fname, ".stdout"];
 %!   endif
@@ -830,7 +830,7 @@ endfunction
 %!     endif
 %!   end_unwind_protect
 %!   options.output_file = fname;
-%!   options.verbose = false;
+%!   options.verbose = true;
 %!   if (~options.verbose)
 %!     options.logfile = [fname, ".stdout"];
 %!   endif
@@ -970,7 +970,7 @@ endfunction
 %!     endif
 %!   end_unwind_protect
 %!   options.output_file = fname;
-%!   options.verbose = false;
+%!   options.verbose = true;
 %!   if (~options.verbose)
 %!     options.logfile = [fname, ".stdout"];
 %!   endif
@@ -1108,7 +1108,7 @@ endfunction
 %!     endif
 %!   end_unwind_protect
 %!   options.output_file = fname;
-%!   options.verbose = false;
+%!   options.verbose = true;
 %!   if (~options.verbose)
 %!     options.logfile = [fname, ".stdout"];
 %!   endif
@@ -1246,7 +1246,7 @@ endfunction
 %!     endif
 %!   end_unwind_protect
 %!   options.output_file = fname;
-%!   options.verbose = false;
+%!   options.verbose = true;
 %!   if (~options.verbose)
 %!     options.logfile = [fname, ".stdout"];
 %!   endif
@@ -1384,7 +1384,7 @@ endfunction
 %!     endif
 %!   end_unwind_protect
 %!   options.output_file = fname;
-%!   options.verbose = false;
+%!   options.verbose = true;
 %!   if (~options.verbose)
 %!     options.logfile = [fname, ".stdout"];
 %!   endif
@@ -1522,7 +1522,7 @@ endfunction
 %!     endif
 %!   end_unwind_protect
 %!   options.output_file = fname;
-%!   options.verbose = false;
+%!   options.verbose = true;
 %!   if (~options.verbose)
 %!     options.logfile = [fname, ".stdout"];
 %!   endif
@@ -1661,7 +1661,7 @@ endfunction
 %!     endif
 %!   end_unwind_protect
 %!   options.output_file = fname;
-%!   options.verbose = false;
+%!   options.verbose = true;
 %!   if (~options.verbose)
 %!     options.logfile = [fname, ".stdout"];
 %!   endif
@@ -1798,7 +1798,7 @@ endfunction
 %!     endif
 %!   end_unwind_protect
 %!   options.output_file = fname;
-%!   options.verbose = false;
+%!   options.verbose = true;
 %!   if (~options.verbose)
 %!     options.logfile = [fname, ".stdout"];
 %!   endif
@@ -1934,7 +1934,7 @@ endfunction
 %!     endif
 %!   end_unwind_protect
 %!   options.output_file = fname;
-%!   options.verbose = false;
+%!   options.verbose = true;
 %!   if (~options.verbose)
 %!     options.logfile = [fname, ".stdout"];
 %!   endif
@@ -2070,7 +2070,7 @@ endfunction
 %!     endif
 %!   end_unwind_protect
 %!   options.output_file = fname;
-%!   options.verbose = false;
+%!   options.verbose = true;
 %!   if (~options.verbose)
 %!     options.logfile = [fname, ".stdout"];
 %!   endif
@@ -2207,7 +2207,7 @@ endfunction
 %!     endif
 %!   end_unwind_protect
 %!   options.output_file = fname;
-%!   options.verbose = false;
+%!   options.verbose = true;
 %!   if (~options.verbose)
 %!     options.logfile = [fname, ".stdout"];
 %!   endif
@@ -2345,7 +2345,7 @@ endfunction
 %!     endif
 %!   end_unwind_protect
 %!   options.output_file = fname;
-%!   options.verbose = false;
+%!   options.verbose = true;
 %!   if (~options.verbose)
 %!     options.logfile = [fname, ".stdout"];
 %!   endif
@@ -2449,7 +2449,7 @@ endfunction
 %!     endif
 %!   end_unwind_protect
 %!   options.output_file = fname;
-%!   options.verbose = false;
+%!   options.verbose = true;
 %!   if (~options.verbose)
 %!     options.logfile = [fname, ".stdout"];
 %!   endif

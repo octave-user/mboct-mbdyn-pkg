@@ -49,68 +49,49 @@ function modal = mbdyn_post_load_output_eig(mbdyn_output_file, options, index)
     options.positive_frequencies = true;
   endif
 
-  if (~isfield(options, "solve_qz"))
-    options.solve_qz = false;
+  if (~isfield(options, "use_netcdf"))
+    options.use_netcdf = false;
   endif
 
   [inp_dir, inp_name, inp_ext] = fileparts(mbdyn_output_file);
 
-  mbdyn_output_file = fullfile(inp_dir, sprintf("%s_%02d.m", inp_name, index));
+  if (options.use_netcdf)
+    mbdyn_output_file = fullfile(inp_dir, [inp_name, ".nc"]);
 
-  [info, err, msg] = stat(mbdyn_output_file);
-
-  if (err ~= 0)
-    mbdyn_output_file = fullfile(inp_dir, cstrcat(inp_name, ".m"));
     [info, err, msg] = stat(mbdyn_output_file);
-  endif
 
-  if (err ~= 0)
-    error("file not found \"%s\"", mbdyn_output_file);
-  endif
-
-  source(mbdyn_output_file);
-
-  if (1 == exist("dCoef", "var"))
-    modal.dCoef = dCoef;
-  endif
-
-  sparse_threshold = 0.1;
-
-  if (1 == exist("Aplus", "var"))
-    if (~issparse(Aplus) && nnz(Aplus) < sparse_threshold * numel(Aplus))
-      Aplus = sparse(Aplus);
+    if (err ~= 0)
+      error("file not found \"%s\"", mbdyn_output_file);
     endif
 
-    modal.Aplus = Aplus;
-  endif
+    modal = mbdyn_post_load_modal_data_nc(mbdyn_output_file, index);
+  else
+    mbdyn_output_file = fullfile(inp_dir, sprintf("%s_%02d.m", inp_name, index));
 
-  if (1 == exist("Aminus", "var"))
-    if (~issparse(Aminus) && nnz(Aminus) < sparse_threshold * numel(Aminus))
-      Aminus = sparse(Aminus);
+    [info, err, msg] = stat(mbdyn_output_file);
+
+    if (err ~= 0)
+      mbdyn_output_file = fullfile(inp_dir, cstrcat(inp_name, ".m"));
+      [info, err, msg] = stat(mbdyn_output_file);
     endif
 
-    modal.Aminus = Aminus;
+    if (err ~= 0)
+      error("file not found \"%s\"", mbdyn_output_file);
+    endif
+
+    modal = mbdyn_post_load_modal_data_m(mbdyn_output_file);
   endif
 
-  if ((options.solve_qz || ...
-       1 ~= exist("alpha", "var")) && ...
-      1 == exist("Aplus", "var") && ...
-      1 == exist("Aminus", "var"))
-    clear alpha VR VL;
-    [VR, alpha2] = eig(Aminus, Aplus);
-    LAMBDA2 = -diag(alpha2);
-    modal.lambda = (LAMBDA2 + 1) ./ (dCoef * (LAMBDA2 - 1));
-    modal.f = imag(modal.lambda) / (2 * pi);
-  elseif (1 == exist("alpha", "var"))
-    LAMBDA = (alpha(:,1) + 1j * alpha(:, 2)) ./ alpha(:, 3);
-    modal.lambda = 1 / dCoef * (LAMBDA - 1) ./ (LAMBDA + 1);
+  if (isfield(modal, "alpha"))
+    LAMBDA = (modal.alpha(:,1) + 1j * modal.alpha(:, 2)) ./ modal.alpha(:, 3);
+    modal.lambda = 1 / modal.dCoef * (LAMBDA - 1) ./ (LAMBDA + 1);
     modal.f = imag(modal.lambda) / (2 * pi);
   else
     modal.lambda = [];
     modal.f = [];
   endif
 
-  if (length(modal.f) > 0)
+  if (~isempty(modal.f))
     [modal.f, idx_f] = sort(modal.f);
     if (options.positive_frequencies)
       idx_gtz = find(modal.f > 0);
@@ -118,6 +99,13 @@ function modal = mbdyn_post_load_output_eig(mbdyn_output_file, options, index)
       idx_f = idx_f(idx_gtz);
     endif
     modal.lambda = modal.lambda(idx_f);
+    if (isfield(modal, "VR"))
+      modal.VR = modal.VR(:, idx_f);
+    endif
+
+    if (isfield(modal, "VL"))
+      modal.VL = modal.VL(:, idx_f);
+    endif
   endif
 
   if (isfield(modal, "lambda"))
@@ -127,33 +115,83 @@ function modal = mbdyn_post_load_output_eig(mbdyn_output_file, options, index)
     modal.D = sqrt(a0 ./ (1 + a0));
     modal.omega0 = omegad ./ sqrt(1 - modal.D.^2);
   endif
+endfunction
 
-  if (1 == exist("dTime", "var"))
-    modal.dTime = dTime;
+function modal = mbdyn_post_load_modal_data_m(mbdyn_output_file)
+  source(mbdyn_output_file);
+
+  var_names = {"dTime", "dCoef", "Aplus", "Aminus", "VR", "VL", "alpha", "X0", "idx", "labels"};
+
+  modal = struct();
+
+  for i=1:numel(var_names)
+    if (1 == exist(var_names{i}, "var"))
+      modal = setfield(modal, var_names{i}, eval(var_names{i}));
+    endif
+  endfor
+endfunction
+
+function modal = mbdyn_post_load_modal_data_nc(mbdyn_output_file, index)
+  pkg load netcdf;
+
+  info = ncinfo(mbdyn_output_file);
+
+  modal = struct();
+
+  prefix = sprintf("eig.%d.", index);
+
+  var_names = {[prefix, "time"],   "dTime";
+               [prefix, "dCoef"],  "dCoef";
+               [prefix, "Aplus"],  "Aplus";
+               [prefix, "Aminus"], "Aminus";
+               [prefix, "VR"],     "VR";
+               [prefix, "VL"],     "VL";
+               [prefix, "alpha"],  "alpha";
+               "eig.idx",          "idx";
+               "eig.labels",       "labels";
+               "eig.joint.idx",    "joint_idx";
+               "eig.joint.labels", "joint_labels"};
+
+  for i=1:rows(var_names)
+    try
+      value = ncread(mbdyn_output_file, var_names{i, 1});
+    catch
+      switch (lasterror.message)
+        case "NetCDF: Variable not found"
+          continue
+        otherwise
+          rethrow(lasterror());
+      endswitch
+    end_try_catch
+    modal = setfield(modal, var_names{i, 2}, value);
+  endfor
+
+  if (isfield(modal, "time"))
+    modal.dTime = modal.time;
+    modal = rmfield(modal, "time");
   endif
 
-  if (1 == exist("X0", "var"))
-    modal.X0 = X0;
+  if (isfield(modal, "alpha"))
+    modal.alpha = modal.alpha.';
   endif
 
-  if (1 == exist("idx", "var"))
-    modal.idx = idx;
+  if (isfield(modal, "VR"))
+    modal.VR = complex(modal.VR(:, :, 1), modal.VR(:, :, 2));
   endif
 
-  if (1 == exist("labels", "var"))
-    modal.labels = labels;
+  if (isfield(modal, "VL"))
+    modal.VL = complex(modal.VL(:, :, 1), modal.VL(:, :, 2));
   endif
 
-  if (1 == exist("VR", "var"))
-    modal.VR = VR(:, idx_f);
-  else
-    modal.VR = [];
-  endif
+  if (isfield(modal, "Aplus"))
+    Aplus_attr = ncreadatt(mbdyn_output_file, [prefix, "Aplus"], "description");
 
-  if (1 == exist("VL", "var"))
-    modal.VL = VL(:, idx_f);
-  else
-    modal.VL = [];
+    Aplus_format = "sparse";
+
+    if (strncmp(Aplus_attr, Aplus_format, length(Aplus_format)))
+      modal.Aplus = spconvert(modal.Aplus.');
+      modal.Aminus = spconvert(modal.Aminus.');
+    endif
   endif
 endfunction
 
@@ -214,6 +252,7 @@ endfunction
 %!     fputs(fd, "     use automatic differentiation;\n");
 %!     fputs(fd, "     abstract nodes: 2;\n");
 %!     fputs(fd, "     genels: 4;\n");
+%!     fputs(fd, "     output results: netcdf, text;\n");
 %!     fputs(fd, " end: control data;\n");
 %!     fputs(fd, " begin: nodes;\n");
 %!     fputs(fd, "         abstract: 1, differential;\n");
@@ -237,6 +276,8 @@ endfunction
 %!   options.positive_frequencies = false;
 %!   mbdyn_solver_run(fname, options);
 %!   modal = mbdyn_post_load_output_eig(fname, options, 0);
+%!   options.use_netcdf = true;
+%!   modalnc = mbdyn_post_load_output_eig(fname, options, 0);
 %!   omega1 = sqrt(s1 / m1 - (d1 / (2 * m1))^2);
 %!   omega2 = sqrt(s2 / m2 - (d2 / (2 * m2))^2);
 %!   alpha1 = -d1 / (2 * m1);
@@ -247,6 +288,7 @@ endfunction
 %!   [dummy, idx] = sort(imag(lambda), "ascend");
 %!   lambda = lambda(idx);
 %!   assert(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
+%!   assert(modalnc.lambda, lambda, eps^0.9 * max(abs(lambda)))
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -313,6 +355,7 @@ endfunction
 %!     fputs(fd, " begin: control data;\n");
 %!     fputs(fd, "     abstract nodes: 2;\n");
 %!     fputs(fd, "     genels: 4;\n");
+%!     fputs(fd, "     output results: netcdf, text;\n");
 %!     fputs(fd, " end: control data;\n");
 %!     fputs(fd, " begin: nodes;\n");
 %!     fputs(fd, "         abstract: 1, differential;\n");
@@ -336,6 +379,8 @@ endfunction
 %!   options.positive_frequencies = false;
 %!   mbdyn_solver_run(fname, options);
 %!   modal = mbdyn_post_load_output_eig(fname, options, 0);
+%!   options.use_netcdf = true;
+%!   modalnc = mbdyn_post_load_output_eig(fname, options, 0);
 %!   omega1 = sqrt(s1 / m1 - (d1 / (2 * m1))^2);
 %!   omega2 = sqrt(s2 / m2 - (d2 / (2 * m2))^2);
 %!   alpha1 = -d1 / (2 * m1);
@@ -346,6 +391,7 @@ endfunction
 %!   [dummy, idx] = sort(imag(lambda), "ascend");
 %!   lambda = lambda(idx);
 %!   assert(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
+%!   assert(modalnc.lambda, lambda, eps^0.9 * max(abs(lambda)));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -401,6 +447,7 @@ endfunction
 %!     fputs(fd, " begin: control data;\n");
 %!     fputs(fd, "     abstract nodes: 2;\n");
 %!     fputs(fd, "     genels: 4;\n");
+%!     fputs(fd, "     output results: netcdf, text;\n");
 %!     fputs(fd, " end: control data;\n");
 %!     fputs(fd, " begin: nodes;\n");
 %!     fputs(fd, "         abstract: 1, differential;\n");
@@ -424,6 +471,8 @@ endfunction
 %!   options.positive_frequencies = false;
 %!   mbdyn_solver_run(fname, options);
 %!   modal = mbdyn_post_load_output_eig(fname, options, 0);
+%!   options.use_netcdf = true;
+%!   modalnc = mbdyn_post_load_output_eig(fname, options, 0);
 %!   omega1 = sqrt(s1 / m1 - (d1 / (2 * m1))^2);
 %!   omega2 = sqrt(s2 / m2 - (d2 / (2 * m2))^2);
 %!   alpha1 = -d1 / (2 * m1);
@@ -434,6 +483,7 @@ endfunction
 %!   [dummy, idx] = sort(imag(lambda), "ascend");
 %!   lambda = lambda(idx);
 %!   assert(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
+%!   assert(modalnc.lambda, lambda, eps^0.9 * max(abs(lambda)));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -487,9 +537,9 @@ endfunction
 %!     fputs(fd, " end: initial value;\n");
 %!     fputs(fd, " begin: control data;\n");
 %!     fputs(fd, "     use automatic differentiation;\n");
-
 %!     fputs(fd, "     abstract nodes: 2;\n");
 %!     fputs(fd, "     genels: 4;\n");
+%!     fputs(fd, "     output results: netcdf, text;\n");
 %!     fputs(fd, " end: control data;\n");
 %!     fputs(fd, " begin: nodes;\n");
 %!     fputs(fd, "         abstract: 1, differential;\n");
@@ -513,6 +563,8 @@ endfunction
 %!   options.positive_frequencies = false;
 %!   mbdyn_solver_run(fname, options);
 %!   modal = mbdyn_post_load_output_eig(fname, options, 0);
+%!   options.use_netcdf = true;
+%!   modalnc = mbdyn_post_load_output_eig(fname, options, 0);
 %!   omega1 = sqrt(s1 / m1 - (d1 / (2 * m1))^2);
 %!   omega2 = sqrt(s2 / m2 - (d2 / (2 * m2))^2);
 %!   alpha1 = -d1 / (2 * m1);
@@ -523,6 +575,7 @@ endfunction
 %!   [dummy, idx] = sort(imag(lambda), "ascend");
 %!   lambda = lambda(idx);
 %!   assert(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
+%!   assert(modalnc.lambda, lambda, eps^0.9 * max(abs(lambda)));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -664,6 +717,7 @@ endfunction
 %!     fprintf(fd, "    structural nodes: %d;\n", opt_mbd_mesh.struct_nodes.number);
 %!     fprintf(fd, "    joints: %d;\n", opt_mbd_mesh.joints.number);
 %!     fprintf(fd, "    solids: %d;\n", opt_mbd_mesh.solids.number);
+%!     fputs(fd, "     output results: netcdf, text;\n");
 %!     fputs(fd, " end: control data;\n");
 %!     fputs(fd, " reference: ref_id_center,\n");
 %!     fputs(fd, "   position, reference, global, null,\n");
@@ -686,8 +740,11 @@ endfunction
 %!     info = mbdyn_solver_run(mbdyn_file, options_mbd);
 %!     [mesh_sol, sol] = mbdyn_post_load_output_sol(options_mbd.output_file);
 %!     modal = mbdyn_post_load_output_eig(options_mbd.output_file, options_eig);
+%!     options_eig.use_netcdf = true;
+%!     modalnc = mbdyn_post_load_output_eig(options_mbd.output_file, options_eig);
 %!     fref = [5078; 6005; 6378; 6729] / SI_unit_second^-1;
 %!     assert(modal.f([7, 12, 19, 39] - 6), fref, 5e-4 * max(fref));
+%!     assert(modalnc.f([7, 12, 19, 39] - 6), fref, 5e-4 * max(fref));
 %!   unwind_protect_cleanup
 %!     if (fd ~= -1)
 %!       fclose(fd);

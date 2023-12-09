@@ -228,7 +228,7 @@ endfunction
 %!         endfor
 %!         omega = linspace(1e-5, 1, M) * 100 * omega_crit(1);
 %!         DELTA = sqrt(omega ./ omega1) / l;
-%!         V = 3 ./ (DELTA * l).^3 .* (sin(DELTA * l) .* cosh(DELTA * l) - cos(DELTA * l) .* sinh(DELTA * l)) ./ (1 .+ cos(DELTA * l) .* cosh(DELTA * l));
+%!         V = 3 ./ (DELTA * l).^3 .* (sin(DELTA * l) .* cosh(DELTA * l) - cos(DELTA * l) .* sinh(DELTA * l)) ./ (1 + cos(DELTA * l) .* cosh(DELTA * l));
 %!         options.A = "A";
 %!         options.Ip = "It";
 %!         options.Iy = "Iy";
@@ -427,7 +427,7 @@ endfunction
 %! omega_crit = [3.516, 22.035, 61.697] * omega1;
 %! omega = linspace(1e-5, 1, M) * 0.5 * omega_crit(end);
 %! DELTA = sqrt(omega ./ omega1) / l;
-%! V = 3 ./ (DELTA * l).^3 .* (sin(DELTA * l) .* cosh(DELTA * l) - cos(DELTA * l) .* sinh(DELTA * l)) ./ (1 .+ cos(DELTA * l) .* cosh(DELTA * l));
+%! V = 3 ./ (DELTA * l).^3 .* (sin(DELTA * l) .* cosh(DELTA * l) - cos(DELTA * l) .* sinh(DELTA * l)) ./ (1 + cos(DELTA * l) .* cosh(DELTA * l));
 %! options.A = "A";
 %! options.Ip = "It";
 %! options.Iy = "Iy";
@@ -591,7 +591,7 @@ endfunction
 %! omega_crit = [3.516, 22.035, 61.697] * omega1;
 %! omega = linspace(1e-5, 1, M) * 0.5 * omega_crit(end);
 %! DELTA = sqrt(omega ./ omega1) / l;
-%! V = 3 ./ (DELTA * l).^3 .* (sin(DELTA * l) .* cosh(DELTA * l) - cos(DELTA * l) .* sinh(DELTA * l)) ./ (1 .+ cos(DELTA * l) .* cosh(DELTA * l));
+%! V = 3 ./ (DELTA * l).^3 .* (sin(DELTA * l) .* cosh(DELTA * l) - cos(DELTA * l) .* sinh(DELTA * l)) ./ (1 + cos(DELTA * l) .* cosh(DELTA * l));
 %! options.A = "A";
 %! options.Ip = "It";
 %! options.Iy = "Iy";
@@ -744,7 +744,7 @@ endfunction
 %! omega_crit = [3.516, 22.035, 61.697] * omega1;
 %! omega = linspace(1e-5, 1, M) * 0.5 * omega_crit(end);
 %! DELTA = sqrt(omega ./ omega1) / l;
-%! V = 3 ./ (DELTA * l).^3 .* (sin(DELTA * l) .* cosh(DELTA * l) - cos(DELTA * l) .* sinh(DELTA * l)) ./ (1 .+ cos(DELTA * l) .* cosh(DELTA * l));
+%! V = 3 ./ (DELTA * l).^3 .* (sin(DELTA * l) .* cosh(DELTA * l) - cos(DELTA * l) .* sinh(DELTA * l)) ./ (1 + cos(DELTA * l) .* cosh(DELTA * l));
 %! options.A = "A";
 %! options.Ip = "It";
 %! options.Iy = "Iy";

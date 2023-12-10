@@ -120,7 +120,7 @@ endfunction
 function modal = mbdyn_post_load_modal_data_m(mbdyn_output_file)
   source(mbdyn_output_file);
 
-  var_names = {"dTime", "dCoef", "Aplus", "Aminus", "VR", "VL", "alpha", "X0", "idx", "labels"};
+  var_names = {"dTime", "dCoef", "lStep", "Aplus", "Aminus", "VR", "VL", "alpha", "X0", "idx", "labels"};
 
   modal = struct();
 
@@ -129,12 +129,14 @@ function modal = mbdyn_post_load_modal_data_m(mbdyn_output_file)
       modal = setfield(modal, var_names{i}, eval(var_names{i}));
     endif
   endfor
+
+  if (isfield(modal, "X0"))
+    modal.X0 = reshape(modal.X0, 6, numel(modal.idx)).';
+  endif
 endfunction
 
 function modal = mbdyn_post_load_modal_data_nc(mbdyn_output_file, index)
   pkg load netcdf;
-
-  info = ncinfo(mbdyn_output_file);
 
   modal = struct();
 
@@ -142,11 +144,13 @@ function modal = mbdyn_post_load_modal_data_nc(mbdyn_output_file, index)
 
   var_names = {[prefix, "time"],   "dTime";
                [prefix, "dCoef"],  "dCoef";
+               [prefix, "step"],   "lStep";
                [prefix, "Aplus"],  "Aplus";
                [prefix, "Aminus"], "Aminus";
                [prefix, "VR"],     "VR";
                [prefix, "VL"],     "VL";
                [prefix, "alpha"],  "alpha";
+               [prefix, "X0"],     "X0";
                "eig.idx",          "idx";
                "eig.labels",       "labels";
                "eig.joint.idx",    "joint_idx";
@@ -288,7 +292,14 @@ endfunction
 %!   [dummy, idx] = sort(imag(lambda), "ascend");
 %!   lambda = lambda(idx);
 %!   assert(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
-%!   assert(modalnc.lambda, lambda, eps^0.9 * max(abs(lambda)))
+%!   assert(modalnc.lambda, lambda, eps^0.9 * max(abs(lambda)));
+%!   assert(modalnc.Aplus, modal.Aplus);
+%!   assert(modalnc.Aminus, modal.Aminus);
+%!   assert(modalnc.VR, modal.VR);
+%!   assert(modalnc.alpha, modal.alpha);
+%!   assert(modalnc.dTime, modal.dTime);
+%!   assert(modalnc.dCoef, modal.dCoef);
+%!   assert(modalnc.lStep, modal.lStep);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -709,6 +720,7 @@ endfunction
 %!     fputs(fd, "    eigenanalysis: list, 1, 0.,\n");
 %!     fputs(fd, "    output eigenvectors,\n");
 %!     fputs(fd, "        output geometry,\n");
+%!     fputs(fd, "        results output precision, 16,\n");
 %!     fprintf(fd, "        lower frequency limit, %g, upper frequency limit, %g,\n", fmin, fmax);
 %!     fprintf(fd, "    use arpack,%d,%d,0.,suffix format,\"%%02d\";\n", number_of_modes, 2 * number_of_modes + 1);
 %!     fputs(fd, " end: initial value;\n");
@@ -745,6 +757,10 @@ endfunction
 %!     fref = [5078; 6005; 6378; 6729] / SI_unit_second^-1;
 %!     assert(modal.f([7, 12, 19, 39] - 6), fref, 5e-4 * max(fref));
 %!     assert(modalnc.f([7, 12, 19, 39] - 6), fref, 5e-4 * max(fref));
+%!     fn = fieldnames(modal);
+%!     for idxfn=1:numel(fn)
+%!       assert(getfield(modal, fn{idxfn}), getfield(modalnc, fn{idxfn}));
+%!     endfor
 %!   unwind_protect_cleanup
 %!     if (fd ~= -1)
 %!       fclose(fd);

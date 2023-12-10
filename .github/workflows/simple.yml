@@ -33,7 +33,7 @@ jobs:
            sudo apt-get build-dep octave
            sudo apt-get install mercurial \
            libsuitesparse-dev libarpack2-dev libmumps-seq-dev \
-           libmetis-dev libnlopt-dev \
+           libmetis-dev libnlopt-dev libnetcdf-c++4-dev \
            trilinos-all-dev libopenmpi-dev libptscotch-dev libsuitesparse-dev libqrupdate-dev
 
       # Runs a single command using the runners shell
@@ -71,7 +71,7 @@ jobs:
       # Runs a single command using the runners shell
       - name: Install nurbs
         run: |
-           sudo octave --eval "pkg install -verbose -forge nurbs"
+           sudo octave --eval "pkg install -verbose -forge nurbs; pkg install -verbose -forge netcdf"
 
       # Runs a single command using the runners shell
       - name: Install MKL
@@ -89,7 +89,7 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Clone MBDyn
         run: |
-          git clone -b develop https://public.gitlab.polimi.it/DAER/mbdyn.git
+          git clone -b fix-netcdf-eig https://public.gitlab.polimi.it/DAER/mbdyn.git
 
       # Runs a set of commands using the runners shell
       - name: Compile MBDyn
@@ -101,7 +101,7 @@ jobs:
           --disable-Werror CXXFLAGS="-Ofast -Wall -march=native -mtune=native" \
           CPPFLAGS="-I/usr/lib/x86_64-linux-gnu/openmpi/include -I/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi/ompi/mpi/cxx -I/usr/include/trilinos -I/usr/include/suitesparse" \
           LDFLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/openmpi" \
-          --with-arpack --with-umfpack --with-klu --with-arpack --with-lapack --without-metis --with-mpi --with-trilinos --with-pardiso --with-suitesparseqr --with-qrupdate
+          --with-arpack --with-umfpack --with-klu --with-arpack --with-lapack --without-metis --with-mpi --with-trilinos --with-pardiso --with-suitesparseqr --with-qrupdate --enable-netcdf
           make -j4
           popd
 

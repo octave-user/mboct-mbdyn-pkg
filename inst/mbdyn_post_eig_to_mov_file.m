@@ -172,8 +172,8 @@ function mode_index = mbdyn_post_eig_to_mov_file(input_file, output_filename_tem
             dX = options.scale * real(VR * exp(1j * phase(i)));
             XP = options.scale * real(lambda * VR * exp(1j * phase(i)));
 
-            X = modal.X0((node_idx_modal(j) - 1) * 6 + (1:3)) + dX(1:3);
-            Phi = modal.X0((node_idx_modal(j) - 1) * 6 + (4:6)) + dX(4:6);
+            X = modal.X0(node_idx_modal(j), 1:3).' + dX(1:3);
+            Phi = modal.X0(node_idx_modal(j), 4:6).' + dX(4:6);
             R = rotation_vector_to_rotation_matrix(Phi);
           else
             X = nodes(j).X0;

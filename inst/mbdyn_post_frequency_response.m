@@ -188,13 +188,13 @@ endfunction
 %!           switch(k)
 %!             case 1
 %!             otherwise
-%!               # skip this test because option is not used at all
+%!                     # skip this test because option is not used at all
 %!               continue;
 %!           endswitch
 %!           switch (n)
 %!             case 1
 %!             otherwise
-%!               # skip this test because option is not used at all
+%!                     # skip this test because option is not used at all
 %!               continue
 %!           endswitch
 %!       endswitch
@@ -306,6 +306,7 @@ endfunction
 %!             fprintf(fd, "     rigid bodies: %d;\n", columns(beam.Xn));
 %!             fprintf(fd, "     beams: %d;\n", numel(beam.beams));
 %!             fputs(fd, "     joints: 1;\n");
+%!             fputs(fd, "     output results: netcdf, text;\n");
 %!             fputs(fd, " end: control data;\n");
 %!             fputs(fd, " constitutive law: 1, 6, linear elastic generic, diag, E * A, G * Ay, G * Az, G * It, E * Iy, E * Iz;\n");
 %!             mbdyn_pre_beam_write_reference_frames(beam, fd, options);
@@ -331,34 +332,39 @@ endfunction
 %!           endif
 %!           info = mbdyn_solver_run(fname, options);
 %!           log_dat = mbdyn_post_load_log(fname);
-%!           modal = mbdyn_post_load_output_eig(options.output_file);
-%!           excitation.node_label = columns(beam.Xn);
-%!           excitation.offset = [0; 0; 0];
-%!           excitation.direction = [0; 0; 1];
-%!           response.node_label = columns(beam.Xn);
-%!           response.offset = [0; 0; 0];
-%!           response.direction = [0; 0; 1];
-%!           options.matrix_type = "wre";
-%!           F = mbdyn_post_frequency_response(modal, log_dat.dof_info, excitation, response, omega, P0, options);
-%!           if (f_plot_response)
-%!             figure("visible", "off");
-%!             subplot(2, 1, 1);
-%!             hold on;
-%!             semilogy(omega / (2 * pi), abs(F), "-;abs(F);1");
-%!             semilogy(omega / (2 * pi), abs(V * wstat), "-;abs(V);0");
-%!             grid minor on;
-%!             xlabel("f [Hz]");
-%!             ylabel("abs(F) [m]");
-%!             title("frequency response magnitude");
-%!             subplot(2, 1, 2);
-%!             hold on;
-%!             plot(omega / (2 * pi), 180 / pi * arg(F), "-;arg(F);1");
-%!             plot(omega / (2 * pi), 180 / pi * arg(V * wstat), "-;arg(V);0");
-%!             grid minor on;
-%!             xlabel("f [Hz]");
-%!             ylabel("arg(F) [deg]");
-%!             title("frequency response phase");
-%!           endif
+%!           nc = [false, true];
+%!           modal = cell(size(nc));
+%!           F = cell(size(nc));
+%!           for idxnc=1:numel(nc)
+%!             modal{idxnc} = mbdyn_post_load_output_eig(options.output_file, struct("use_netcdf", nc(idxnc)));
+%!             excitation.node_label = columns(beam.Xn);
+%!             excitation.offset = [0; 0; 0];
+%!             excitation.direction = [0; 0; 1];
+%!             response.node_label = columns(beam.Xn);
+%!             response.offset = [0; 0; 0];
+%!             response.direction = [0; 0; 1];
+%!             options.matrix_type = "wre";
+%!             F{idxnc} = mbdyn_post_frequency_response(modal{idxnc}, log_dat.dof_info, excitation, response, omega, P0, options);
+%!             if (f_plot_response)
+%!               figure("visible", "off");
+%!               subplot(2, 1, 1);
+%!               hold on;
+%!               semilogy(omega / (2 * pi), abs(F{idxnc}), "-;abs(F);1");
+%!               semilogy(omega / (2 * pi), abs(V * wstat), "-;abs(V);0");
+%!               grid minor on;
+%!               xlabel("f [Hz]");
+%!               ylabel("abs(F) [m]");
+%!               title("frequency response magnitude");
+%!               subplot(2, 1, 2);
+%!               hold on;
+%!               plot(omega / (2 * pi), 180 / pi * arg(F{idxnc}), "-;arg(F);1");
+%!               plot(omega / (2 * pi), 180 / pi * arg(V * wstat), "-;arg(V);0");
+%!               grid minor on;
+%!               xlabel("f [Hz]");
+%!               ylabel("arg(F) [deg]");
+%!               title("frequency response phase");
+%!             endif
+%!           endfor
 %!         unwind_protect_cleanup
 %!           if (fd ~= -1)
 %!             unlink(fname);
@@ -369,24 +375,30 @@ endfunction
 %!           endif
 %!         end_unwind_protect
 %!         tol = 2e-2;
-%!         assert(sum(abs(F - V.' * wstat).^2) / sum(abs(V * wstat).^2) < tol);
-%!         wyz = zeros(1, 2 * numel(omega_crit));
-%!         idxyz = 0;
-%!         idx_node = find(modal.labels == excitation.node_label);
-%!         for o=1:numel(modal.lambda)
-%!           Vi = abs(modal.VR(modal.idx(idx_node) + (1:6), o));
-%!           switch (max(Vi))
-%!           case {Vi(2), Vi(6), Vi(3), Vi(5)}
-%!             if (idxyz < numel(wyz))
-%!               wyz(++idxyz) = 2 * pi * modal.f(o); ## extract only the bending modes in the x-y and y-z plane
-%!             endif
-%!           endswitch
+%!         for idxnc=1:numel(F)
+%!           assert(sum(abs(F{idxnc} - V.' * wstat).^2) / sum(abs(V * wstat).^2) < tol);
+%!           wyz = zeros(1, 2 * numel(omega_crit));
+%!           idxyz = 0;
+%!           idx_node = find(modal{idxnc}.labels == excitation.node_label);
+%!           for o=1:numel(modal{idxnc}.lambda)
+%!             Vi = abs(modal{idxnc}.VR(modal{idxnc}.idx(idx_node) + (1:6), o));
+%!             switch (max(Vi))
+%!               case {Vi(2), Vi(6), Vi(3), Vi(5)}
+%!                 if (idxyz < numel(wyz))
+%!                   wyz(++idxyz) = 2 * pi * modal{idxnc}.f(o); ## extract only the bending modes in the x-y and y-z plane
+%!                 endif
+%!             endswitch
+%!           endfor
+%!           erryz = max(max(abs(wyz(1:2:end-1) ./ omega_crit - 1)), max(abs(wyz(2:2:end) ./ omega_crit - 1)));
+%!           if (options.verbose)
+%!             fprintf(stderr, "err(%d:%d:%d:%d): %.3f%%\n", n, m, k, i, 100 * erryz);
+%!           endif
+%!           assert(erryz < tol);
 %!         endfor
-%!         erryz = max(max(abs(wyz(1:2:end-1) ./ omega_crit - 1)), max(abs(wyz(2:2:end) ./ omega_crit - 1)));
-%!         if (options.verbose)
-%!           fprintf(stderr, "err(%d:%d:%d:%d): %.3f%%\n", n, m, k, i, 100 * erryz);
-%!         endif
-%!         assert(erryz < tol);
+%!         fn = fieldnames(modal{1});
+%!         for idxfn=1:numel(fn)
+%!           assert(getfield(modal{1}, fn{idxfn}), getfield(modal{2}, fn{idxfn}));
+%!         endfor
 %!       endfor
 %!     endfor
 %!   endfor
@@ -397,11 +409,10 @@ endfunction
 %! ##  Robert Gash, Klaus Knothe
 %! ##  Strukturdynamik Band 2
 %! ##  Page 25 figure 2.10, equation 2.38b
-%!
 %! f_print_input_file = false;
 %! f_plot_response = false;
 %! if (f_plot_response)
-%!  close("all");
+%!   close("all");
 %! endif
 %! N = 40;
 %! M = 200;
@@ -490,6 +501,7 @@ endfunction
 %!     fprintf(fd, "     rigid bodies: %d;\n", columns(beam.Xn));
 %!     fprintf(fd, "     beams: %d;\n", numel(beam.beams));
 %!     fputs(fd, "     joints: 1;\n");
+%!     fputs(fd, "     output results: netcdf, text;\n");
 %!     fputs(fd, " end: control data;\n");
 %!     fputs(fd, " constitutive law: 1, 6, linear elastic generic, diag, E * A, G * Ay, G * Az, G * It, E * Iy, E * Iz;\n");
 %!     mbdyn_pre_beam_write_reference_frames(beam, fd, options);
@@ -516,36 +528,45 @@ endfunction
 %!   endif
 %!   info = mbdyn_solver_run(fname, options);
 %!   log_dat = mbdyn_post_load_log(fname);
-%!   modal = mbdyn_post_load_output_eig(options.output_file);
-%!   excitation.node_label = columns(beam.Xn);
-%!   excitation.offset = [0; 0; 0];
-%!   excitation.direction = [0; 0; 1];
-%!   response.node_label = columns(beam.Xn);
-%!   response.offset = [0; 0; 0];
-%!   response.direction = [0; 0; 1];
-%!   options.matrix_type = "wre";
-%!   F = mbdyn_post_frequency_response(modal, log_dat.dof_info, excitation, response, omega, P0, options);
-%!   if (f_plot_response)
-%!     figure("visible", "off");
-%!     subplot(2, 1, 1);
-%!     hold on;
-%!     semilogy(omega / (2 * pi), abs(F), "-;abs(F);1");
-%!     semilogy(omega / (2 * pi), abs(V * wstat), "-;abs(V);0");
-%!     grid minor on;
-%!     xlabel("f [Hz]");
-%!     ylabel("abs(F) [m]");
-%!     title("frequency response magnitude");
-%!     subplot(2, 1, 2);
-%!     hold on;
-%!     plot(omega / (2 * pi), 180 / pi * arg(F), "-;arg(F);1");
-%!     plot(omega / (2 * pi), 180 / pi * arg(V * wstat), "-;arg(V);0");
-%!     grid minor on;
-%!     xlabel("f [Hz]");
-%!     ylabel("arg(F) [deg]");
-%!     title("frequency response phase");
-%!   endif
-%!   tol = 1e-2;
-%!   assert(sum(abs(F - V.' * wstat).^2) / sum(abs(V * wstat).^2) < tol);
+%!   nc = [false, true];
+%!   modal = cell(1, numel(nc));
+%!   F = cell(1, numel(nc));
+%!   for idxnc=1:numel(nc)
+%!     modal{idxnc} = mbdyn_post_load_output_eig(options.output_file, struct("use_netcdf", nc(idxnc)));
+%!     excitation.node_label = columns(beam.Xn);
+%!     excitation.offset = [0; 0; 0];
+%!     excitation.direction = [0; 0; 1];
+%!     response.node_label = columns(beam.Xn);
+%!     response.offset = [0; 0; 0];
+%!     response.direction = [0; 0; 1];
+%!     options.matrix_type = "wre";
+%!     F{idxnc} = mbdyn_post_frequency_response(modal{idxnc}, log_dat.dof_info, excitation, response, omega, P0, options);
+%!     if (f_plot_response)
+%!       figure("visible", "off");
+%!       subplot(2, 1, 1);
+%!       hold on;
+%!       semilogy(omega / (2 * pi), abs(F{idxnc}), "-;abs(F);1");
+%!       semilogy(omega / (2 * pi), abs(V * wstat), "-;abs(V);0");
+%!       grid minor on;
+%!       xlabel("f [Hz]");
+%!       ylabel("abs(F) [m]");
+%!       title("frequency response magnitude");
+%!       subplot(2, 1, 2);
+%!       hold on;
+%!       plot(omega / (2 * pi), 180 / pi * arg(F{idxnc}), "-;arg(F);1");
+%!       plot(omega / (2 * pi), 180 / pi * arg(V * wstat), "-;arg(V);0");
+%!       grid minor on;
+%!       xlabel("f [Hz]");
+%!       ylabel("arg(F) [deg]");
+%!       title("frequency response phase");
+%!     endif
+%!     tol = 1e-2;
+%!     assert(sum(abs(F{idxnc} - V.' * wstat).^2) / sum(abs(V * wstat).^2) < tol);
+%!   endfor
+%!   fn = fieldnames(modal{1});
+%!   for idxfn=1:numel(fn)
+%!     assert(getfield(modal{1}, fn{idxfn}), getfield(modal{2}, fn{idxfn}));
+%!   endfor
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -561,7 +582,6 @@ endfunction
 %! ##  Robert Gash, Klaus Knothe
 %! ##  Strukturdynamik Band 2
 %! ##  Page 25 figure 2.10, equation 2.38b
-%!
 %! f_print_input_file = false;
 %! f_plot_response = false;
 %! if (f_plot_response)
@@ -643,6 +663,7 @@ endfunction
 %!     fprintf(fd, "     rigid bodies: %d;\n", columns(beam.Xn));
 %!     fprintf(fd, "     beams: %d;\n", numel(beam.beams));
 %!     fputs(fd, "     joints: 1;\n");
+%!     fputs(fd, "     output results: netcdf, text;\n");
 %!     fputs(fd, " end: control data;\n");
 %!     fputs(fd, " constitutive law: 1, 6, linear elastic generic, diag, E * A, G * Ay, G * Az, G * It, E * Iy, E * Iz;\n");
 %!     mbdyn_pre_beam_write_reference_frames(beam, fd, options);
@@ -669,7 +690,11 @@ endfunction
 %!   endif
 %!   info = mbdyn_solver_run(fname, options);
 %!   log_dat = mbdyn_post_load_log(fname);
-%!   modal = mbdyn_post_load_output_eig(options.output_file);
+%!   nc = [true, false];
+%!   modal = cell(size(nc));
+%!   F = cell(size(nc));
+%!   for idxnc=1:numel(nc)
+%!   modal{idxnc} = mbdyn_post_load_output_eig(options.output_file, struct("use_netcdf", nc(idxnc)));
 %!   excitation.node_label = columns(beam.Xn);
 %!   excitation.offset = [0; 0; 0];
 %!   excitation.direction = [0; 0; 1];
@@ -677,12 +702,12 @@ endfunction
 %!   response.offset = [0; 0; 0];
 %!   response.direction = [0; 0; 1];
 %!   options.matrix_type = "wre";
-%!   F = mbdyn_post_frequency_response(modal, log_dat.dof_info, excitation, response, omega, P0, options);
+%!   F{idxnc} = mbdyn_post_frequency_response(modal{idxnc}, log_dat.dof_info, excitation, response, omega, P0, options);
 %!   if (f_plot_response)
 %!     figure("visible", "off");
 %!     subplot(2, 1, 1);
 %!     hold on;
-%!     semilogy(omega / (2 * pi), abs(F), "-;abs(F);1");
+%!     semilogy(omega / (2 * pi), abs(F{idxnc}), "-;abs(F);1");
 %!     semilogy(omega / (2 * pi), abs(V * wstat), "-;abs(V);0");
 %!     grid minor on;
 %!     xlabel("f [Hz]");
@@ -690,7 +715,7 @@ endfunction
 %!     title("frequency response magnitude");
 %!     subplot(2, 1, 2);
 %!     hold on;
-%!     plot(omega / (2 * pi), 180 / pi * arg(F), "-;arg(F);1");
+%!     plot(omega / (2 * pi), 180 / pi * arg(F{idxnc}), "-;arg(F);1");
 %!     plot(omega / (2 * pi), 180 / pi * arg(V * wstat), "-;arg(V);0");
 %!     grid minor on;
 %!     xlabel("f [Hz]");
@@ -698,7 +723,12 @@ endfunction
 %!     title("frequency response phase");
 %!   endif
 %!   tol = 1e-2;
-%!   assert(sum(abs(F - V.' * wstat).^2) / sum(abs(V * wstat).^2) < tol);
+%!   assert(sum(abs(F{idxnc} - V.' * wstat).^2) / sum(abs(V * wstat).^2) < tol);
+%!   endfor
+%!   fn = fieldnames(modal{1});
+%!   for idxfn=1:numel(fn)
+%!     assert(getfield(modal{1}, fn{idxfn}), getfield(modal{2}, fn{idxfn}));
+%!   endfor
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -714,11 +744,10 @@ endfunction
 %! ##  Robert Gash, Klaus Knothe
 %! ##  Strukturdynamik Band 2
 %! ##  Page 25 figure 2.10, equation 2.38b
-%!
 %! f_print_input_file = false;
 %! f_plot_response = true;
 %! if (f_plot_response)
-%!  close("all");
+%!   close("all");
 %! endif
 %! N = 40;
 %! M = 200;
@@ -792,11 +821,11 @@ endfunction
 %!     fputs(fd, " end: initial value;\n");
 %!     fputs(fd, " begin: control data;\n");
 %!     fputs(fd, "     use automatic differentiation;\n");
-
 %!     fprintf(fd, "     structural nodes: %d;\n", columns(beam.Xn));
 %!     fprintf(fd, "     rigid bodies: %d;\n", columns(beam.Xn));
 %!     fprintf(fd, "     beams: %d;\n", numel(beam.beams));
 %!     fputs(fd, "     joints: 1;\n");
+%!     fputs(fd, "     output results: netcdf, text;\n");
 %!     fputs(fd, " end: control data;\n");
 %!     fputs(fd, " constitutive law: 1, 6, linear elastic generic, diag, E * A, G * Ay, G * Az, G * It, E * Iy, E * Iz;\n");
 %!     mbdyn_pre_beam_write_reference_frames(beam, fd, options);
@@ -823,36 +852,45 @@ endfunction
 %!   endif
 %!   info = mbdyn_solver_run(fname, options);
 %!   log_dat = mbdyn_post_load_log(fname);
-%!   modal = mbdyn_post_load_output_eig(options.output_file);
-%!   excitation.node_label = columns(beam.Xn);
-%!   excitation.offset = [0; 0; 0];
-%!   excitation.direction = [0; 0; 1];
-%!   response.node_label = columns(beam.Xn);
-%!   response.offset = [0; 0; 0];
-%!   response.direction = [0; 0; 1];
-%!   options.matrix_type = "wre";
-%!   F = mbdyn_post_frequency_response(modal, log_dat.dof_info, excitation, response, omega, P0, options);
-%!   if (f_plot_response)
-%!     figure("visible", "off");
-%!     subplot(2, 1, 1);
-%!     hold on;
-%!     semilogy(omega / (2 * pi), abs(F), "-;abs(F);1");
-%!     semilogy(omega / (2 * pi), abs(V * wstat), "-;abs(V);0");
-%!     grid minor on;
-%!     xlabel("f [Hz]");
-%!     ylabel("abs(F) [m]");
-%!     title("frequency response magnitude");
-%!     subplot(2, 1, 2);
-%!     hold on;
-%!     plot(omega / (2 * pi), 180 / pi * arg(F), "-;arg(F);1");
-%!     plot(omega / (2 * pi), 180 / pi * arg(V * wstat), "-;arg(V);0");
-%!     grid minor on;
-%!     xlabel("f [Hz]");
-%!     ylabel("arg(F) [deg]");
-%!     title("frequency response phase");
-%!   endif
-%!   tol = 1e-2;
-%!   assert(sum(abs(F - V.' * wstat).^2) / sum(abs(V * wstat).^2) < tol);
+%!   nc = [true, false];
+%!   modal = cell(size(nc));
+%!   F = cell(size(nc));
+%!   for idxnc=1:numel(nc)
+%!     modal{idxnc} = mbdyn_post_load_output_eig(options.output_file, struct("use_netcdf", nc(idxnc)));
+%!     excitation.node_label = columns(beam.Xn);
+%!     excitation.offset = [0; 0; 0];
+%!     excitation.direction = [0; 0; 1];
+%!     response.node_label = columns(beam.Xn);
+%!     response.offset = [0; 0; 0];
+%!     response.direction = [0; 0; 1];
+%!     options.matrix_type = "wre";
+%!     F{idxnc} = mbdyn_post_frequency_response(modal{idxnc}, log_dat.dof_info, excitation, response, omega, P0, options);
+%!     if (f_plot_response)
+%!       figure("visible", "off");
+%!       subplot(2, 1, 1);
+%!       hold on;
+%!       semilogy(omega / (2 * pi), abs(F{idxnc}), "-;abs(F);1");
+%!       semilogy(omega / (2 * pi), abs(V * wstat), "-;abs(V);0");
+%!       grid minor on;
+%!       xlabel("f [Hz]");
+%!       ylabel("abs(F) [m]");
+%!       title("frequency response magnitude");
+%!       subplot(2, 1, 2);
+%!       hold on;
+%!       plot(omega / (2 * pi), 180 / pi * arg(F{idxnc}), "-;arg(F);1");
+%!       plot(omega / (2 * pi), 180 / pi * arg(V * wstat), "-;arg(V);0");
+%!       grid minor on;
+%!       xlabel("f [Hz]");
+%!       ylabel("arg(F) [deg]");
+%!       title("frequency response phase");
+%!     endif
+%!     tol = 1e-2;
+%!     assert(sum(abs(F{idxnc} - V.' * wstat).^2) / sum(abs(V * wstat).^2) < tol);
+%!   endfor
+%!   fn = fieldnames(modal{1});
+%!   for idxfn=1:numel(fn)
+%!     assert(getfield(modal{1}, fn{idxfn}), getfield(modal{2}, fn{idxfn}));
+%!   endfor
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);

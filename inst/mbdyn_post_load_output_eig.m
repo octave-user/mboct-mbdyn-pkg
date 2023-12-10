@@ -93,12 +93,15 @@ function modal = mbdyn_post_load_output_eig(mbdyn_output_file, options, index)
 
   if (~isempty(modal.f))
     [modal.f, idx_f] = sort(modal.f);
+
     if (options.positive_frequencies)
       idx_gtz = find(modal.f > 0);
       modal.f = modal.f(idx_gtz);
       idx_f = idx_f(idx_gtz);
     endif
+
     modal.lambda = modal.lambda(idx_f);
+
     if (isfield(modal, "VR"))
       modal.VR = modal.VR(:, idx_f);
     endif
@@ -106,6 +109,8 @@ function modal = mbdyn_post_load_output_eig(mbdyn_output_file, options, index)
     if (isfield(modal, "VL"))
       modal.VL = modal.VL(:, idx_f);
     endif
+
+    modal.alpha = modal.alpha(idx_f, :);
   endif
 
   if (isfield(modal, "lambda"))
@@ -291,6 +296,27 @@ endfunction
 %!   lambda = [lambda1; lambda2];
 %!   [dummy, idx] = sort(imag(lambda), "ascend");
 %!   lambda = lambda(idx);
+%!   DELTA = (modalnc.alpha(:, 1) + 1j * modalnc.alpha(:, 2)) ./ modalnc.alpha(:, 3);
+%!   assert(modalnc.lambda, (DELTA - 1) ./ (DELTA + 1) / modalnc.dCoef, eps^0.9 * norm(modalnc.lambda));
+%!   for i=1:columns(modalnc.VR)
+%!     assert(modalnc.Aminus * modalnc.VR(:, i),  DELTA(i) * modalnc.Aplus * modalnc.VR(:, i), eps^0.9 * norm(modalnc.Aminus * modalnc.VR(:, i)));
+%!     assert(modalnc.Aminus.' * modalnc.VL(:, i),  DELTA(i)' * modalnc.Aplus.' * modalnc.VL(:, i), eps^0.9 * norm(modalnc.Aminus.' * modalnc.VL(:, i)));
+%!   endfor
+%!   Jac1 = modalnc.Aplus;
+%!   Jac2 = modalnc.Aminus;
+%!   dCoef1 = modalnc.dCoef;
+%!   dCoef2 = -modalnc.dCoef;
+%!   R = modalnc.VR;
+%!   A = (Jac2 - Jac1) / (dCoef1 - dCoef2);
+%!   B = dCoef1 * A + Jac1;
+%!   L = inv(B * R).';
+%!   for i=1:columns(R)
+%!     assert(A * R(:, i), lambda(i) * B * R(:, i), eps^0.9 * norm(A * R(:, i)));
+%!     assert(A.' * L(:, i), lambda(i) * B.' * L(:, i), eps^0.9 * norm(A.' * L(:, i)));
+%!     assert(L(:, i).' * A, lambda(i) * L(:, i).' * B, eps^0.9 * norm(L(:, i).' * A));
+%!   endfor
+%!   assert(L.' * A * R, diag(lambda), eps^0.9 * norm(lambda));
+%!   assert(L.' * B * R, eye(columns(A)), eps^0.9 * columns(A));
 %!   assert(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
 %!   assert(modalnc.lambda, lambda, eps^0.9 * max(abs(lambda)));
 %!   assert(modalnc.Aplus, modal.Aplus);

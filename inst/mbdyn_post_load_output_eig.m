@@ -120,6 +120,14 @@ function modal = mbdyn_post_load_output_eig(mbdyn_output_file, options, index)
     modal.D = sqrt(a0 ./ (1 + a0));
     modal.omega0 = omegad ./ sqrt(1 - modal.D.^2);
   endif
+
+  if (~isfield(modal, "VR"))
+    modal.VR = [];
+  endif
+
+  if (~isfield(modal, "VL"))
+    modal.VL = [];
+  endif
 endfunction
 
 function modal = mbdyn_post_load_modal_data_m(mbdyn_output_file)

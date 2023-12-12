@@ -201,14 +201,30 @@ function modal = mbdyn_post_load_modal_data_nc(mbdyn_output_file, index)
   endif
 
   if (isfield(modal, "Aplus"))
-    Aplus_attr = ncreadatt(mbdyn_output_file, [prefix, "Aplus"], "description");
+    Aplus_attr = ncreadatt(mbdyn_output_file, [prefix, "Aplus"], "matrix type");
+    Aminus_attr = ncreadatt(mbdyn_output_file, [prefix, "Aminus"], "matrix type");
 
-    Aplus_format = "sparse";
+    switch (Aplus_attr)
+      case "sparse"
+        modal.Aplus = spconvert(modal.Aplus.');
+      case "dense"
+        if (rows(modal.Aplus) ~= columns(modal.Aplus))
+          error("invalid matrix format");
+        endif
+      otherwise
+        error("unknown matrix type: \"%s\"", Aplus_attr);
+    endswitch
 
-    if (strncmp(Aplus_attr, Aplus_format, length(Aplus_format)))
-      modal.Aplus = spconvert(modal.Aplus.');
-      modal.Aminus = spconvert(modal.Aminus.');
-    endif
+    switch (Aminus_attr)
+      case "sparse"
+        modal.Aminus = spconvert(modal.Aminus.');
+      case "dense"
+        if (rows(modal.Aminus) ~= columns(modal.Aminus))
+          error("invalid matrix format");
+        endif
+      otherwise
+        error("unknown matrix type: \"%s\"", Aminus_attr);
+    endswitch
   endif
 endfunction
 

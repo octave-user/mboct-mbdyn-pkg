@@ -117,7 +117,7 @@ function modal = mbdyn_post_load_output_eig(mbdyn_output_file, options, index)
     endif
   endif
 
-  if (isfield(modal, "alpha"))
+  if (isfield(modal, "alpha") && isfield(modal, "dCoef"))
     LAMBDA = (modal.alpha(:,1) + 1j * modal.alpha(:, 2)) ./ modal.alpha(:, 3);
     modal.lambda = 1 / modal.dCoef * (LAMBDA - 1) ./ (LAMBDA + 1);
     modal.f = imag(modal.lambda) / (2 * pi);

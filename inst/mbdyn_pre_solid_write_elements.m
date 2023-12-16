@@ -268,6 +268,9 @@ function options = mbdyn_pre_solid_write_elements(mesh, load_case_dof, load_case
 
     if (isfield(load_case, "loads"))
       for j=1:numel(load_case)
+        if (isempty(load_case(j).loads))
+          continue;
+        endif
         fprintf(fd, "drive caller: %d, name, \"forces for load_case(%d)\", %s;\n", ++options.drive_callers.number, j, options.forces.time_function{j});
         force_format = sprintf("force: %%d, abstract, %%d, structural, %%d, mult, const, %%.16e, reference, %d;\n", options.drive_callers.number);
 

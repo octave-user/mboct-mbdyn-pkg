@@ -49,37 +49,72 @@ function modal = mbdyn_post_load_output_eig(mbdyn_output_file, options, index)
     options.positive_frequencies = true;
   endif
 
-  if (~isfield(options, "use_netcdf"))
-    options.use_netcdf = false;
-  endif
-
   [inp_dir, inp_name, inp_ext] = fileparts(mbdyn_output_file);
 
-  if (options.use_netcdf)
-    mbdyn_output_file = fullfile(inp_dir, [inp_name, ".nc"]);
+  empty_cell = cell(1, 3);
 
-    [info, err, msg] = stat(mbdyn_output_file);
+  output_files = struct("name", empty_cell, "type", empty_cell);
 
-    if (err ~= 0)
-      error("file not found \"%s\"", mbdyn_output_file);
+  output_files(1).name = fullfile(inp_dir, [inp_name, ".nc"]);
+  output_files(1).type = "netcdf";
+  output_files(2).name = fullfile(inp_dir, sprintf("%s_%02d.m", inp_name, index));
+  output_files(2).type = "m";
+  output_files(3).name = fullfile(inp_dir, cstrcat(inp_name, ".m"));
+  output_files(3).type = "m";
+
+  idx = false(size(output_files));
+
+  for i=1:numel(output_files)
+    [info, err, msg] = stat(output_files(i).name);
+    idx(i) = (err == 0);
+  endfor
+
+  output_files = output_files(idx);
+
+  clear idx;
+
+  if (isempty(output_files))
+    error("file not found \"%s\"", mbdyn_output_file);
+  endif
+
+  if (isfield(options, "use_netcdf"))
+    for i=1:numel(output_files)
+      switch (output_files(i).type)
+        case "netcdf"
+          if (options.use_netcdf)
+            output_files = output_files(i);
+            break;
+          endif
+        otherwise
+          if (~options.use_netcdf)
+            output_files = output_files(i);
+            break;
+          endif
+      endswitch
+    endfor
+  endif
+
+  fprintf(stderr, "loading file \"%s\":%d\n", output_files(1).name, index);
+
+  switch (output_files(1).type)
+    case "netcdf"
+      modal = mbdyn_post_load_modal_data_nc(output_files(1).name, index);
+    otherwise
+      modal = mbdyn_post_load_modal_data_m(output_files(1).name);
+  endswitch
+
+  sparse_threshold = 0.1;
+
+  if (isfield(modal, "Aplus"))
+    if (nnz(modal.Aplus) < sparse_threshold * numel(modal.Aplus))
+      modal.Aplus = sparse(modal.Aplus);
     endif
+  endif
 
-    modal = mbdyn_post_load_modal_data_nc(mbdyn_output_file, index);
-  else
-    mbdyn_output_file = fullfile(inp_dir, sprintf("%s_%02d.m", inp_name, index));
-
-    [info, err, msg] = stat(mbdyn_output_file);
-
-    if (err ~= 0)
-      mbdyn_output_file = fullfile(inp_dir, cstrcat(inp_name, ".m"));
-      [info, err, msg] = stat(mbdyn_output_file);
+  if (isfield(modal, "Aminus"))
+    if (nnz(modal.Aminus) < sparse_threshold * numel(modal.Aminus))
+      modal.Aminus = sparse(modal.Aminus);
     endif
-
-    if (err ~= 0)
-      error("file not found \"%s\"", mbdyn_output_file);
-    endif
-
-    modal = mbdyn_post_load_modal_data_m(mbdyn_output_file);
   endif
 
   if (isfield(modal, "alpha"))
@@ -264,7 +299,7 @@ endfunction
 %!     fputs(fd, "         derivatives coefficient: auto;\n");
 %!     fputs(fd, "         eigenanalysis: 0,\n");
 %!     fputs(fd, "          suffix format, \"%02d\",\n");
-%!     fputs(fd, "          output full matrices,\n");
+%!     fputs(fd, "          output matrices,\n");
 %!     fputs(fd, "          output eigenvectors,\n");
 %!     fputs(fd, "          results output precision, 16,\n");
 %!     fputs(fd, "          parameter, 0.01, use lapack, balance, permute;\n");
@@ -308,6 +343,7 @@ endfunction
 %!   options.f_run_mbdyn2easyanim = false;
 %!   options.positive_frequencies = false;
 %!   mbdyn_solver_run(fname, options);
+%!   options.use_netcdf = false;
 %!   modal = mbdyn_post_load_output_eig(fname, options, 0);
 %!   options.use_netcdf = true;
 %!   modalnc = mbdyn_post_load_output_eig(fname, options, 0);
@@ -439,6 +475,7 @@ endfunction
 %!   options.f_run_mbdyn2easyanim = false;
 %!   options.positive_frequencies = false;
 %!   mbdyn_solver_run(fname, options);
+%!   options.use_netcdf = false;
 %!   modal = mbdyn_post_load_output_eig(fname, options, 0);
 %!   options.use_netcdf = true;
 %!   modalnc = mbdyn_post_load_output_eig(fname, options, 0);
@@ -531,6 +568,7 @@ endfunction
 %!   options.f_run_mbdyn2easyanim = false;
 %!   options.positive_frequencies = false;
 %!   mbdyn_solver_run(fname, options);
+%!   options.use_netcdf = false;
 %!   modal = mbdyn_post_load_output_eig(fname, options, 0);
 %!   options.use_netcdf = true;
 %!   modalnc = mbdyn_post_load_output_eig(fname, options, 0);
@@ -623,6 +661,7 @@ endfunction
 %!   options.f_run_mbdyn2easyanim = false;
 %!   options.positive_frequencies = false;
 %!   mbdyn_solver_run(fname, options);
+%!   options.use_netcdf = false;
 %!   modal = mbdyn_post_load_output_eig(fname, options, 0);
 %!   options.use_netcdf = true;
 %!   modalnc = mbdyn_post_load_output_eig(fname, options, 0);
@@ -801,6 +840,7 @@ endfunction
 %!     options_mbd.mbdyn_command = "mbdyn";
 %!     info = mbdyn_solver_run(mbdyn_file, options_mbd);
 %!     [mesh_sol, sol] = mbdyn_post_load_output_sol(options_mbd.output_file);
+%!     options_eig.use_netcdf = false;
 %!     modal = mbdyn_post_load_output_eig(options_mbd.output_file, options_eig);
 %!     options_eig.use_netcdf = true;
 %!     modalnc = mbdyn_post_load_output_eig(options_mbd.output_file, options_eig);

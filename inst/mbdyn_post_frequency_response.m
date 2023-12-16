@@ -53,7 +53,7 @@ function F = mbdyn_post_frequency_response(modal, dof_info, excitation, response
   endif
 
   if (nargin < 7)
-    options = struct("singular", false, "matrix_format", "wre");
+    options = struct();
   endif
 
   if (~isfield(options,"singular"))
@@ -62,6 +62,14 @@ function F = mbdyn_post_frequency_response(modal, dof_info, excitation, response
 
   if (~isfield(options, "number_of_processors"))
     options.number_of_processors = 1;
+  endif
+
+  if (~isfield(options, "solver"))
+    options.solver = "mldivide";
+  endif
+
+  if (~isfield(options, "symmetric"))
+    options.symmetric = false; ## The default for MBDyn since A will be symmetric only in rare situations.
   endif
 
   if (~isfield(options, "matrix_format"))
@@ -104,21 +112,8 @@ function F = mbdyn_post_frequency_response(modal, dof_info, excitation, response
   df_dy = (Jac2 - Jac1) / (dCoef1 - dCoef2);
   df_dy_dot = -dCoef1 * df_dy - Jac1;
 
-  number_dofs = length(df_dy);
-
-  Tp = sparse([], [], [], 0, number_dofs);
-
-  for i=1:length(excitation)
-    Tp_i = mbdyn_post_trans_mat_struct_node(dof_info, number_dofs, excitation(i).node_label, "force", excitation(i).offset, excitation(i).direction, excitation(i).component);
-    Tp((end + 1):(end + rows(Tp_i)), :) = Tp_i;
-  endfor
-
-  Tu = sparse([], [], [], 0, number_dofs);
-
-  for i=1:length(response)
-    Tu_i = mbdyn_post_trans_mat_struct_node(dof_info, number_dofs, response(i).node_label, "displacement", response(i).offset, response(i).direction, response(i).component);
-    Tu((end + 1):(end + rows(Tu_i)), :) = Tu_i;
-  endfor
+  Tp = mbdyn_build_excitation_matrix(dof_info, columns(df_dy), excitation, "force");
+  Tu = mbdyn_build_excitation_matrix(dof_info, columns(df_dy), excitation, "displacement");
 
   N_response = rows(Tu);
 
@@ -133,6 +128,16 @@ function F = mbdyn_post_frequency_response(modal, dof_info, excitation, response
       F = zeros(length(omega), N_response, N_excitation);
     case "rew"
       F = zeros(N_response, N_excitation, length(omega));
+  endswitch
+
+  switch (options.solver)
+    case "mldivide"
+      options.solver_func = @mbdyn_post_linear_solver_mldivide;
+    otherwise
+      if (~exist("fem_sol_factor", "file"))
+        pkg load mboct-fem-pkg;
+      endif
+      options.solver_func = @mbdyn_post_linear_solver_factor;
   endswitch
 
   if (options.number_of_processors == 1)
@@ -160,6 +165,24 @@ function F = mbdyn_post_frequency_response(modal, dof_info, excitation, response
       endswitch
     endfor
   endif
+endfunction
+
+function Tp = mbdyn_build_excitation_matrix(dof_info, number_dofs, excitation, type)
+  Tp_i = cell(numel(excitation), 1);
+  number_of_rows = int32(0);
+
+  for i=1:numel(excitation)
+    Tp_i{i} = mbdyn_post_trans_mat_struct_node(dof_info, number_dofs, excitation(i).node_label, type, excitation(i).offset, excitation(i).direction, excitation(i).component);
+    number_of_rows += rows(Tp_i{i});
+  endfor
+
+  Tp = sparse([], [], [], number_of_rows, number_dofs);
+
+  number_of_rows = int32(0);
+
+  for i=1:numel(excitation)
+    Tp((number_of_rows + 1):(number_of_rows + rows(Tp_i{i})), :) = Tp_i{i};
+  endfor
 endfunction
 
 %!test
@@ -344,6 +367,7 @@ endfunction
 %!             response.offset = [0; 0; 0];
 %!             response.direction = [0; 0; 1];
 %!             options.matrix_type = "wre";
+%!             options.number_of_processors = int32(1);
 %!             F{idxnc} = mbdyn_post_frequency_response(modal{idxnc}, log_dat.dof_info, excitation, response, omega, P0, options);
 %!             if (f_plot_response)
 %!               figure("visible", "off");
@@ -702,6 +726,7 @@ endfunction
 %!   response.offset = [0; 0; 0];
 %!   response.direction = [0; 0; 1];
 %!   options.matrix_type = "wre";
+%!   options.solver = "pardiso";
 %!   F{idxnc} = mbdyn_post_frequency_response(modal{idxnc}, log_dat.dof_info, excitation, response, omega, P0, options);
 %!   if (f_plot_response)
 %!     figure("visible", "off");
@@ -864,6 +889,7 @@ endfunction
 %!     response.offset = [0; 0; 0];
 %!     response.direction = [0; 0; 1];
 %!     options.matrix_type = "wre";
+%!     options.solver = "pardiso";
 %!     F{idxnc} = mbdyn_post_frequency_response(modal{idxnc}, log_dat.dof_info, excitation, response, omega, P0, options);
 %!     if (f_plot_response)
 %!       figure("visible", "off");

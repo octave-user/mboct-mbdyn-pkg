@@ -30,7 +30,7 @@ function y = mbdyn_post_frequency_response_helper(i, df_dy, df_dy_dot, Tp, p, Tu
     p = p(:, i); ## reduce memory usage: expand only one load vector per time
   endif
 
-  b = -Tp.' * p;
+  b = Tp.' * p;
 
   A = df_dy + 1j * omega(i) * df_dy_dot;
 

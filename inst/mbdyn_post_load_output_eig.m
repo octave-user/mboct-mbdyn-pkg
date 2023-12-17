@@ -202,7 +202,9 @@ function modal = mbdyn_post_load_modal_data_nc(mbdyn_output_file, index)
                "eig.idx",          "idx";
                "eig.labels",       "labels";
                "eig.joint.idx",    "joint_idx";
-               "eig.joint.labels", "joint_labels"};
+               "eig.joint.labels", "joint_labels";
+               "eig.genel.idx",    "genel_idx";
+               "eig.genel.labels", "genel_labels"};
 
   for i=1:rows(var_names)
     try

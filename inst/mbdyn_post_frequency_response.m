@@ -285,7 +285,7 @@ endfunction
 %!             fputs(fd, "         initial time: 0;\n");
 %!             fputs(fd, "         final time: 1e-2;\n");
 %!             fputs(fd, "         time step: 1e-2;\n");
-%!             fprintf(fd, "         linear solver: %s;\n", linear_solvers{n});
+%!             fprintf(fd, "         linear solver: %s, scale, iterative, once, max iterations, 10;\n", linear_solvers{n});
 %!             fputs(fd, "         method: ms, 0.6;\n");
 %!             fputs(fd, "         max iterations: 10;\n");
 %!             fputs(fd, "         tolerance: 1.e-6;\n");
@@ -494,7 +494,7 @@ endfunction
 %!     fputs(fd, "         initial time: 0;\n");
 %!     fputs(fd, "         final time: 1e-2;\n");
 %!     fputs(fd, "         time step: 1e-2;\n");
-%!     fputs(fd, "         linear solver: naive, colamd;\n");
+%!     fputs(fd, "         linear solver: naive, colamd, scale, iterative, once;\n");
 %!     fputs(fd, "         method: ms, 0.6;\n");
 %!     fputs(fd, "         max iterations: 10;\n");
 %!     fputs(fd, "         tolerance: 1.e-6;\n");
@@ -667,7 +667,7 @@ endfunction
 %!     fputs(fd, "         initial time: 0;\n");
 %!     fputs(fd, "         final time: 1e-2;\n");
 %!     fputs(fd, "         time step: 1e-2;\n");
-%!     fputs(fd, "         linear solver: naive, colamd;\n");
+%!     fputs(fd, "         linear solver: naive, colamd, scale, iterative, once;\n");
 %!     fputs(fd, "         method: ms, 0.6;\n");
 %!     fputs(fd, "         max iterations: 10;\n");
 %!     fputs(fd, "         tolerance: 1.e-6;\n");

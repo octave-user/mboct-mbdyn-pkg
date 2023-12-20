@@ -243,13 +243,13 @@ endfunction
 %!             fputs(fd, "         time step: 0.005 * t1;\n");
 %!             switch (autodiff{i})
 %!             case true
-%!               fputs(fd, "         linear solver: umfpack, grad, scale, iterative, always, max iterations, 50;\n");
+%!               fputs(fd, "         linear solver: umfpack, grad, pivot factor, 0.1, scale, iterative, always,  tolerance, 1e-12, max iterations, 100;\n");
 %!             otherwise
-%!               fputs(fd, "         linear solver: umfpack, map, scale, iterative, always, max iterations, 50;\n");
+%!               fputs(fd, "         linear solver: umfpack, map, pivot factor, 0.1, scale, iterative, always,  tolerance, 1e-12, max iterations, 100;\n");
 %!             endswitch
 %!             fputs(fd, "         method: implicit euler;\n");
 %!             fputs(fd, "         max iterations: 100;\n");
-%!             fputs(fd, "         tolerance: 1e-9, test, sepnorm, 1e-10, test, norm;\n");
+%!             fputs(fd, "         tolerance: 1e-9, test, sepnorm, 1e-14, test, norm;\n");
 %!             if (options.verbose)
 %!               fputs(fd, "         output: iterations, solver condition number, stat, yes;\n");
 %!             endif
@@ -258,8 +258,9 @@ endfunction
 %!             fputs(fd, "         derivatives coefficient: auto;\n");
 %!             fputs(fd, "         nonlinear solver: nox, modified, 30,\n");
 %!             fputs(fd, "             keep jacobian matrix,\n");
+%!             fputs(fd, "             use preconditioner as solver, yes,\n");
 %!             fputs(fd, "             inner iterations before assembly, 6,\n");
-%!             fputs(fd, "             jacobian operator, newton krylov,\n");
+%!             fputs(fd, "             jacobian operator, newton,\n");
 %!             fputs(fd, "             solver, line search based,\n");
 %!             fputs(fd, "             forcing term, type 2,\n");
 %!             fputs(fd, "             direction, newton,\n");
@@ -267,6 +268,7 @@ endfunction
 %!             fputs(fd, "             recovery step, 1e-6,\n");
 %!             fputs(fd, "             recovery step type, constant,\n");
 %!             fputs(fd, "             linear solver, gmres,\n");
+%!             fputs(fd, "             linear solver tolerance, 1e-12,\n");
 %!             fputs(fd, "             print convergence info, no,\n");
 %!             fputs(fd, "             linear solver max iterations, 12,\n");
 %!             fputs(fd, "             krylov subspace size, 12;\n");
@@ -347,7 +349,7 @@ endfunction
 %!   tolR = 2e-6;
 %!   tolU = 2e-6;
 %!   tolf = 2e-5;
-%!   tolD = 4e-2;
+%!   tolD = 3e-2;
 %!   for j=1:numel(damping)
 %!     for i=1:numel(autodiff)
 %!       for k=1:numel(offset)

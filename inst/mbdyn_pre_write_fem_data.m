@@ -4586,7 +4586,7 @@ endfunction
 %!   mesh.elements.rbe3 = fem_pre_mesh_rbe3_from_surf(mesh, [2], [cms_opt.nodes.interfaces.number], "quad8");
 %!   cms_opt.refine_max_iter = 30;
 %!   cms_opt.pre_scaling = false;
-%!   cms_opt.solver = "pardiso";
+%!   cms_opt.solver = "umfpack"; ## Need to test at least one case with an unsymmetric solver
 %!   cms_opt.modes.number = 20;
 %!   cms_opt.tolerance_tau = -1;
 %!   cms_opt.element.name = "elem_id_modal";
@@ -4596,7 +4596,7 @@ endfunction
 %!   cms_opt.invariants = true;
 %!   load_case_dof.locked_dof = false(size(mesh.nodes));
 %!   load_case_dof.locked_dof(mesh.groups.quad8(grp_idx_clamp).nodes, 1:3) = true;
-%!   load_case_dof.locked_dof(cms_opt.nodes.modal.number, 1:3) = true;
+%!   load_case_dof.locked_dof(cms_opt.nodes.modal.number, :) = true; ## Avoid singular matrix
 %!   [mesh_cms, mat_ass_cms, dof_map_cms, sol_eig_cms, cms_opt, sol_tau_cms] = fem_cms_create2(mesh, load_case_dof, cms_opt);
 %!   fem_cms_export(filename, mesh_cms, dof_map_cms, mat_ass_cms, cms_opt);
 %!   pert.omega = [1e2; 3e2; 2e2] / (SI_unit_rad / SI_unit_second);
@@ -5177,9 +5177,7 @@ endfunction
 %!   endfor
 %!   load_case_dof.locked_dof = false(size(mesh.nodes));
 %!   load_case_dof.locked_dof(mesh.groups.quad8(grp_idx_clamp).nodes, 1:3) = true;
-%!   load_case_dof.locked_dof(cms_opt.nodes.modal.number, 1:3) = true;
-%!   mesh.elements.joints.nodes = cms_opt.nodes.modal.number;
-%!   mesh.elements.joints.C = eye(6);
+%!   load_case_dof.locked_dof(cms_opt.nodes.modal.number, :) = true; ## Avoid singular matrix
 %!   dof_map = fem_ass_dof_map(mesh, load_case_dof);
 %!   dof_map.parallel.threads_ass = options.number_of_threads;
 %!   load_case = struct("omega", empty_cell, ...
@@ -7730,7 +7728,7 @@ endfunction
 %!   cms_opt.invariants = true;
 %!   load_case_dof.locked_dof = false(size(mesh.nodes));
 %!   load_case_dof.locked_dof(mesh.groups.quad9(grp_idx_clamp).nodes, 1:3) = true;
-%!   load_case_dof.locked_dof(cms_opt.nodes.modal.number, 1:3) = true;
+%!   load_case_dof.locked_dof(cms_opt.nodes.modal.number, :) = true; ## Avoid singular matrix
 %!   [mesh_cms, mat_ass_cms, dof_map_cms, sol_eig_cms, cms_opt, sol_tau_cms] = fem_cms_create2(mesh, load_case_dof, cms_opt);
 %!   fem_cms_export(filename, mesh_cms, dof_map_cms, mat_ass_cms, cms_opt);
 %!   pert.omega = [1e2; 3e2; 2e2] / (SI_unit_rad / SI_unit_second);
@@ -8311,9 +8309,7 @@ endfunction
 %!   endfor
 %!   load_case_dof.locked_dof = false(size(mesh.nodes));
 %!   load_case_dof.locked_dof(mesh.groups.quad9(grp_idx_clamp).nodes, 1:3) = true;
-%!   load_case_dof.locked_dof(cms_opt.nodes.modal.number, 1:3) = true;
-%!   mesh.elements.joints.nodes = cms_opt.nodes.modal.number;
-%!   mesh.elements.joints.C = eye(6);
+%!   load_case_dof.locked_dof(cms_opt.nodes.modal.number, :) = true; ## Avoid singular matrix
 %!   dof_map = fem_ass_dof_map(mesh, load_case_dof);
 %!   dof_map.parallel.threads_ass = options.number_of_threads;
 %!   load_case = struct("omega", empty_cell, ...

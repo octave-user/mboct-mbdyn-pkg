@@ -235,7 +235,7 @@ function options = mbdyn_pre_solid_write_elements(mesh, load_case_dof, load_case
       warning("file \"%s\": no solid elements were generated", elem_file);
     endif
 
-    [nidx, dofidx] = find(load_case_dof.locked_dof);
+    [nidx, dofidx] = find(load_case_dof.locked_dof(:, 1:3)); ## FIXME: cannot use genels for rotation parameters
 
     if (~isempty(nidx))
       genel_format = "genel: %d, clamp, %d, structural, %d, algebraic, from node;\n";

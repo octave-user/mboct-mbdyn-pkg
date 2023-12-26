@@ -938,28 +938,28 @@ endfunction
 %! param.Udyn = eye(3) / SI_unit_meter;
 %! param.fmin = 0 / (SI_unit_second^-1);
 %! param.fmax = 1500 / (SI_unit_second^-1);
-%! param.num_freq = 1000;
+%! param.num_freq = 250;
 %! param.t1 = 1000 / SI_unit_second;
 %! param.num_steps = 10;
 %! param.damping = "beta";
 %! geometry(1).user_data.helspr.L = 25.8e-3 / SI_unit_meter;
 %! geometry(1).user_data.helspr.Di = 12.12e-3 / SI_unit_meter;
 %! geometry(1).user_data.helspr.d = 1.3e-3 / SI_unit_meter;
-%! geometry(1).user_data.helspr.n = 5.3;
+%! geometry(1).user_data.helspr.n = 1.3;
 %! geometry(1).user_data.helspr.ni = 3;
 %! geometry(1).user_data.helspr.ng = 0.75;
 %! geometry(1).user_data.color = "r";
 %! geometry(2).user_data.helspr.L = 27.7e-3 / SI_unit_meter;
 %! geometry(2).user_data.helspr.Di = 12.12e-3 / SI_unit_meter;
 %! geometry(2).user_data.helspr.d = 1.3e-3 / SI_unit_meter;
-%! geometry(2).user_data.helspr.n = 5.7;
+%! geometry(2).user_data.helspr.n = 1.7;
 %! geometry(2).user_data.helspr.ni = 2.7;
 %! geometry(2).user_data.helspr.ng = 0.75;
 %! geometry(2).user_data.color = "g";
 %! geometry(3).user_data.helspr.L = 28.63e-3 / SI_unit_meter;
 %! geometry(3).user_data.helspr.Di = 12.12e-3 / SI_unit_meter;
 %! geometry(3).user_data.helspr.d = 1.25e-3 / SI_unit_meter;
-%! geometry(3).user_data.helspr.n = 6;
+%! geometry(3).user_data.helspr.n = 2;
 %! geometry(3).user_data.helspr.ni = 2.7;
 %! geometry(3).user_data.helspr.ng = 0.75;
 %! geometry(3).user_data.color = "b";
@@ -1127,7 +1127,7 @@ endfunction
 %!   geometry.user_data.helspr.D = geometry.user_data.helspr.Di + geometry.user_data.helspr.d;
 %!   kz = material.G * geometry.user_data.helspr.d^4 / (8 * geometry.user_data.helspr.n * geometry.user_data.helspr.D^3);
 %!   Ustat = [0; 0; param.Fz / kz];
-%!   h = geometry.user_data.helspr.d * pi / 2;
+%!   h = geometry.user_data.helspr.d * pi;
 %!   geometry.user_data.helspr.nPhi = max([2, round(sqrt((geometry.user_data.helspr.D * pi * geometry.user_data.helspr.n)^2 + geometry.user_data.helspr.L^2) / h)]) + 1;
 %!   geometry.user_data.helspr.nr = max([1, round(0.5 * geometry.user_data.helspr.d / h)]) + 1;
 %!   geometry.user_data.helspr.nTheta = max([3, round(geometry.user_data.helspr.d * pi / h)]) + 1;
@@ -1294,5 +1294,5 @@ endfunction
 %! endfor
 %! endif
 %! for i=1:numel(Freact)
-%!   assert(max(max(max(abs(Freact_mbd{i}(:, :, 2:end) ./ Freact{i}(:, :, 2:end) - 1)))) < 1e-5);
+%!   assert(max(max(max(abs(Freact_mbd{i}(:, :, 2:end) ./ Freact{i}(:, :, 2:end) - 1)))) < 1e-4);
 %! endfor

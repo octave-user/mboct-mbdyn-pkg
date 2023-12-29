@@ -434,9 +434,9 @@ endfunction
 %!   R = G * d^4 / (8 * n * D^3);
 %!   wref = -F / R;
 %!   tol = 1e-2;
-%!   assert(deformation{end}(end, 3), wref, tol * abs(wref));
+%!   assert_simple(deformation{end}(end, 3), wref, tol * abs(wref));
 %!   for k=1:numel(scaled)
-%!     assert(scaled{k}.deformation{end}(end, 3), node_groups.scale * wref, tol * abs(node_groups.scale * wref));
+%!     assert_simple(scaled{k}.deformation{end}(end, 3), node_groups.scale * wref, tol * abs(node_groups.scale * wref));
 %!   endfor
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
@@ -582,9 +582,9 @@ endfunction
 %!   R = G * d^4 / (8 * n * D^3);
 %!   wref = -F / R;
 %!   tol = 1e-2;
-%!   assert(deformation{end}(end, 3), wref, tol * abs(wref));
+%!   assert_simple(deformation{end}(end, 3), wref, tol * abs(wref));
 %!   for k=1:numel(scaled)
-%!     assert(scaled{k}.deformation{end}(end, 3), node_groups.scale * wref, tol * abs(node_groups.scale * wref));
+%!     assert_simple(scaled{k}.deformation{end}(end, 3), node_groups.scale * wref, tol * abs(node_groups.scale * wref));
 %!   endfor
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
@@ -719,9 +719,9 @@ endfunction
 %!   R = G * d^4 / (8 * n * D^3);
 %!   wref = -F / R;
 %!   tol = 1e-2;
-%!   assert(deformation{end}(end, 3), wref, tol * abs(wref));
+%!   assert_simple(deformation{end}(end, 3), wref, tol * abs(wref));
 %!   for k=1:numel(scaled)
-%!     assert(scaled{k}.deformation{end}(end, 3), node_groups.scale * wref, tol * abs(node_groups.scale * wref));
+%!     assert_simple(scaled{k}.deformation{end}(end, 3), node_groups.scale * wref, tol * abs(node_groups.scale * wref));
 %!   endfor
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
@@ -857,9 +857,9 @@ endfunction
 %!   R = G * d^4 / (8 * n * D^3);
 %!   wref = -F / R;
 %!   tol = 1e-2;
-%!   assert(deformation{end}(end, 3), wref, tol * abs(wref));
+%!   assert_simple(deformation{end}(end, 3), wref, tol * abs(wref));
 %!   for k=1:numel(scaled)
-%!     assert(scaled{k}.deformation{end}(end, 3), node_groups.scale * wref, tol * abs(node_groups.scale * wref));
+%!     assert_simple(scaled{k}.deformation{end}(end, 3), node_groups.scale * wref, tol * abs(node_groups.scale * wref));
 %!   endfor
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)

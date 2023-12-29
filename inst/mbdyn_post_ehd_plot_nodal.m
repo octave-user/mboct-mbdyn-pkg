@@ -758,11 +758,11 @@ endfunction
 %!   fprintf(stderr, "beta / beta_ref - 1 = %.2f\n", beta / beta_ref - 1);
 %!   fprintf(stderr, "mu / mu_ref - 1 = %.2f\n", mu / mu_ref - 1);
 %!   fprintf(stderr, "Q / Q_ref - 1 = %.2f\n", Q / Q_ref - 1);
-%!   assert(So, So_ref, 0.03 * So_ref);
-%!   assert(beta, beta_ref, 0.02 * beta_ref);
-%!   assert(mu, mu_ref, 0.03 * mu_ref);
-%!   assert(Q, Q_ref, 0.07 * Q_ref);
-%!   assert(dQ, 0, 1e-3);
+%!   assert_simple(So, So_ref, 0.03 * So_ref);
+%!   assert_simple(beta, beta_ref, 0.02 * beta_ref);
+%!   assert_simple(mu, mu_ref, 0.03 * mu_ref);
+%!   assert_simple(Q, Q_ref, 0.07 * Q_ref);
+%!   assert_simple(dQ, 0, 1e-3);
 %! unwind_protect_cleanup
 %!   if (numel(output_file))
 %!     fn = dir([output_file, "*"]);

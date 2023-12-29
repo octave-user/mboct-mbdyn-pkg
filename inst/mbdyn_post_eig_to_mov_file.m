@@ -379,7 +379,7 @@ endfunction
 %!   lambda = [lambda1; lambda2];
 %!   [dummy, idx] = sort(imag(lambda), "ascend");
 %!   lambda = lambda(idx);
-%!   assert(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
+%!   assert_simple(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
 %!   options.frames = 36;
 %!   options.scale = 1;
 %!   options.mode_index = 1:numel(modal.lambda);
@@ -494,7 +494,7 @@ endfunction
 %!   lambda = [lambda1; lambda2];
 %!   [dummy, idx] = sort(imag(lambda), "ascend");
 %!   lambda = lambda(idx);
-%!   assert(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
+%!   assert_simple(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
 %!   options.frames = 36;
 %!   options.scale = 1;
 %!   options.mode_index = 1:numel(modal.lambda);
@@ -598,7 +598,7 @@ endfunction
 %!   lambda = [lambda1; lambda2];
 %!   [dummy, idx] = sort(imag(lambda), "ascend");
 %!   lambda = lambda(idx);
-%!   assert(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
+%!   assert_simple(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
 %!   options.frames = 36;
 %!   options.scale = 1;
 %!   options.mode_index = 1:numel(modal.lambda);
@@ -702,7 +702,7 @@ endfunction
 %!   lambda = [lambda1; lambda2];
 %!   [dummy, idx] = sort(imag(lambda), "ascend");
 %!   lambda = lambda(idx);
-%!   assert(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
+%!   assert_simple(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
 %!   options.frames = 36;
 %!   options.scale = 1;
 %!   options.mode_index = 1:numel(modal.lambda);

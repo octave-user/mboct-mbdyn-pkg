@@ -89,7 +89,7 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Clone MBDyn
         run: |
-          git clone -b testsuite https://public.gitlab.polimi.it/DAER/mbdyn.git
+          git clone -b develop https://public.gitlab.polimi.it/DAER/mbdyn.git
 
       # Runs a set of commands using the runners shell
       - name: Compile MBDyn
@@ -159,7 +159,7 @@ jobs:
 
       - name: Install mboct-fem-pkg
         run: |
-           git clone -b fem_sol_harmonic_modal2 https://github.com/octave-user/mboct-fem-pkg.git
+           git clone -b assert_simple https://github.com/octave-user/mboct-fem-pkg.git
            pushd mboct-fem-pkg
            make CXXFLAGS="-Ofast -Wall -march=native" install_local
            pushd src

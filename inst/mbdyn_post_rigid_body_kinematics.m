@@ -169,14 +169,14 @@ endfunction
 %! log_dat.nodes(1).R0 = eye(3);
 %! [a, v, s] = mbdyn_post_rigid_body_kinematics(res, log_dat, response);
 %! tol = eps^0.8;
-%! assert(a{1}, a_rad.', tol * norm(a_rad));
-%! assert(v{1}, zeros(length(res.t), 1), tol * norm(v_tan));
-%! assert(a{2}, a_tan.', tol * norm(a_tan));
-%! assert(v{2}, v_tan.', tol * norm(v_tan));
-%! assert(a{3}, -a_rad.', tol * norm(a_rad));
-%! assert(v{3}, zeros(length(res.t), 1), tol * norm(v_tan));
-%! assert(a{4}, -a_tan.', tol * norm(a_tan));
-%! assert(v{4}, -v_tan.', tol * norm(v_tan));
+%! assert_simple(a{1}, a_rad.', tol * norm(a_rad));
+%! assert_simple(v{1}, zeros(length(res.t), 1), tol * norm(v_tan));
+%! assert_simple(a{2}, a_tan.', tol * norm(a_tan));
+%! assert_simple(v{2}, v_tan.', tol * norm(v_tan));
+%! assert_simple(a{3}, -a_rad.', tol * norm(a_rad));
+%! assert_simple(v{3}, zeros(length(res.t), 1), tol * norm(v_tan));
+%! assert_simple(a{4}, -a_tan.', tol * norm(a_tan));
+%! assert_simple(v{4}, -v_tan.', tol * norm(v_tan));
 
 %!test
 %! t = linspace(0, 10, 100);
@@ -208,8 +208,8 @@ endfunction
 %! log_dat.nodes(1).R0 = eye(3);
 %! [a1, v1, s1] = mbdyn_post_rigid_body_kinematics(res, log_dat, response);
 %! tol = eps;
-%! assert(a1{1}, a.', tol * norm(a));
-%! assert(v1{1}, v.', tol * norm(v));
+%! assert_simple(a1{1}, a.', tol * norm(a));
+%! assert_simple(v1{1}, v.', tol * norm(v));
 
 %!test
 %! r1 = 15e-3;
@@ -246,9 +246,9 @@ endfunction
 %! log_dat.nodes(1).R0 = euler123_to_rotation_matrix([0; 0; 2*Phi0]);
 %! [a, v, s] = mbdyn_post_rigid_body_kinematics(res, log_dat, response);
 %! tol = eps^0.8;
-%! assert(s{1}, (x1 - log_dat.nodes(1).X0 - log_dat.nodes(1).R0 * o1).', tol * norm(x1));
-%! assert(v{1}, xP1.', tol * norm(xP1));
-%! assert(a{1}, xPP1.', tol * norm(xPP1));
+%! assert_simple(s{1}, (x1 - log_dat.nodes(1).X0 - log_dat.nodes(1).R0 * o1).', tol * norm(x1));
+%! assert_simple(v{1}, xP1.', tol * norm(xP1));
+%! assert_simple(a{1}, xPP1.', tol * norm(xPP1));
 
 %!demo
 %! r1 = 15e-3;
@@ -293,11 +293,11 @@ endfunction
 %! log_dat.nodes(1).R0 = eye(3);
 %! [a, v, s] = mbdyn_post_rigid_body_kinematics(res, log_dat, response);
 %! tol = eps^0.8;
-%! assert(a{1}, a_rad.', tol * norm(a_rad));
-%! assert(v{1}, zeros(length(res.t), 1), tol * norm(v_tan));
-%! assert(a{2}, a_tan.', tol * norm(a_tan));
-%! assert(v{2}, v_tan.', tol * norm(v_tan));
-%! assert(a{3}, -a_rad.', tol * norm(a_rad));
-%! assert(v{3}, zeros(length(res.t), 1), tol * norm(v_tan));
-%! assert(a{4}, -a_tan.', tol * norm(a_tan));
-%! assert(v{4}, -v_tan.', tol * norm(v_tan));
+%! assert_simple(a{1}, a_rad.', tol * norm(a_rad));
+%! assert_simple(v{1}, zeros(length(res.t), 1), tol * norm(v_tan));
+%! assert_simple(a{2}, a_tan.', tol * norm(a_tan));
+%! assert_simple(v{2}, v_tan.', tol * norm(v_tan));
+%! assert_simple(a{3}, -a_rad.', tol * norm(a_rad));
+%! assert_simple(v{3}, zeros(length(res.t), 1), tol * norm(v_tan));
+%! assert_simple(a{4}, -a_tan.', tol * norm(a_tan));
+%! assert_simple(v{4}, -v_tan.', tol * norm(v_tan));

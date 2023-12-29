@@ -197,17 +197,17 @@ endfunction
 %!   options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
 %!   forces = mbdyn_post_load_log_force(fname);
-%!   assert(forces(1).label, int32(1));
-%!   assert(forces(1).node1, int32(1));
-%!   assert(forces(1).arm1, [1.1; 1.2; 1.3]);
-%!   assert(forces(2).label, int32(2));
-%!   assert(forces(2).node1, int32(2));
-%!   assert(forces(2).arm1, [2.1; 2.2; 2.3]);
-%!   assert(forces(3).label, int32(3));
-%!   assert(forces(3).node1, int32(1));
-%!   assert(forces(3).node2, int32(2));
-%!   assert(forces(3).arm1, [3.1; 3.2; 3.3]);
-%!   assert(forces(3).arm2, [4.1; 4.2; 4.3]);
+%!   assert_simple(forces(1).label, int32(1));
+%!   assert_simple(forces(1).node1, int32(1));
+%!   assert_simple(forces(1).arm1, [1.1; 1.2; 1.3]);
+%!   assert_simple(forces(2).label, int32(2));
+%!   assert_simple(forces(2).node1, int32(2));
+%!   assert_simple(forces(2).arm1, [2.1; 2.2; 2.3]);
+%!   assert_simple(forces(3).label, int32(3));
+%!   assert_simple(forces(3).node1, int32(1));
+%!   assert_simple(forces(3).node2, int32(2));
+%!   assert_simple(forces(3).arm1, [3.1; 3.2; 3.3]);
+%!   assert_simple(forces(3).arm2, [4.1; 4.2; 4.3]);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -295,17 +295,17 @@ endfunction
 %!   options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
 %!   forces = mbdyn_post_load_log_force(fname);
-%!   assert(forces(1).label, int32(1));
-%!   assert(forces(1).node1, int32(1));
-%!   assert(forces(1).arm1, [1.1; 1.2; 1.3]);
-%!   assert(forces(2).label, int32(2));
-%!   assert(forces(2).node1, int32(2));
-%!   assert(forces(2).arm1, [2.1; 2.2; 2.3]);
-%!   assert(forces(3).label, int32(3));
-%!   assert(forces(3).node1, int32(1));
-%!   assert(forces(3).node2, int32(2));
-%!   assert(forces(3).arm1, [3.1; 3.2; 3.3]);
-%!   assert(forces(3).arm2, [4.1; 4.2; 4.3]);
+%!   assert_simple(forces(1).label, int32(1));
+%!   assert_simple(forces(1).node1, int32(1));
+%!   assert_simple(forces(1).arm1, [1.1; 1.2; 1.3]);
+%!   assert_simple(forces(2).label, int32(2));
+%!   assert_simple(forces(2).node1, int32(2));
+%!   assert_simple(forces(2).arm1, [2.1; 2.2; 2.3]);
+%!   assert_simple(forces(3).label, int32(3));
+%!   assert_simple(forces(3).node1, int32(1));
+%!   assert_simple(forces(3).node2, int32(2));
+%!   assert_simple(forces(3).arm1, [3.1; 3.2; 3.3]);
+%!   assert_simple(forces(3).arm2, [4.1; 4.2; 4.3]);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -382,17 +382,17 @@ endfunction
 %!   options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
 %!   forces = mbdyn_post_load_log_force(fname);
-%!   assert(forces(1).label, int32(1));
-%!   assert(forces(1).node1, int32(1));
-%!   assert(forces(1).arm1, [1.1; 1.2; 1.3]);
-%!   assert(forces(2).label, int32(2));
-%!   assert(forces(2).node1, int32(2));
-%!   assert(forces(2).arm1, [2.1; 2.2; 2.3]);
-%!   assert(forces(3).label, int32(3));
-%!   assert(forces(3).node1, int32(1));
-%!   assert(forces(3).node2, int32(2));
-%!   assert(forces(3).arm1, [3.1; 3.2; 3.3]);
-%!   assert(forces(3).arm2, [4.1; 4.2; 4.3]);
+%!   assert_simple(forces(1).label, int32(1));
+%!   assert_simple(forces(1).node1, int32(1));
+%!   assert_simple(forces(1).arm1, [1.1; 1.2; 1.3]);
+%!   assert_simple(forces(2).label, int32(2));
+%!   assert_simple(forces(2).node1, int32(2));
+%!   assert_simple(forces(2).arm1, [2.1; 2.2; 2.3]);
+%!   assert_simple(forces(3).label, int32(3));
+%!   assert_simple(forces(3).node1, int32(1));
+%!   assert_simple(forces(3).node2, int32(2));
+%!   assert_simple(forces(3).arm1, [3.1; 3.2; 3.3]);
+%!   assert_simple(forces(3).arm2, [4.1; 4.2; 4.3]);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -481,17 +481,17 @@ endfunction
 %!   options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
 %!   forces = mbdyn_post_load_log_force(fname);
-%!   assert(forces(1).label, int32(1));
-%!   assert(forces(1).node1, int32(1));
-%!   assert(forces(1).arm1, [1.1; 1.2; 1.3]);
-%!   assert(forces(2).label, int32(2));
-%!   assert(forces(2).node1, int32(2));
-%!   assert(forces(2).arm1, [2.1; 2.2; 2.3]);
-%!   assert(forces(3).label, int32(3));
-%!   assert(forces(3).node1, int32(1));
-%!   assert(forces(3).node2, int32(2));
-%!   assert(forces(3).arm1, [3.1; 3.2; 3.3]);
-%!   assert(forces(3).arm2, [4.1; 4.2; 4.3]);
+%!   assert_simple(forces(1).label, int32(1));
+%!   assert_simple(forces(1).node1, int32(1));
+%!   assert_simple(forces(1).arm1, [1.1; 1.2; 1.3]);
+%!   assert_simple(forces(2).label, int32(2));
+%!   assert_simple(forces(2).node1, int32(2));
+%!   assert_simple(forces(2).arm1, [2.1; 2.2; 2.3]);
+%!   assert_simple(forces(3).label, int32(3));
+%!   assert_simple(forces(3).node1, int32(1));
+%!   assert_simple(forces(3).node2, int32(2));
+%!   assert_simple(forces(3).arm1, [3.1; 3.2; 3.3]);
+%!   assert_simple(forces(3).arm2, [4.1; 4.2; 4.3]);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);

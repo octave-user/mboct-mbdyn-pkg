@@ -373,12 +373,12 @@ endfunction
 %!                 fprintf(stderr, "%5.2f %3.2f%% %5.2f %3.2f%% %4.2f%% %4.2f%%\n", [f1(1:M).'; 100 * D1(1:M).'; f2(1:M).'; 100 * D2(1:M).'; 100 * df.'; 100 * dD.' / max(abs(D1ref(1:M))).']);
 %!               endif
 %!               try
-%!                 assert(max(abs(df)) < tolf);
-%!                 assert(max(abs(dD)) < tolD * max(abs(D1ref(1:M))));
-%!                 assert(max(max(abs(U1(:,1:3) - U2(:, 1:3)))) < tolU * max(max(abs(U2))));
+%!                 assert_simple(max(abs(df)) < tolf);
+%!                 assert_simple(max(abs(dD)) < tolD * max(abs(D1ref(1:M))));
+%!                 assert_simple(max(max(abs(U1(:,1:3) - U2(:, 1:3)))) < tolU * max(max(abs(U2))));
 %!                 for o=1:size(R1, 3)
-%!                   assert(max(max(max(abs(R1(:, :, o).' * R2(:, :, o) - eye(3))))) < tolR);
-%!                   assert(max(max(max(abs(R2(:, :, o).' * R1(:, :, o) - eye(3))))) < tolR);
+%!                   assert_simple(max(max(max(abs(R1(:, :, o).' * R2(:, :, o) - eye(3))))) < tolR);
+%!                   assert_simple(max(max(max(abs(R2(:, :, o).' * R1(:, :, o) - eye(3))))) < tolR);
 %!                 endfor
 %!               catch
 %!                 fprintf(stderr, "mbdyn_pre_beam_write_nodes:test1[%d, %d, %d, %d, %d, %d]:\n", i, j, k, l, m, n);

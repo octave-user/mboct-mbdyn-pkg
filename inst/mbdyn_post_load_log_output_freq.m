@@ -121,7 +121,7 @@ endfunction
 %!   options.verbose = false;
 %!   options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
-%!   assert(mbdyn_post_load_log_output_freq(fname), 10);
+%!   assert_simple(mbdyn_post_load_log_output_freq(fname), 10);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -209,7 +209,7 @@ endfunction
 %!   options.verbose = false;
 %!   options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
-%!   assert(mbdyn_post_load_log_output_freq(fname), 10);
+%!   assert_simple(mbdyn_post_load_log_output_freq(fname), 10);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -286,7 +286,7 @@ endfunction
 %!   options.verbose = false;
 %!   options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
-%!   assert(mbdyn_post_load_log_output_freq(fname), 10);
+%!   assert_simple(mbdyn_post_load_log_output_freq(fname), 10);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -364,7 +364,7 @@ endfunction
 %!   options.verbose = false;
 %!   options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
-%!   assert(mbdyn_post_load_log_output_freq(fname), 10);
+%!   assert_simple(mbdyn_post_load_log_output_freq(fname), 10);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);

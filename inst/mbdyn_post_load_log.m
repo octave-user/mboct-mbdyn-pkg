@@ -750,15 +750,15 @@ endfunction
 %!   options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
 %!   log_dat = mbdyn_post_load_log(fname);
-%!   assert(log_dat.nodes(1).label, int32(1));
-%!   assert(log_dat.nodes(1).X0, zeros(3, 1));
-%!   assert(log_dat.nodes(1).R0, eye(3));
-%!   assert(log_dat.nodes(2).label, int32(2));
-%!   assert(log_dat.nodes(2).X0, [1; 2; 3]);
-%!   assert(log_dat.nodes(2).R0, euler123_to_rotation_matrix([0.1; 0.2; 0.3]), 1e-6);
-%!   assert(log_dat.vars.m1, 1);
-%!   assert(log_dat.vars.F1, 100);
-%!   assert(log_dat.vars.g, 9.81);
+%!   assert_simple(log_dat.nodes(1).label, int32(1));
+%!   assert_simple(log_dat.nodes(1).X0, zeros(3, 1));
+%!   assert_simple(log_dat.nodes(1).R0, eye(3));
+%!   assert_simple(log_dat.nodes(2).label, int32(2));
+%!   assert_simple(log_dat.nodes(2).X0, [1; 2; 3]);
+%!   assert_simple(log_dat.nodes(2).R0, euler123_to_rotation_matrix([0.1; 0.2; 0.3]), 1e-6);
+%!   assert_simple(log_dat.vars.m1, 1);
+%!   assert_simple(log_dat.vars.F1, 100);
+%!   assert_simple(log_dat.vars.g, 9.81);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -845,15 +845,15 @@ endfunction
 %!   options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
 %!   log_dat = mbdyn_post_load_log(fname);
-%!   assert(log_dat.nodes(1).label, int32(1));
-%!   assert(log_dat.nodes(1).X0, zeros(3, 1));
-%!   assert(log_dat.nodes(1).R0, eye(3));
-%!   assert(log_dat.nodes(2).label, int32(2));
-%!   assert(log_dat.nodes(2).X0, [1; 2; 3]);
-%!   assert(log_dat.nodes(2).R0, euler123_to_rotation_matrix([0.1; 0.2; 0.3]), 1e-6);
-%!   assert(log_dat.vars.m1, 1);
-%!   assert(log_dat.vars.F1, 100);
-%!   assert(log_dat.vars.g, 9.81);
+%!   assert_simple(log_dat.nodes(1).label, int32(1));
+%!   assert_simple(log_dat.nodes(1).X0, zeros(3, 1));
+%!   assert_simple(log_dat.nodes(1).R0, eye(3));
+%!   assert_simple(log_dat.nodes(2).label, int32(2));
+%!   assert_simple(log_dat.nodes(2).X0, [1; 2; 3]);
+%!   assert_simple(log_dat.nodes(2).R0, euler123_to_rotation_matrix([0.1; 0.2; 0.3]), 1e-6);
+%!   assert_simple(log_dat.vars.m1, 1);
+%!   assert_simple(log_dat.vars.F1, 100);
+%!   assert_simple(log_dat.vars.g, 9.81);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -929,15 +929,15 @@ endfunction
 %!   options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
 %!   log_dat = mbdyn_post_load_log(fname);
-%!   assert(log_dat.nodes(1).label, int32(1));
-%!   assert(log_dat.nodes(1).X0, zeros(3, 1));
-%!   assert(log_dat.nodes(1).R0, eye(3));
-%!   assert(log_dat.nodes(2).label, int32(2));
-%!   assert(log_dat.nodes(2).X0, [1; 2; 3]);
-%!   assert(log_dat.nodes(2).R0, euler123_to_rotation_matrix([0.1; 0.2; 0.3]), 1e-6);
-%!   assert(log_dat.vars.m1, 1);
-%!   assert(log_dat.vars.F1, 100);
-%!   assert(log_dat.vars.g, 9.81);
+%!   assert_simple(log_dat.nodes(1).label, int32(1));
+%!   assert_simple(log_dat.nodes(1).X0, zeros(3, 1));
+%!   assert_simple(log_dat.nodes(1).R0, eye(3));
+%!   assert_simple(log_dat.nodes(2).label, int32(2));
+%!   assert_simple(log_dat.nodes(2).X0, [1; 2; 3]);
+%!   assert_simple(log_dat.nodes(2).R0, euler123_to_rotation_matrix([0.1; 0.2; 0.3]), 1e-6);
+%!   assert_simple(log_dat.vars.m1, 1);
+%!   assert_simple(log_dat.vars.F1, 100);
+%!   assert_simple(log_dat.vars.g, 9.81);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -1025,15 +1025,15 @@ endfunction
 %!   options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
 %!   log_dat = mbdyn_post_load_log(fname);
-%!   assert(log_dat.nodes(1).label, int32(1));
-%!   assert(log_dat.nodes(1).X0, zeros(3, 1));
-%!   assert(log_dat.nodes(1).R0, eye(3));
-%!   assert(log_dat.nodes(2).label, int32(2));
-%!   assert(log_dat.nodes(2).X0, [1; 2; 3]);
-%!   assert(log_dat.nodes(2).R0, euler123_to_rotation_matrix([0.1; 0.2; 0.3]), 1e-6);
-%!   assert(log_dat.vars.m1, 1);
-%!   assert(log_dat.vars.F1, 100);
-%!   assert(log_dat.vars.g, 9.81);
+%!   assert_simple(log_dat.nodes(1).label, int32(1));
+%!   assert_simple(log_dat.nodes(1).X0, zeros(3, 1));
+%!   assert_simple(log_dat.nodes(1).R0, eye(3));
+%!   assert_simple(log_dat.nodes(2).label, int32(2));
+%!   assert_simple(log_dat.nodes(2).X0, [1; 2; 3]);
+%!   assert_simple(log_dat.nodes(2).R0, euler123_to_rotation_matrix([0.1; 0.2; 0.3]), 1e-6);
+%!   assert_simple(log_dat.vars.m1, 1);
+%!   assert_simple(log_dat.vars.F1, 100);
+%!   assert_simple(log_dat.vars.g, 9.81);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);

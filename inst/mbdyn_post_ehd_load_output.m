@@ -959,14 +959,14 @@ endfunction
 %!   grid minor on;
 %!   title(sprintf("Non-dimensional oil flow pure rotation B/d=%.2f", B_d_r(i)));
 %! endfor
-%! assert(mean(mean(abs(So(1:test_freq:end, 1:test_freq:end) ./ So_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.03);
-%! assert(mean(mean(abs(beta(1:test_freq:end, 1:test_freq:end) ./ beta_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.02);
-%! assert(mean(mean(abs(mu(1:test_freq:end, 1:test_freq:end) ./ mu_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.02);
-%! assert(mean(mean(abs(Q(1:test_freq:end, 1:test_freq:end) ./ Q_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.07);
-%! assert(max(max(abs(So(1:test_freq:end, 1:test_freq:end) ./ So_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.05);
-%! assert(max(max(abs(beta(1:test_freq:end, 1:test_freq:end) ./ beta_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.04);
-%! assert(max(max(abs(mu(1:test_freq:end, 1:test_freq:end) ./ mu_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.05);
-%! assert(max(max(abs(Q(1:test_freq:end, 1:test_freq:end) ./ Q_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.08);
+%! assert_simple(mean(mean(abs(So(1:test_freq:end, 1:test_freq:end) ./ So_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.03);
+%! assert_simple(mean(mean(abs(beta(1:test_freq:end, 1:test_freq:end) ./ beta_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.02);
+%! assert_simple(mean(mean(abs(mu(1:test_freq:end, 1:test_freq:end) ./ mu_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.02);
+%! assert_simple(mean(mean(abs(Q(1:test_freq:end, 1:test_freq:end) ./ Q_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.07);
+%! assert_simple(max(max(abs(So(1:test_freq:end, 1:test_freq:end) ./ So_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.05);
+%! assert_simple(max(max(abs(beta(1:test_freq:end, 1:test_freq:end) ./ beta_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.04);
+%! assert_simple(max(max(abs(mu(1:test_freq:end, 1:test_freq:end) ./ mu_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.05);
+%! assert_simple(max(max(abs(Q(1:test_freq:end, 1:test_freq:end) ./ Q_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.08);
 
 %!test
 %! ## TEST 2
@@ -1432,14 +1432,14 @@ endfunction
 %!   grid minor on;
 %!   title(sprintf("Non-dimensional oil flow pure displacement B/d=%.2f", B_d_r(i)));
 %! endfor
-%! assert(mean(mean(abs(So(1:test_freq:end, 1:test_freq:end) ./ So_r(1:test_freq:end,1:test_freq:end) - 1))) < 0.02);
-%! assert(mean(mean(abs(beta(1:test_freq:end,1:test_freq:end) - beta_r(1:test_freq:end, 1:test_freq:end)))) < 1e-6 * pi / 180);
-%! assert(mean(mean(abs(mu(1:test_freq:end,1:test_freq:end)))) < 1e-8);
-%! assert(mean(mean(abs(Q(1:test_freq:end,1:test_freq:end) ./ Q_r(1:test_freq:end,1:test_freq:end) - 1))) < 0.06);
-%! assert(max(max(abs(So(1:test_freq:end,1:test_freq:end) ./ So_r(1:test_freq:end,1:test_freq:end) - 1))) < 0.11);
-%! assert(max(max(abs(beta(1:test_freq:end,1:test_freq:end) - beta_r(1:test_freq:end,1:test_freq:end)))) < 1e-6 * pi / 180);
-%! assert(max(max(abs(mu(1:test_freq:end,1:test_freq:end)))) < 1e-8);
-%! assert(max(max(abs(Q(1:test_freq:end,1:test_freq:end) ./ Q_r(1:test_freq:end,1:test_freq:end) - 1))) < 0.07);
+%! assert_simple(mean(mean(abs(So(1:test_freq:end, 1:test_freq:end) ./ So_r(1:test_freq:end,1:test_freq:end) - 1))) < 0.02);
+%! assert_simple(mean(mean(abs(beta(1:test_freq:end,1:test_freq:end) - beta_r(1:test_freq:end, 1:test_freq:end)))) < 1e-6 * pi / 180);
+%! assert_simple(mean(mean(abs(mu(1:test_freq:end,1:test_freq:end)))) < 1e-8);
+%! assert_simple(mean(mean(abs(Q(1:test_freq:end,1:test_freq:end) ./ Q_r(1:test_freq:end,1:test_freq:end) - 1))) < 0.06);
+%! assert_simple(max(max(abs(So(1:test_freq:end,1:test_freq:end) ./ So_r(1:test_freq:end,1:test_freq:end) - 1))) < 0.11);
+%! assert_simple(max(max(abs(beta(1:test_freq:end,1:test_freq:end) - beta_r(1:test_freq:end,1:test_freq:end)))) < 1e-6 * pi / 180);
+%! assert_simple(max(max(abs(mu(1:test_freq:end,1:test_freq:end)))) < 1e-8);
+%! assert_simple(max(max(abs(Q(1:test_freq:end,1:test_freq:end) ./ Q_r(1:test_freq:end,1:test_freq:end) - 1))) < 0.07);
 
 %!test
 %! ## TEST 3
@@ -1861,14 +1861,14 @@ endfunction
 %!   grid minor on;
 %!   title(sprintf("Non-dimensional oil flow pure rotation B/d=%.2f", B_d_r(i)));
 %! endfor
-%! assert(mean(mean(abs(So(1:test_freq:end, 1:test_freq:end) ./ So_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.03);
-%! assert(mean(mean(abs(beta(1:test_freq:end, 1:test_freq:end) ./ beta_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.02);
-%! assert(mean(mean(abs(mu(1:test_freq:end, 1:test_freq:end) ./ mu_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.02);
-%! assert(mean(mean(abs(Q(1:test_freq:end, 1:test_freq:end) ./ Q_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.07);
-%! assert(max(max(abs(So(1:test_freq:end, 1:test_freq:end) ./ So_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.05);
-%! assert(max(max(abs(beta(1:test_freq:end, 1:test_freq:end) ./ beta_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.04);
-%! assert(max(max(abs(mu(1:test_freq:end, 1:test_freq:end) ./ mu_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.05);
-%! assert(max(max(abs(Q(1:test_freq:end, 1:test_freq:end) ./ Q_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.08);
+%! assert_simple(mean(mean(abs(So(1:test_freq:end, 1:test_freq:end) ./ So_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.03);
+%! assert_simple(mean(mean(abs(beta(1:test_freq:end, 1:test_freq:end) ./ beta_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.02);
+%! assert_simple(mean(mean(abs(mu(1:test_freq:end, 1:test_freq:end) ./ mu_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.02);
+%! assert_simple(mean(mean(abs(Q(1:test_freq:end, 1:test_freq:end) ./ Q_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.07);
+%! assert_simple(max(max(abs(So(1:test_freq:end, 1:test_freq:end) ./ So_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.05);
+%! assert_simple(max(max(abs(beta(1:test_freq:end, 1:test_freq:end) ./ beta_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.04);
+%! assert_simple(max(max(abs(mu(1:test_freq:end, 1:test_freq:end) ./ mu_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.05);
+%! assert_simple(max(max(abs(Q(1:test_freq:end, 1:test_freq:end) ./ Q_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.08);
 
 %!test
 %! ## TEST 4
@@ -2325,14 +2325,14 @@ endfunction
 %!   grid minor on;
 %!   title(sprintf("Non-dimensional oil flow pure displacement B/d=%.2f", B_d_r(i)));
 %! endfor
-%! assert(mean(mean(abs(So(1:test_freq:end, 1:test_freq:end) ./ So_r(1:test_freq:end,1:test_freq:end) - 1))) < 0.02);
-%! assert(mean(mean(abs(beta(1:test_freq:end,1:test_freq:end) - beta_r(1:test_freq:end, 1:test_freq:end)))) < 1e-6 * pi / 180);
-%! assert(mean(mean(abs(mu(1:test_freq:end,1:test_freq:end)))) < 1e-8);
-%! assert(mean(mean(abs(Q(1:test_freq:end,1:test_freq:end) ./ Q_r(1:test_freq:end,1:test_freq:end) - 1))) < 0.06);
-%! assert(max(max(abs(So(1:test_freq:end,1:test_freq:end) ./ So_r(1:test_freq:end,1:test_freq:end) - 1))) < 0.11);
-%! assert(max(max(abs(beta(1:test_freq:end,1:test_freq:end) - beta_r(1:test_freq:end,1:test_freq:end)))) < 1e-6 * pi / 180);
-%! assert(max(max(abs(mu(1:test_freq:end,1:test_freq:end)))) < 1e-8);
-%! assert(max(max(abs(Q(1:test_freq:end,1:test_freq:end) ./ Q_r(1:test_freq:end,1:test_freq:end) - 1))) < 0.07);
+%! assert_simple(mean(mean(abs(So(1:test_freq:end, 1:test_freq:end) ./ So_r(1:test_freq:end,1:test_freq:end) - 1))) < 0.02);
+%! assert_simple(mean(mean(abs(beta(1:test_freq:end,1:test_freq:end) - beta_r(1:test_freq:end, 1:test_freq:end)))) < 1e-6 * pi / 180);
+%! assert_simple(mean(mean(abs(mu(1:test_freq:end,1:test_freq:end)))) < 1e-8);
+%! assert_simple(mean(mean(abs(Q(1:test_freq:end,1:test_freq:end) ./ Q_r(1:test_freq:end,1:test_freq:end) - 1))) < 0.06);
+%! assert_simple(max(max(abs(So(1:test_freq:end,1:test_freq:end) ./ So_r(1:test_freq:end,1:test_freq:end) - 1))) < 0.11);
+%! assert_simple(max(max(abs(beta(1:test_freq:end,1:test_freq:end) - beta_r(1:test_freq:end,1:test_freq:end)))) < 1e-6 * pi / 180);
+%! assert_simple(max(max(abs(mu(1:test_freq:end,1:test_freq:end)))) < 1e-8);
+%! assert_simple(max(max(abs(Q(1:test_freq:end,1:test_freq:end) ./ Q_r(1:test_freq:end,1:test_freq:end) - 1))) < 0.07);
 
 %!test
 %! ## TEST 5
@@ -2675,9 +2675,9 @@ endfunction
 %!   grid on;
 %!   grid minor on;
 %!   title("radial clearance versus time");
-%!   assert(res.bearings.columns.p(:, 1), p_ref, 1e-4 * max(abs(p_ref)));
-%!   assert(-mdot1, mdotz_ref(1), 0.5e-2 * abs(mdotz_ref(1)));
-%!   assert(mdot2, mdotz_ref(end), 0.5e-2 * abs(mdotz_ref(end)));
+%!   assert_simple(res.bearings.columns.p(:, 1), p_ref, 1e-4 * max(abs(p_ref)));
+%!   assert_simple(-mdot1, mdotz_ref(1), 0.5e-2 * abs(mdotz_ref(1)));
+%!   assert_simple(mdot2, mdotz_ref(end), 0.5e-2 * abs(mdotz_ref(end)));
 %! unwind_protect_cleanup
 %!   if (numel(output_file))
 %!     fn = dir([output_file, "*"]);
@@ -3021,9 +3021,9 @@ endfunction
 %!   grid on;
 %!   grid minor on;
 %!   title("radial clearance versus time");
-%!   assert(res.bearings.columns.p(:, 1), p_ref, 1e-4 * max(abs(p_ref)));
-%!   assert(-mdot1, mdotz_ref(1), 0.5e-2 * abs(mdotz_ref(1)));
-%!   assert(mdot2, mdotz_ref(end), 0.5e-2 * abs(mdotz_ref(end)));
+%!   assert_simple(res.bearings.columns.p(:, 1), p_ref, 1e-4 * max(abs(p_ref)));
+%!   assert_simple(-mdot1, mdotz_ref(1), 0.5e-2 * abs(mdotz_ref(1)));
+%!   assert_simple(mdot2, mdotz_ref(end), 0.5e-2 * abs(mdotz_ref(end)));
 %! unwind_protect_cleanup
 %!   if (numel(output_file))
 %!     fn = dir([output_file, "*"]);
@@ -3416,9 +3416,9 @@ endfunction
 %! title("radial clearance versus time");
 %! tol_q = 1e-3;
 %! tol_p = 2e-2;
-%! assert(-q1, analy.q_u1_wc, tol_q * analy.q_u1_wc);
-%! assert(q2, analy.q_u1_wc, tol_q * analy.q_u1_wc);
-%! assert(res.bearings.columns.p(:, 1), analy.p_wc(:), tol_p * max(abs(analy.p_wc)));
+%! assert_simple(-q1, analy.q_u1_wc, tol_q * analy.q_u1_wc);
+%! assert_simple(q2, analy.q_u1_wc, tol_q * analy.q_u1_wc);
+%! assert_simple(res.bearings.columns.p(:, 1), analy.p_wc(:), tol_p * max(abs(analy.p_wc)));
 %! unwind_protect_cleanup
 %!   if (numel(output_file))
 %!     fn = dir([output_file, "*"]);
@@ -3834,11 +3834,11 @@ endfunction
 %!   fprintf(stderr, "beta / beta_ref - 1 = %.2f\n", beta / beta_ref - 1);
 %!   fprintf(stderr, "mu / mu_ref - 1 = %.2f\n", mu / mu_ref - 1);
 %!   fprintf(stderr, "Q / Q_ref - 1 = %.2f\n", Q / Q_ref - 1);
-%!   assert(So, So_ref, 0.03 * So_ref);
-%!   assert(beta, beta_ref, 0.02 * beta_ref);
-%!   assert(mu, mu_ref, 0.03 * mu_ref);
-%!   assert(Q, Q_ref, 0.07 * Q_ref);
-%!   assert(dQ, 0, 1e-3);
+%!   assert_simple(So, So_ref, 0.03 * So_ref);
+%!   assert_simple(beta, beta_ref, 0.02 * beta_ref);
+%!   assert_simple(mu, mu_ref, 0.03 * mu_ref);
+%!   assert_simple(Q, Q_ref, 0.07 * Q_ref);
+%!   assert_simple(dQ, 0, 1e-3);
 %! unwind_protect_cleanup
 %!   if (numel(output_file))
 %!     fn = dir([output_file, "*"]);
@@ -4616,11 +4616,11 @@ endfunction
 %!   figure_list();
 %!   p_int = interp1(180 / pi * Phi, 1e-3 * p * SI_unit_pascal, ref_p(:, 1), "linear");
 %!   w_int = interp1(180 / pi * Phi, 1e6 * w * SI_unit_meter, ref_data_w(:, 1), "linear");
-%!   assert(p_int, ref_p(:, 2), 0.15 * max(abs(ref_p(:, 2))));
-%!   assert(mean(abs(p_int - ref_p(:, 2))) < 0.05 * max(abs(ref_p(:, 2))));
+%!   assert_simple(p_int, ref_p(:, 2), 0.15 * max(abs(ref_p(:, 2))));
+%!   assert_simple(mean(abs(p_int - ref_p(:, 2))) < 0.05 * max(abs(ref_p(:, 2))));
 %!   ## Don't check the first point because of issues related to the interpolation of the compliance matrix near to the slot
-%!   assert(w_int(2:end), ref_data_w(2:end, 2), 0.07 * max(abs(ref_data_w(:, 2))));
-%!   assert(mean(abs(w_int(2:end) - ref_data_w(2:end, 2))) < 0.04 * max(abs(ref_data_w(:, 2))));
+%!   assert_simple(w_int(2:end), ref_data_w(2:end, 2), 0.07 * max(abs(ref_data_w(:, 2))));
+%!   assert_simple(mean(abs(w_int(2:end) - ref_data_w(2:end, 2))) < 0.04 * max(abs(ref_data_w(:, 2))));
 %! unwind_protect_cleanup
 %!   if (numel(output_file))
 %!     fn = dir([output_file, "*"]);

@@ -359,10 +359,10 @@ endfunction
 %!   [dummy, idx] = sort(imag(lambda), "ascend");
 %!   lambda = lambda(idx);
 %!   DELTA = (modalnc.alpha(:, 1) + 1j * modalnc.alpha(:, 2)) ./ modalnc.alpha(:, 3);
-%!   assert(modalnc.lambda, (DELTA - 1) ./ (DELTA + 1) / modalnc.dCoef, eps^0.9 * norm(modalnc.lambda));
+%!   assert_simple(modalnc.lambda, (DELTA - 1) ./ (DELTA + 1) / modalnc.dCoef, eps^0.9 * norm(modalnc.lambda));
 %!   for i=1:columns(modalnc.VR)
-%!     assert(modalnc.Aminus * modalnc.VR(:, i),  DELTA(i) * modalnc.Aplus * modalnc.VR(:, i), eps^0.9 * norm(modalnc.Aminus * modalnc.VR(:, i)));
-%!     assert(modalnc.Aminus.' * modalnc.VL(:, i),  DELTA(i)' * modalnc.Aplus.' * modalnc.VL(:, i), eps^0.9 * norm(modalnc.Aminus.' * modalnc.VL(:, i)));
+%!     assert_simple(modalnc.Aminus * modalnc.VR(:, i),  DELTA(i) * modalnc.Aplus * modalnc.VR(:, i), eps^0.9 * norm(modalnc.Aminus * modalnc.VR(:, i)));
+%!     assert_simple(modalnc.Aminus.' * modalnc.VL(:, i),  DELTA(i)' * modalnc.Aplus.' * modalnc.VL(:, i), eps^0.9 * norm(modalnc.Aminus.' * modalnc.VL(:, i)));
 %!   endfor
 %!   Jac1 = modalnc.Aplus;
 %!   Jac2 = modalnc.Aminus;
@@ -373,21 +373,21 @@ endfunction
 %!   B = dCoef1 * A + Jac1;
 %!   L = inv(B * R).';
 %!   for i=1:columns(R)
-%!     assert(A * R(:, i), lambda(i) * B * R(:, i), eps^0.9 * norm(A * R(:, i)));
-%!     assert(A.' * L(:, i), lambda(i) * B.' * L(:, i), eps^0.9 * norm(A.' * L(:, i)));
-%!     assert(L(:, i).' * A, lambda(i) * L(:, i).' * B, eps^0.9 * norm(L(:, i).' * A));
+%!     assert_simple(A * R(:, i), lambda(i) * B * R(:, i), eps^0.9 * norm(A * R(:, i)));
+%!     assert_simple(A.' * L(:, i), lambda(i) * B.' * L(:, i), eps^0.9 * norm(A.' * L(:, i)));
+%!     assert_simple(L(:, i).' * A, lambda(i) * L(:, i).' * B, eps^0.9 * norm(L(:, i).' * A));
 %!   endfor
-%!   assert(L.' * A * R, diag(lambda), eps^0.9 * norm(lambda));
-%!   assert(L.' * B * R, eye(columns(A)), eps^0.9 * columns(A));
-%!   assert(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
-%!   assert(modalnc.lambda, lambda, eps^0.9 * max(abs(lambda)));
-%!   assert(modalnc.Aplus, modal.Aplus);
-%!   assert(modalnc.Aminus, modal.Aminus);
-%!   assert(modalnc.VR, modal.VR);
-%!   assert(modalnc.alpha, modal.alpha);
-%!   assert(modalnc.dTime, modal.dTime);
-%!   assert(modalnc.dCoef, modal.dCoef);
-%!   assert(modalnc.lStep, modal.lStep);
+%!   assert_simple(L.' * A * R, diag(lambda), eps^0.9 * norm(lambda));
+%!   assert_simple(L.' * B * R, eye(columns(A)), eps^0.9 * columns(A));
+%!   assert_simple(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
+%!   assert_simple(modalnc.lambda, lambda, eps^0.9 * max(abs(lambda)));
+%!   assert_simple(modalnc.Aplus, modal.Aplus);
+%!   assert_simple(modalnc.Aminus, modal.Aminus);
+%!   assert_simple(modalnc.VR, modal.VR);
+%!   assert_simple(modalnc.alpha, modal.alpha);
+%!   assert_simple(modalnc.dTime, modal.dTime);
+%!   assert_simple(modalnc.dCoef, modal.dCoef);
+%!   assert_simple(modalnc.lStep, modal.lStep);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -490,8 +490,8 @@ endfunction
 %!   lambda = [lambda1; lambda2];
 %!   [dummy, idx] = sort(imag(lambda), "ascend");
 %!   lambda = lambda(idx);
-%!   assert(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
-%!   assert(modalnc.lambda, lambda, eps^0.9 * max(abs(lambda)));
+%!   assert_simple(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
+%!   assert_simple(modalnc.lambda, lambda, eps^0.9 * max(abs(lambda)));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -583,8 +583,8 @@ endfunction
 %!   lambda = [lambda1; lambda2];
 %!   [dummy, idx] = sort(imag(lambda), "ascend");
 %!   lambda = lambda(idx);
-%!   assert(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
-%!   assert(modalnc.lambda, lambda, eps^0.9 * max(abs(lambda)));
+%!   assert_simple(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
+%!   assert_simple(modalnc.lambda, lambda, eps^0.9 * max(abs(lambda)));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -676,8 +676,8 @@ endfunction
 %!   lambda = [lambda1; lambda2];
 %!   [dummy, idx] = sort(imag(lambda), "ascend");
 %!   lambda = lambda(idx);
-%!   assert(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
-%!   assert(modalnc.lambda, lambda, eps^0.9 * max(abs(lambda)));
+%!   assert_simple(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
+%!   assert_simple(modalnc.lambda, lambda, eps^0.9 * max(abs(lambda)));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -847,11 +847,11 @@ endfunction
 %!     options_eig.use_netcdf = true;
 %!     modalnc = mbdyn_post_load_output_eig(options_mbd.output_file, options_eig);
 %!     fref = [5078; 6005; 6378; 6729] / SI_unit_second^-1;
-%!     assert(modal.f([7, 12, 19, 39] - 6), fref, 5e-4 * max(fref));
-%!     assert(modalnc.f([7, 12, 19, 39] - 6), fref, 5e-4 * max(fref));
+%!     assert_simple(modal.f([7, 12, 19, 39] - 6), fref, 5e-4 * max(fref));
+%!     assert_simple(modalnc.f([7, 12, 19, 39] - 6), fref, 5e-4 * max(fref));
 %!     fn = fieldnames(modal);
 %!     for idxfn=1:numel(fn)
-%!       assert(getfield(modal, fn{idxfn}), getfield(modalnc, fn{idxfn}));
+%!       assert_simple(getfield(modal, fn{idxfn}), getfield(modalnc, fn{idxfn}));
 %!     endfor
 %!   unwind_protect_cleanup
 %!     if (fd ~= -1)

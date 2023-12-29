@@ -198,7 +198,7 @@ endfunction
 %! which_eigenvalues = {"smallest magnitude", "largest imaginary part"};
 %! solvers = {"lapack", "arpack"};
 %! linear_solvers = {"umfpack, grad", "klu, grad", "naive, colamd"};
-%! assert(numel(E), numel(rho));
+%! assert_simple(numel(E), numel(rho));
 %! for n=1:numel(linear_solvers)
 %!   for m=1:numel(solvers)
 %!     for k=1:numel(which_eigenvalues)
@@ -396,7 +396,7 @@ endfunction
 %!         end_unwind_protect
 %!         tol = 2e-2;
 %!         for idxnc=1:numel(F)
-%!           assert(sum(abs(F{idxnc} - V.' * wstat).^2) / sum(abs(V * wstat).^2) < tol);
+%!           assert_simple(sum(abs(F{idxnc} - V.' * wstat).^2) / sum(abs(V * wstat).^2) < tol);
 %!           wyz = zeros(1, 2 * numel(omega_crit));
 %!           idxyz = 0;
 %!           idx_node = find(modal{idxnc}.labels == excitation.node_label);
@@ -413,11 +413,11 @@ endfunction
 %!           if (options.verbose)
 %!             fprintf(stderr, "err(%d:%d:%d:%d): %.3f%%\n", n, m, k, i, 100 * erryz);
 %!           endif
-%!           assert(erryz < tol);
+%!           assert_simple(erryz < tol);
 %!         endfor
 %!         fn = fieldnames(modal{1});
 %!         for idxfn=1:numel(fn)
-%!           assert(getfield(modal{1}, fn{idxfn}), getfield(modal{2}, fn{idxfn}));
+%!           assert_simple(getfield(modal{1}, fn{idxfn}), getfield(modal{2}, fn{idxfn}));
 %!         endfor
 %!       endfor
 %!     endfor
@@ -582,11 +582,11 @@ endfunction
 %!       title("frequency response phase");
 %!     endif
 %!     tol = 1e-2;
-%!     assert(sum(abs(F{idxnc} - V.' * wstat).^2) / sum(abs(V * wstat).^2) < tol);
+%!     assert_simple(sum(abs(F{idxnc} - V.' * wstat).^2) / sum(abs(V * wstat).^2) < tol);
 %!   endfor
 %!   fn = fieldnames(modal{1});
 %!   for idxfn=1:numel(fn)
-%!     assert(getfield(modal{1}, fn{idxfn}), getfield(modal{2}, fn{idxfn}));
+%!     assert_simple(getfield(modal{1}, fn{idxfn}), getfield(modal{2}, fn{idxfn}));
 %!   endfor
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
@@ -746,11 +746,11 @@ endfunction
 %!     title("frequency response phase");
 %!   endif
 %!   tol = 1e-2;
-%!   assert(sum(abs(F{idxnc} - V.' * wstat).^2) / sum(abs(V * wstat).^2) < tol);
+%!   assert_simple(sum(abs(F{idxnc} - V.' * wstat).^2) / sum(abs(V * wstat).^2) < tol);
 %!   endfor
 %!   fn = fieldnames(modal{1});
 %!   for idxfn=1:numel(fn)
-%!     assert(getfield(modal{1}, fn{idxfn}), getfield(modal{2}, fn{idxfn}));
+%!     assert_simple(getfield(modal{1}, fn{idxfn}), getfield(modal{2}, fn{idxfn}));
 %!   endfor
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
@@ -909,11 +909,11 @@ endfunction
 %!       title("frequency response phase");
 %!     endif
 %!     tol = 1e-2;
-%!     assert(sum(abs(F{idxnc} - V.' * wstat).^2) / sum(abs(V * wstat).^2) < tol);
+%!     assert_simple(sum(abs(F{idxnc} - V.' * wstat).^2) / sum(abs(V * wstat).^2) < tol);
 %!   endfor
 %!   fn = fieldnames(modal{1});
 %!   for idxfn=1:numel(fn)
-%!     assert(getfield(modal{1}, fn{idxfn}), getfield(modal{2}, fn{idxfn}));
+%!     assert_simple(getfield(modal{1}, fn{idxfn}), getfield(modal{2}, fn{idxfn}));
 %!   endfor
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
@@ -997,8 +997,8 @@ endfunction
 %!   e2 = cross(e3, e1);
 %!   R1 = [e1, e2, e3];
 %!   R1 *= diag(1 ./ norm(R1, "cols"));
-%!   assert(R1.' * R1, eye(3), eps^0.9);
-%!   assert(R1 * R1.', eye(3), eps^0.9);
+%!   assert_simple(R1.' * R1, eye(3), eps^0.9);
+%!   assert_simple(R1 * R1.', eye(3), eps^0.9);
 %!   x3 = R1 * [0; r1 * cos(Theta); r1 * sin(Theta)] + x1;
 %!   x = x3(1);
 %!   y = x3(2);
@@ -1294,5 +1294,5 @@ endfunction
 %! endfor
 %! endif
 %! for i=1:numel(Freact)
-%!   assert(max(max(max(abs(Freact_mbd{i}(:, :, 2:end) ./ Freact{i}(:, :, 2:end) - 1)))) < 1e-4);
+%!   assert_simple(max(max(max(abs(Freact_mbd{i}(:, :, 2:end) ./ Freact{i}(:, :, 2:end) - 1)))) < 1e-4);
 %! endfor

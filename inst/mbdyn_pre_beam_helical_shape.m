@@ -679,7 +679,7 @@ endfunction
 %! mbdyn_pre_beam_print_nodes(beam, fd);
 %! unwind_protect_cleanup
 %! fclose(fd);
-%! assert(unlink(fname), 0);
+%! assert_simple(unlink(fname), 0);
 %! end_unwind_protect
 %! figure("visible","off");
 %! hold on;

@@ -120,11 +120,11 @@ endfunction
 %!   options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
 %!   vars = mbdyn_post_load_log_vars(fname);
-%!   assert(vars.m1, 1);
-%!   assert(vars.m2, 2);
-%!   assert(vars.F1, 100);
-%!   assert(vars.F2, 20);
-%!   assert(vars.g, 9.81);
+%!   assert_simple(vars.m1, 1);
+%!   assert_simple(vars.m2, 2);
+%!   assert_simple(vars.F1, 100);
+%!   assert_simple(vars.F2, 20);
+%!   assert_simple(vars.g, 9.81);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -211,11 +211,11 @@ endfunction
 %!   options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
 %!   vars = mbdyn_post_load_log_vars(fname);
-%!   assert(vars.m1, 1);
-%!   assert(vars.m2, 2);
-%!   assert(vars.F1, 100);
-%!   assert(vars.F2, 20);
-%!   assert(vars.g, 9.81);
+%!   assert_simple(vars.m1, 1);
+%!   assert_simple(vars.m2, 2);
+%!   assert_simple(vars.F1, 100);
+%!   assert_simple(vars.F2, 20);
+%!   assert_simple(vars.g, 9.81);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -291,11 +291,11 @@ endfunction
 %!   options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
 %!   vars = mbdyn_post_load_log_vars(fname);
-%!   assert(vars.m1, 1);
-%!   assert(vars.m2, 2);
-%!   assert(vars.F1, 100);
-%!   assert(vars.F2, 20);
-%!   assert(vars.g, 9.81);
+%!   assert_simple(vars.m1, 1);
+%!   assert_simple(vars.m2, 2);
+%!   assert_simple(vars.F1, 100);
+%!   assert_simple(vars.F2, 20);
+%!   assert_simple(vars.g, 9.81);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);

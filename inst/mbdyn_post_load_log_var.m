@@ -137,11 +137,11 @@ endfunction
 %!   options.verbose = false;
 %!   options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
-%!   assert(mbdyn_post_load_log_var(fname, "g", "%g", "real"), 9.81);
-%!   assert(mbdyn_post_load_log_var(fname, "F1", "%g", "real"), 100);
-%!   assert(mbdyn_post_load_log_var(fname, "F2", "%g", "real"), 20);
-%!   assert(mbdyn_post_load_log_var(fname, "m1", "%g", "real"), 1);
-%!   assert(mbdyn_post_load_log_var(fname, "m2", "%g", "real"), 2);
+%!   assert_simple(mbdyn_post_load_log_var(fname, "g", "%g", "real"), 9.81);
+%!   assert_simple(mbdyn_post_load_log_var(fname, "F1", "%g", "real"), 100);
+%!   assert_simple(mbdyn_post_load_log_var(fname, "F2", "%g", "real"), 20);
+%!   assert_simple(mbdyn_post_load_log_var(fname, "m1", "%g", "real"), 1);
+%!   assert_simple(mbdyn_post_load_log_var(fname, "m2", "%g", "real"), 2);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -228,11 +228,11 @@ endfunction
 %!   options.verbose = false;
 %!   options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
-%!   assert(mbdyn_post_load_log_var(fname, "g", "%g", "real"), 9.81);
-%!   assert(mbdyn_post_load_log_var(fname, "F1", "%g", "real"), 100);
-%!   assert(mbdyn_post_load_log_var(fname, "F2", "%g", "real"), 20);
-%!   assert(mbdyn_post_load_log_var(fname, "m1", "%g", "real"), 1);
-%!   assert(mbdyn_post_load_log_var(fname, "m2", "%g", "real"), 2);
+%!   assert_simple(mbdyn_post_load_log_var(fname, "g", "%g", "real"), 9.81);
+%!   assert_simple(mbdyn_post_load_log_var(fname, "F1", "%g", "real"), 100);
+%!   assert_simple(mbdyn_post_load_log_var(fname, "F2", "%g", "real"), 20);
+%!   assert_simple(mbdyn_post_load_log_var(fname, "m1", "%g", "real"), 1);
+%!   assert_simple(mbdyn_post_load_log_var(fname, "m2", "%g", "real"), 2);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -308,11 +308,11 @@ endfunction
 %!   options.verbose = false;
 %!   options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
-%!   assert(mbdyn_post_load_log_var(fname, "g", "%g", "real"), 9.81);
-%!   assert(mbdyn_post_load_log_var(fname, "F1", "%g", "real"), 100);
-%!   assert(mbdyn_post_load_log_var(fname, "F2", "%g", "real"), 20);
-%!   assert(mbdyn_post_load_log_var(fname, "m1", "%g", "real"), 1);
-%!   assert(mbdyn_post_load_log_var(fname, "m2", "%g", "real"), 2);
+%!   assert_simple(mbdyn_post_load_log_var(fname, "g", "%g", "real"), 9.81);
+%!   assert_simple(mbdyn_post_load_log_var(fname, "F1", "%g", "real"), 100);
+%!   assert_simple(mbdyn_post_load_log_var(fname, "F2", "%g", "real"), 20);
+%!   assert_simple(mbdyn_post_load_log_var(fname, "m1", "%g", "real"), 1);
+%!   assert_simple(mbdyn_post_load_log_var(fname, "m2", "%g", "real"), 2);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -400,11 +400,11 @@ endfunction
 %!   options.verbose = false;
 %!   options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
-%!   assert(mbdyn_post_load_log_var(fname, "g", "%g", "real"), 9.81);
-%!   assert(mbdyn_post_load_log_var(fname, "F1", "%g", "real"), 100);
-%!   assert(mbdyn_post_load_log_var(fname, "F2", "%g", "real"), 20);
-%!   assert(mbdyn_post_load_log_var(fname, "m1", "%g", "real"), 1);
-%!   assert(mbdyn_post_load_log_var(fname, "m2", "%g", "real"), 2);
+%!   assert_simple(mbdyn_post_load_log_var(fname, "g", "%g", "real"), 9.81);
+%!   assert_simple(mbdyn_post_load_log_var(fname, "F1", "%g", "real"), 100);
+%!   assert_simple(mbdyn_post_load_log_var(fname, "F2", "%g", "real"), 20);
+%!   assert_simple(mbdyn_post_load_log_var(fname, "m1", "%g", "real"), 1);
+%!   assert_simple(mbdyn_post_load_log_var(fname, "m2", "%g", "real"), 2);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);

@@ -158,12 +158,12 @@ endfunction
 %!   [node_id, beta, gamma] = mbdyn_post_load_output_ine(options.output_file, 1, numel(t));
 %!   [node_id, beta] = mbdyn_post_load_output_ine(options.output_file, 1, numel(t));
 %!   [node_id] = mbdyn_post_load_output_ine(options.output_file, 1, numel(t));
-%!   assert(node_id, int32(1));
+%!   assert_simple(node_id, int32(1));
 %!   tol = eps^0.4;
-%!   assert(beta{1}, betaref.', tol * max(max(abs(betaref))));
-%!   assert(gamma{1}, repmat(gammaref.', numel(t), 1), tol * norm(gammaref));
-%!   assert(beta_dot{1}, repmat(betadotref.', numel(t), 1), tol * norm(betadotref));
-%!   assert(gamma_dot{1}, repmat(gammadotref.', numel(t), 1), tol * max([1,norm(gammadotref)]));
+%!   assert_simple(beta{1}, betaref.', tol * max(max(abs(betaref))));
+%!   assert_simple(gamma{1}, repmat(gammaref.', numel(t), 1), tol * norm(gammaref));
+%!   assert_simple(beta_dot{1}, repmat(betadotref.', numel(t), 1), tol * norm(betadotref));
+%!   assert_simple(gamma_dot{1}, repmat(gammadotref.', numel(t), 1), tol * max([1,norm(gammadotref)]));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -262,12 +262,12 @@ endfunction
 %!   [node_id, beta, gamma] = mbdyn_post_load_output_ine(options.output_file, 1, numel(t));
 %!   [node_id, beta] = mbdyn_post_load_output_ine(options.output_file, 1, numel(t));
 %!   [node_id] = mbdyn_post_load_output_ine(options.output_file, 1, numel(t));
-%!   assert(node_id, int32(1));
+%!   assert_simple(node_id, int32(1));
 %!   tol = eps^0.4;
-%!   assert(beta{1}, betaref.', tol * max(max(abs(betaref))));
-%!   assert(gamma{1}, repmat(gammaref.', numel(t), 1), tol * norm(gammaref));
-%!   assert(beta_dot{1}, repmat(betadotref.', numel(t), 1), tol * norm(betadotref));
-%!   assert(gamma_dot{1}, repmat(gammadotref.', numel(t), 1), tol * max([1,norm(gammadotref)]));
+%!   assert_simple(beta{1}, betaref.', tol * max(max(abs(betaref))));
+%!   assert_simple(gamma{1}, repmat(gammaref.', numel(t), 1), tol * norm(gammaref));
+%!   assert_simple(beta_dot{1}, repmat(betadotref.', numel(t), 1), tol * norm(betadotref));
+%!   assert_simple(gamma_dot{1}, repmat(gammadotref.', numel(t), 1), tol * max([1,norm(gammadotref)]));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -355,12 +355,12 @@ endfunction
 %!   [node_id, beta, gamma] = mbdyn_post_load_output_ine(options.output_file, 1, numel(t));
 %!   [node_id, beta] = mbdyn_post_load_output_ine(options.output_file, 1, numel(t));
 %!   [node_id] = mbdyn_post_load_output_ine(options.output_file, 1, numel(t));
-%!   assert(node_id, int32(1));
+%!   assert_simple(node_id, int32(1));
 %!   tol = eps^0.4;
-%!   assert(beta{1}, betaref.', tol * max(max(abs(betaref))));
-%!   assert(gamma{1}, repmat(gammaref.', numel(t), 1), tol * norm(gammaref));
-%!   assert(beta_dot{1}, repmat(betadotref.', numel(t), 1), tol * norm(betadotref));
-%!   assert(gamma_dot{1}, repmat(gammadotref.', numel(t), 1), tol * max([1,norm(gammadotref)]));
+%!   assert_simple(beta{1}, betaref.', tol * max(max(abs(betaref))));
+%!   assert_simple(gamma{1}, repmat(gammaref.', numel(t), 1), tol * norm(gammaref));
+%!   assert_simple(beta_dot{1}, repmat(betadotref.', numel(t), 1), tol * norm(betadotref));
+%!   assert_simple(gamma_dot{1}, repmat(gammadotref.', numel(t), 1), tol * max([1,norm(gammadotref)]));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -449,12 +449,12 @@ endfunction
 %!   [node_id, beta, gamma] = mbdyn_post_load_output_ine(options.output_file, 1, numel(t));
 %!   [node_id, beta] = mbdyn_post_load_output_ine(options.output_file, 1, numel(t));
 %!   [node_id] = mbdyn_post_load_output_ine(options.output_file, 1, numel(t));
-%!   assert(node_id, int32(1));
+%!   assert_simple(node_id, int32(1));
 %!   tol = eps^0.4;
-%!   assert(beta{1}, betaref.', tol * max(max(abs(betaref))));
-%!   assert(gamma{1}, repmat(gammaref.', numel(t), 1), tol * norm(gammaref));
-%!   assert(beta_dot{1}, repmat(betadotref.', numel(t), 1), tol * norm(betadotref));
-%!   assert(gamma_dot{1}, repmat(gammadotref.', numel(t), 1), tol * max([1,norm(gammadotref)]));
+%!   assert_simple(beta{1}, betaref.', tol * max(max(abs(betaref))));
+%!   assert_simple(gamma{1}, repmat(gammaref.', numel(t), 1), tol * norm(gammaref));
+%!   assert_simple(beta_dot{1}, repmat(betadotref.', numel(t), 1), tol * norm(betadotref));
+%!   assert_simple(gamma_dot{1}, repmat(gammadotref.', numel(t), 1), tol * max([1,norm(gammadotref)]));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);

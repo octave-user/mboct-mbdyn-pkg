@@ -157,14 +157,14 @@ endfunction
 %!   M1 = cross(repmat((R1 * l1).', numel(t), 1), F1);
 %!   M2 = cross(repmat((R2 * l2).', numel(t), 1), F2);
 %!   tol = eps^0.3;
-%!   assert(Fg{1}(:, 1:3), F1, tol * norm(F1));
-%!   assert(Fg{1}(:, 4:6), M1, tol * norm(M1));
-%!   assert(Fl{1}(:, 1:3), F1 * R1, tol * norm(F1));
-%!   assert(Fl{1}(:, 4:6), M1 * R1, tol * norm(M1));
-%!   assert(Fg{2}(:, 1:3), F2, tol * norm(F2));
-%!   assert(Fg{2}(:, 4:6), M2, tol * norm(M2));
-%!   assert(Fl{2}(:, 1:3), F2 * R2, tol * norm(F2));
-%!   assert(Fl{2}(:, 4:6), M2 * R2, tol * norm(M2));
+%!   assert_simple(Fg{1}(:, 1:3), F1, tol * norm(F1));
+%!   assert_simple(Fg{1}(:, 4:6), M1, tol * norm(M1));
+%!   assert_simple(Fl{1}(:, 1:3), F1 * R1, tol * norm(F1));
+%!   assert_simple(Fl{1}(:, 4:6), M1 * R1, tol * norm(M1));
+%!   assert_simple(Fg{2}(:, 1:3), F2, tol * norm(F2));
+%!   assert_simple(Fg{2}(:, 4:6), M2, tol * norm(M2));
+%!   assert_simple(Fl{2}(:, 1:3), F2 * R2, tol * norm(F2));
+%!   assert_simple(Fl{2}(:, 4:6), M2 * R2, tol * norm(M2));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -259,14 +259,14 @@ endfunction
 %!   M1 = cross(repmat((R1 * l1).', numel(t), 1), F1);
 %!   M2 = cross(repmat((R2 * l2).', numel(t), 1), F2);
 %!   tol = eps^0.3;
-%!   assert(Fg{1}(:, 1:3), F1, tol * norm(F1));
-%!   assert(Fg{1}(:, 4:6), M1, tol * norm(M1));
-%!   assert(Fl{1}(:, 1:3), F1 * R1, tol * norm(F1));
-%!   assert(Fl{1}(:, 4:6), M1 * R1, tol * norm(M1));
-%!   assert(Fg{2}(:, 1:3), F2, tol * norm(F2));
-%!   assert(Fg{2}(:, 4:6), M2, tol * norm(M2));
-%!   assert(Fl{2}(:, 1:3), F2 * R2, tol * norm(F2));
-%!   assert(Fl{2}(:, 4:6), M2 * R2, tol * norm(M2));
+%!   assert_simple(Fg{1}(:, 1:3), F1, tol * norm(F1));
+%!   assert_simple(Fg{1}(:, 4:6), M1, tol * norm(M1));
+%!   assert_simple(Fl{1}(:, 1:3), F1 * R1, tol * norm(F1));
+%!   assert_simple(Fl{1}(:, 4:6), M1 * R1, tol * norm(M1));
+%!   assert_simple(Fg{2}(:, 1:3), F2, tol * norm(F2));
+%!   assert_simple(Fg{2}(:, 4:6), M2, tol * norm(M2));
+%!   assert_simple(Fl{2}(:, 1:3), F2 * R2, tol * norm(F2));
+%!   assert_simple(Fl{2}(:, 4:6), M2 * R2, tol * norm(M2));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -350,14 +350,14 @@ endfunction
 %!   M1 = cross(repmat((R1 * l1).', numel(t), 1), F1);
 %!   M2 = cross(repmat((R2 * l2).', numel(t), 1), F2);
 %!   tol = eps^0.3;
-%!   assert(Fg{1}(:, 1:3), F1, tol * norm(F1));
-%!   assert(Fg{1}(:, 4:6), M1, tol * norm(M1));
-%!   assert(Fl{1}(:, 1:3), F1 * R1, tol * norm(F1));
-%!   assert(Fl{1}(:, 4:6), M1 * R1, tol * norm(M1));
-%!   assert(Fg{2}(:, 1:3), F2, tol * norm(F2));
-%!   assert(Fg{2}(:, 4:6), M2, tol * norm(M2));
-%!   assert(Fl{2}(:, 1:3), F2 * R2, tol * norm(F2));
-%!   assert(Fl{2}(:, 4:6), M2 * R2, tol * norm(M2));
+%!   assert_simple(Fg{1}(:, 1:3), F1, tol * norm(F1));
+%!   assert_simple(Fg{1}(:, 4:6), M1, tol * norm(M1));
+%!   assert_simple(Fl{1}(:, 1:3), F1 * R1, tol * norm(F1));
+%!   assert_simple(Fl{1}(:, 4:6), M1 * R1, tol * norm(M1));
+%!   assert_simple(Fg{2}(:, 1:3), F2, tol * norm(F2));
+%!   assert_simple(Fg{2}(:, 4:6), M2, tol * norm(M2));
+%!   assert_simple(Fl{2}(:, 1:3), F2 * R2, tol * norm(F2));
+%!   assert_simple(Fl{2}(:, 4:6), M2 * R2, tol * norm(M2));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -453,14 +453,14 @@ endfunction
 %!   M1 = cross(repmat((R1 * l1).', numel(t), 1), F1);
 %!   M2 = cross(repmat((R2 * l2).', numel(t), 1), F2);
 %!   tol = eps^0.3;
-%!   assert(Fg{1}(:, 1:3), F1, tol * norm(F1));
-%!   assert(Fg{1}(:, 4:6), M1, tol * norm(M1));
-%!   assert(Fl{1}(:, 1:3), F1 * R1, tol * norm(F1));
-%!   assert(Fl{1}(:, 4:6), M1 * R1, tol * norm(M1));
-%!   assert(Fg{2}(:, 1:3), F2, tol * norm(F2));
-%!   assert(Fg{2}(:, 4:6), M2, tol * norm(M2));
-%!   assert(Fl{2}(:, 1:3), F2 * R2, tol * norm(F2));
-%!   assert(Fl{2}(:, 4:6), M2 * R2, tol * norm(M2));
+%!   assert_simple(Fg{1}(:, 1:3), F1, tol * norm(F1));
+%!   assert_simple(Fg{1}(:, 4:6), M1, tol * norm(M1));
+%!   assert_simple(Fl{1}(:, 1:3), F1 * R1, tol * norm(F1));
+%!   assert_simple(Fl{1}(:, 4:6), M1 * R1, tol * norm(M1));
+%!   assert_simple(Fg{2}(:, 1:3), F2, tol * norm(F2));
+%!   assert_simple(Fg{2}(:, 4:6), M2, tol * norm(M2));
+%!   assert_simple(Fl{2}(:, 1:3), F2 * R2, tol * norm(F2));
+%!   assert_simple(Fl{2}(:, 4:6), M2 * R2, tol * norm(M2));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);

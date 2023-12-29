@@ -169,10 +169,10 @@ endfunction
 %!   log_dat = mbdyn_post_load_log(fname);
 %!   [beam_id, F_I, M_I, F_II, M_II] = mbdyn_post_load_output_act(fname, 1, numel(t));
 %!   tol = eps^0.4;
-%!   assert(F_I{1}(:, 3), -log_dat.vars.F1 * t, tol * abs(log_dat.vars.F1));
-%!   assert(F_II{1}(:, 3), -log_dat.vars.F1 * t, tol * abs(log_dat.vars.F1));
-%!   assert(M_I{1}(:, 2), log_dat.vars.F1 * t * 0.5 * (1 + 1/sqrt(3)) * log_dat.vars.L, tol * abs(log_dat.vars.F1 * log_dat.vars.L));
-%!   assert(M_II{1}(:, 2), log_dat.vars.F1 * t * 0.5 * (1 - 1/sqrt(3)) * log_dat.vars.L, tol * abs(log_dat.vars.F1 * log_dat.vars.L));
+%!   assert_simple(F_I{1}(:, 3), -log_dat.vars.F1 * t, tol * abs(log_dat.vars.F1));
+%!   assert_simple(F_II{1}(:, 3), -log_dat.vars.F1 * t, tol * abs(log_dat.vars.F1));
+%!   assert_simple(M_I{1}(:, 2), log_dat.vars.F1 * t * 0.5 * (1 + 1/sqrt(3)) * log_dat.vars.L, tol * abs(log_dat.vars.F1 * log_dat.vars.L));
+%!   assert_simple(M_II{1}(:, 2), log_dat.vars.F1 * t * 0.5 * (1 - 1/sqrt(3)) * log_dat.vars.L, tol * abs(log_dat.vars.F1 * log_dat.vars.L));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -274,10 +274,10 @@ endfunction
 %!   log_dat = mbdyn_post_load_log(fname);
 %!   [beam_id, F_I, M_I, F_II, M_II] = mbdyn_post_load_output_act(fname, 1, numel(t));
 %!   tol = eps^0.4;
-%!   assert(F_I{1}(:, 3), -log_dat.vars.F1 * t, tol * abs(log_dat.vars.F1));
-%!   assert(F_II{1}(:, 3), -log_dat.vars.F1 * t, tol * abs(log_dat.vars.F1));
-%!   assert(M_I{1}(:, 2), log_dat.vars.F1 * t * 0.5 * (1 + 1/sqrt(3)) * log_dat.vars.L, tol * abs(log_dat.vars.F1 * log_dat.vars.L));
-%!   assert(M_II{1}(:, 2), log_dat.vars.F1 * t * 0.5 * (1 - 1/sqrt(3)) * log_dat.vars.L, tol * abs(log_dat.vars.F1 * log_dat.vars.L));
+%!   assert_simple(F_I{1}(:, 3), -log_dat.vars.F1 * t, tol * abs(log_dat.vars.F1));
+%!   assert_simple(F_II{1}(:, 3), -log_dat.vars.F1 * t, tol * abs(log_dat.vars.F1));
+%!   assert_simple(M_I{1}(:, 2), log_dat.vars.F1 * t * 0.5 * (1 + 1/sqrt(3)) * log_dat.vars.L, tol * abs(log_dat.vars.F1 * log_dat.vars.L));
+%!   assert_simple(M_II{1}(:, 2), log_dat.vars.F1 * t * 0.5 * (1 - 1/sqrt(3)) * log_dat.vars.L, tol * abs(log_dat.vars.F1 * log_dat.vars.L));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -368,10 +368,10 @@ endfunction
 %!   log_dat = mbdyn_post_load_log(fname);
 %!   [beam_id, F_I, M_I, F_II, M_II] = mbdyn_post_load_output_act(fname, 1, numel(t));
 %!   tol = eps^0.4;
-%!   assert(F_I{1}(:, 3), -log_dat.vars.F1 * t, tol * abs(log_dat.vars.F1));
-%!   assert(F_II{1}(:, 3), -log_dat.vars.F1 * t, tol * abs(log_dat.vars.F1));
-%!   assert(M_I{1}(:, 2), log_dat.vars.F1 * t * 0.5 * (1 + 1/sqrt(3)) * log_dat.vars.L, tol * abs(log_dat.vars.F1 * log_dat.vars.L));
-%!   assert(M_II{1}(:, 2), log_dat.vars.F1 * t * 0.5 * (1 - 1/sqrt(3)) * log_dat.vars.L, tol * abs(log_dat.vars.F1 * log_dat.vars.L));
+%!   assert_simple(F_I{1}(:, 3), -log_dat.vars.F1 * t, tol * abs(log_dat.vars.F1));
+%!   assert_simple(F_II{1}(:, 3), -log_dat.vars.F1 * t, tol * abs(log_dat.vars.F1));
+%!   assert_simple(M_I{1}(:, 2), log_dat.vars.F1 * t * 0.5 * (1 + 1/sqrt(3)) * log_dat.vars.L, tol * abs(log_dat.vars.F1 * log_dat.vars.L));
+%!   assert_simple(M_II{1}(:, 2), log_dat.vars.F1 * t * 0.5 * (1 - 1/sqrt(3)) * log_dat.vars.L, tol * abs(log_dat.vars.F1 * log_dat.vars.L));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -474,10 +474,10 @@ endfunction
 %!   log_dat = mbdyn_post_load_log(fname);
 %!   [beam_id, F_I, M_I, F_II, M_II] = mbdyn_post_load_output_act(fname, 1, numel(t));
 %!   tol = eps^0.4;
-%!   assert(F_I{1}(:, 3), -log_dat.vars.F1 * t, tol * abs(log_dat.vars.F1));
-%!   assert(F_II{1}(:, 3), -log_dat.vars.F1 * t, tol * abs(log_dat.vars.F1));
-%!   assert(M_I{1}(:, 2), log_dat.vars.F1 * t * 0.5 * (1 + 1/sqrt(3)) * log_dat.vars.L, tol * abs(log_dat.vars.F1 * log_dat.vars.L));
-%!   assert(M_II{1}(:, 2), log_dat.vars.F1 * t * 0.5 * (1 - 1/sqrt(3)) * log_dat.vars.L, tol * abs(log_dat.vars.F1 * log_dat.vars.L));
+%!   assert_simple(F_I{1}(:, 3), -log_dat.vars.F1 * t, tol * abs(log_dat.vars.F1));
+%!   assert_simple(F_II{1}(:, 3), -log_dat.vars.F1 * t, tol * abs(log_dat.vars.F1));
+%!   assert_simple(M_I{1}(:, 2), log_dat.vars.F1 * t * 0.5 * (1 + 1/sqrt(3)) * log_dat.vars.L, tol * abs(log_dat.vars.F1 * log_dat.vars.L));
+%!   assert_simple(M_II{1}(:, 2), log_dat.vars.F1 * t * 0.5 * (1 - 1/sqrt(3)) * log_dat.vars.L, tol * abs(log_dat.vars.F1 * log_dat.vars.L));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);

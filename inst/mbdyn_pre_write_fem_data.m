@@ -708,12 +708,12 @@ endfunction
 %!   end_unwind_protect
 %!   tol = 1e-4;
 %!   for j=1:numel(node_id2)
-%!     assert(trajectory2{j}, trajectory1{j}, tol * max(max(abs(trajectory1{j}))));
-%!     assert(velocity2{j}, velocity1{j}, tol * max(max(abs(velocity1{j}))));
-%!     assert(acceleration2{j}, acceleration1{j}, tol * max(max(abs(acceleration1{j}))));
-%!     assert(trajectory3{j}, trajectory1{j}, tol * max(max(abs(trajectory1{j}))));
-%!     assert(velocity3{j}, velocity1{j}, tol * max(max(abs(velocity1{j}))));
-%!     assert(acceleration3{j}, acceleration1{j}, tol * max(max(abs(acceleration1{j}))));
+%!     assert_simple(trajectory2{j}, trajectory1{j}, tol * max(max(abs(trajectory1{j}))));
+%!     assert_simple(velocity2{j}, velocity1{j}, tol * max(max(abs(velocity1{j}))));
+%!     assert_simple(acceleration2{j}, acceleration1{j}, tol * max(max(abs(acceleration1{j}))));
+%!     assert_simple(trajectory3{j}, trajectory1{j}, tol * max(max(abs(trajectory1{j}))));
+%!     assert_simple(velocity3{j}, velocity1{j}, tol * max(max(abs(velocity1{j}))));
+%!     assert_simple(acceleration3{j}, acceleration1{j}, tol * max(max(abs(acceleration1{j}))));
 %!   endfor
 %! endfor
 
@@ -1059,12 +1059,12 @@ endfunction
 %!   end_unwind_protect
 %!   tol = 1e-4;
 %!   for j=1:numel(node_id2)
-%!     assert(trajectory2{j}, trajectory1{j}, tol * max(max(abs(trajectory1{j}))));
-%!     assert(velocity2{j}, velocity1{j}, tol * max(max(abs(velocity1{j}))));
-%!     assert(acceleration2{j}, acceleration1{j}, tol * max(max(abs(acceleration1{j}))));
-%!     assert(trajectory3{j}, trajectory1{j}, tol * max(max(abs(trajectory1{j}))));
-%!     assert(velocity3{j}, velocity1{j}, tol * max(max(abs(velocity1{j}))));
-%!     assert(acceleration3{j}, acceleration1{j}, tol * max(max(abs(acceleration1{j}))));
+%!     assert_simple(trajectory2{j}, trajectory1{j}, tol * max(max(abs(trajectory1{j}))));
+%!     assert_simple(velocity2{j}, velocity1{j}, tol * max(max(abs(velocity1{j}))));
+%!     assert_simple(acceleration2{j}, acceleration1{j}, tol * max(max(abs(acceleration1{j}))));
+%!     assert_simple(trajectory3{j}, trajectory1{j}, tol * max(max(abs(trajectory1{j}))));
+%!     assert_simple(velocity3{j}, velocity1{j}, tol * max(max(abs(velocity1{j}))));
+%!     assert_simple(acceleration3{j}, acceleration1{j}, tol * max(max(abs(acceleration1{j}))));
 %!   endfor
 %! endfor
 
@@ -1400,12 +1400,12 @@ endfunction
 %!   end_unwind_protect
 %!   tol = 1e-4;
 %!   for j=1:numel(node_id2)
-%!     assert(trajectory2{j}, trajectory1{j}, tol * max(max(abs(trajectory1{j}))));
-%!     assert(velocity2{j}, velocity1{j}, tol * max(max(abs(velocity1{j}))));
-%!     assert(acceleration2{j}, acceleration1{j}, tol * max(max(abs(acceleration1{j}))));
-%!     assert(trajectory3{j}, trajectory1{j}, tol * max(max(abs(trajectory1{j}))));
-%!     assert(velocity3{j}, velocity1{j}, tol * max(max(abs(velocity1{j}))));
-%!     assert(acceleration3{j}, acceleration1{j}, tol * max(max(abs(acceleration1{j}))));
+%!     assert_simple(trajectory2{j}, trajectory1{j}, tol * max(max(abs(trajectory1{j}))));
+%!     assert_simple(velocity2{j}, velocity1{j}, tol * max(max(abs(velocity1{j}))));
+%!     assert_simple(acceleration2{j}, acceleration1{j}, tol * max(max(abs(acceleration1{j}))));
+%!     assert_simple(trajectory3{j}, trajectory1{j}, tol * max(max(abs(trajectory1{j}))));
+%!     assert_simple(velocity3{j}, velocity1{j}, tol * max(max(abs(velocity1{j}))));
+%!     assert_simple(acceleration3{j}, acceleration1{j}, tol * max(max(abs(acceleration1{j}))));
 %!   endfor
 %! endfor
 
@@ -2261,12 +2261,12 @@ endfunction
 %!   for j=idx_k
 %!     for k=1:rows(result_data(i, j).f_fem)
 %!       for l=1:columns(result_data(i, j).f_mbd)
-%!         assert(result_data(i, j).f_mbd(k, l), result_data(i, j).f_fem(k), tol_abs(l) + tol_rel(l) * abs(result_data(i, j).f_fem(k)));
+%!         assert_simple(result_data(i, j).f_mbd(k, l), result_data(i, j).f_fem(k), tol_abs(l) + tol_rel(l) * abs(result_data(i, j).f_fem(k)));
 %!       endfor
 %!     endfor
 %!   endfor
 %! endfor
-%! assert(all(all(err_u_modal < tol_disp_rel)));
+%! assert_simple(all(all(err_u_modal < tol_disp_rel)));
 %! for j=idx_j
 %!   for k=idx_k
 %!       tol = 2e-2;
@@ -2275,7 +2275,7 @@ endfunction
 %!       K = min(20, rows(lambda_s));
 %!       lambda_s = 1j * lambda_s(:,1) + lambda_s(:, 2);
 %!       lambda_red_s = 1j * lambda_red_s(:, 1) + lambda_red_s(:, 2);
-%!       assert(lambda_red_s(1:K), lambda_s(1:K), tol * norm(lambda_s(1:K)));
+%!       assert_simple(lambda_red_s(1:K), lambda_s(1:K), tol * norm(lambda_s(1:K)));
 %!   endfor
 %! endfor
 %! unwind_protect_cleanup
@@ -2719,11 +2719,11 @@ endfunction
 %!     ffem = sort(sol_eig(i).f(:)) * SI_unit_second^-1;
 %!     ffem = ffem(ffem >= 0);
 %!     Nfem = min(numel(fmbd),numel(ffem));
-%!     assert(fmbd(idx_mode), fref(:, i), tol * max(fref(:,i)));
-%!     assert(ffem(idx_mode), fref(:, i), tol * max(fref(:,i)));
-%!     assert(fmbd(1:Nfem), ffem(1:Nfem), tol * max(fmbd(1:Nfem)));
+%!     assert_simple(fmbd(idx_mode), fref(:, i), tol * max(fref(:,i)));
+%!     assert_simple(ffem(idx_mode), fref(:, i), tol * max(fref(:,i)));
+%!     assert_simple(fmbd(1:Nfem), ffem(1:Nfem), tol * max(fmbd(1:Nfem)));
 %!   endfor
-%!   assert(max(abs(sol_eig_diag.f/sol_eig(1).f - 1)) < 0.03);
+%!   assert_simple(max(abs(sol_eig_diag.f/sol_eig(1).f - 1)) < 0.03);
 %! unwind_protect_cleanup
 %!   if (~isempty(filename))
 %!     fn = dir([filename, "*"]);
@@ -3163,11 +3163,11 @@ endfunction
 %!     ffem = sort(sol_eig(i).f(:)) * SI_unit_second^-1;
 %!     ffem = ffem(ffem >= 0);
 %!     Nfem = min(numel(fmbd),numel(ffem));
-%!     assert(fmbd(idx_mode), fref(:, i), tol * max(fref(:,i)));
-%!     assert(ffem(idx_mode), fref(:, i), tol * max(fref(:,i)));
-%!     assert(fmbd(1:Nfem), ffem(1:Nfem), tol * max(fmbd(1:Nfem)));
+%!     assert_simple(fmbd(idx_mode), fref(:, i), tol * max(fref(:,i)));
+%!     assert_simple(ffem(idx_mode), fref(:, i), tol * max(fref(:,i)));
+%!     assert_simple(fmbd(1:Nfem), ffem(1:Nfem), tol * max(fmbd(1:Nfem)));
 %!   endfor
-%!   assert(max(abs(sol_eig_diag.f/sol_eig(1).f - 1)) < 0.025);
+%!   assert_simple(max(abs(sol_eig_diag.f/sol_eig(1).f - 1)) < 0.025);
 %! unwind_protect_cleanup
 %!   if (~isempty(filename))
 %!     fn = dir([filename, "*"]);
@@ -3610,11 +3610,11 @@ endfunction
 %!     ffem = sort(sol_eig(i).f(:)) * SI_unit_second^-1;
 %!     ffem = ffem(ffem >= 0);
 %!     Nfem = min(numel(fmbd),numel(ffem));
-%!     assert(fmbd(idx_mode), fref(:, i), tol * max(fref(:,i)));
-%!     assert(ffem(idx_mode), fref(:, i), tol * max(fref(:,i)));
-%!     assert(fmbd(1:Nfem), ffem(1:Nfem), tol * max(fmbd(1:Nfem)));
+%!     assert_simple(fmbd(idx_mode), fref(:, i), tol * max(fref(:,i)));
+%!     assert_simple(ffem(idx_mode), fref(:, i), tol * max(fref(:,i)));
+%!     assert_simple(fmbd(1:Nfem), ffem(1:Nfem), tol * max(fmbd(1:Nfem)));
 %!   endfor
-%!   assert(max(abs(sol_eig_diag.f/sol_eig(1).f - 1)) < 0.04);
+%!   assert_simple(max(abs(sol_eig_diag.f/sol_eig(1).f - 1)) < 0.04);
 %! unwind_protect_cleanup
 %!   if (~isempty(filename))
 %!     fn = dir([filename, "*"]);
@@ -4036,9 +4036,9 @@ endfunction
 %!     ffem = sort(sol_eig(i).f(:)) * SI_unit_second^-1;
 %!     ffem = ffem(ffem >= 0);
 %!     Nfem = min(numel(fmbd),numel(ffem));
-%!     assert(fmbd(idx_mode), fref(:, i), tol * max(fref(:,i)));
-%!     assert(ffem(idx_mode), fref(:, i), tol * max(fref(:,i)));
-%!     assert(fmbd(1:Nfem), ffem(1:Nfem), tol * max(fmbd(1:Nfem)));
+%!     assert_simple(fmbd(idx_mode), fref(:, i), tol * max(fref(:,i)));
+%!     assert_simple(ffem(idx_mode), fref(:, i), tol * max(fref(:,i)));
+%!     assert_simple(fmbd(1:Nfem), ffem(1:Nfem), tol * max(fmbd(1:Nfem)));
 %!   endfor
 %! unwind_protect_cleanup
 %!   if (~isempty(filename))
@@ -4468,11 +4468,11 @@ endfunction
 %!     ffem = sort(sol_eig(i).f(:)) * SI_unit_second^-1;
 %!     ffem = ffem(ffem >= 0);
 %!     Nfem = min(numel(fmbd),numel(ffem));
-%!     assert(fmbd(idx_mode), fref(:, i), tol * max(fref(:,i)));
-%!     assert(ffem(idx_mode), fref(:, i), tol * max(fref(:,i)));
-%!     assert(fmbd(1:Nfem), ffem(1:Nfem), tol * max(fmbd(1:Nfem)));
+%!     assert_simple(fmbd(idx_mode), fref(:, i), tol * max(fref(:,i)));
+%!     assert_simple(ffem(idx_mode), fref(:, i), tol * max(fref(:,i)));
+%!     assert_simple(fmbd(1:Nfem), ffem(1:Nfem), tol * max(fmbd(1:Nfem)));
 %!   endfor
-%!   assert(max(abs(sol_eig_diag.f / sol_eig(1).f - 1)) < 0.03);
+%!   assert_simple(max(abs(sol_eig_diag.f / sol_eig(1).f - 1)) < 0.03);
 %! unwind_protect_cleanup
 %!   if (~isempty(filename))
 %!     fn = dir([filename, "*"]);
@@ -4586,7 +4586,7 @@ endfunction
 %!   mesh.elements.rbe3 = fem_pre_mesh_rbe3_from_surf(mesh, [2], [cms_opt.nodes.interfaces.number], "quad8");
 %!   cms_opt.refine_max_iter = 30;
 %!   cms_opt.pre_scaling = false;
-%!   cms_opt.solver = "pardiso";
+%!   cms_opt.solver = "umfpack"; ## Need to test at least one case with an unsymmetric solver
 %!   cms_opt.modes.number = 20;
 %!   cms_opt.tolerance_tau = -1;
 %!   cms_opt.element.name = "elem_id_modal";
@@ -4596,7 +4596,7 @@ endfunction
 %!   cms_opt.invariants = true;
 %!   load_case_dof.locked_dof = false(size(mesh.nodes));
 %!   load_case_dof.locked_dof(mesh.groups.quad8(grp_idx_clamp).nodes, 1:3) = true;
-%!   load_case_dof.locked_dof(cms_opt.nodes.modal.number, 1:3) = true;
+%!   load_case_dof.locked_dof(cms_opt.nodes.modal.number, :) = true; ## Avoid singular matrix
 %!   [mesh_cms, mat_ass_cms, dof_map_cms, sol_eig_cms, cms_opt, sol_tau_cms] = fem_cms_create2(mesh, load_case_dof, cms_opt);
 %!   fem_cms_export(filename, mesh_cms, dof_map_cms, mat_ass_cms, cms_opt);
 %!   pert.omega = [1e2; 3e2; 2e2] / (SI_unit_rad / SI_unit_second);
@@ -5177,9 +5177,7 @@ endfunction
 %!   endfor
 %!   load_case_dof.locked_dof = false(size(mesh.nodes));
 %!   load_case_dof.locked_dof(mesh.groups.quad8(grp_idx_clamp).nodes, 1:3) = true;
-%!   load_case_dof.locked_dof(cms_opt.nodes.modal.number, 1:3) = true;
-%!   mesh.elements.joints.nodes = cms_opt.nodes.modal.number;
-%!   mesh.elements.joints.C = eye(6);
+%!   load_case_dof.locked_dof(cms_opt.nodes.modal.number, :) = true; ## Avoid singular matrix
 %!   dof_map = fem_ass_dof_map(mesh, load_case_dof);
 %!   dof_map.parallel.threads_ass = options.number_of_threads;
 %!   load_case = struct("omega", empty_cell, ...
@@ -5383,12 +5381,12 @@ endfunction
 %!     for j=idx_k
 %!       for k=1:rows(result_data(i, j).f_fem)
 %!         for l=1:columns(result_data(i, j).f_mbd)
-%!           assert(result_data(i, j).f_mbd(k, l), result_data(i, j).f_fem(k), tol_abs(l) + tol_rel(l) * abs(result_data(i, j).f_fem(k)));
+%!           assert_simple(result_data(i, j).f_mbd(k, l), result_data(i, j).f_fem(k), tol_abs(l) + tol_rel(l) * abs(result_data(i, j).f_fem(k)));
 %!         endfor
 %!       endfor
 %!     endfor
 %!   endfor
-%!   assert(all(all(err_u_modal < tol_disp_rel)));
+%!   assert_simple(all(all(err_u_modal < tol_disp_rel)));
 %!   for j=idx_j
 %!     for k=idx_k
 %!       tol = 2e-2;
@@ -5397,7 +5395,7 @@ endfunction
 %!       K = min(20, rows(lambda_s));
 %!       lambda_s = 1j * lambda_s(:,1) + lambda_s(:, 2);
 %!       lambda_red_s = 1j * lambda_red_s(:, 1) + lambda_red_s(:, 2);
-%!       assert(lambda_red_s(1:K), lambda_s(1:K), tol * norm(lambda_s(1:K)));
+%!       assert_simple(lambda_red_s(1:K), lambda_s(1:K), tol * norm(lambda_s(1:K)));
 %!     endfor
 %!   endfor
 %! unwind_protect_cleanup
@@ -6172,11 +6170,11 @@ endfunction
 %!                   endif
 %!                   epsilon_res = getfield(sol.strain.epsilon, elem_type_solid{j});
 %!                   sigma_res = getfield(sol.stress.tau, elem_type_solid{j});
-%!                   assert(max(max(max(max(abs(sigma_res))))) < tol_sigma * material.E);
+%!                   assert_simple(max(max(max(max(abs(sigma_res))))) < tol_sigma * material.E);
 %!                   for i=1:numel(sol.t)
 %!                     for k=1:size(epsilon_res, 1)
 %!                       for l=1:size(epsilon_res, 2)
-%!                         assert(epsilon_res(k, l, :, i)(:), epsilon0(:, idx_sigma), tol_epsilon * norm(epsilon0(:, idx_sigma)));
+%!                         assert_simple(epsilon_res(k, l, :, i)(:), epsilon0(:, idx_sigma), tol_epsilon * norm(epsilon0(:, idx_sigma)));
 %!                       endfor
 %!                     endfor
 %!                   endfor
@@ -6194,7 +6192,7 @@ endfunction
 %!                 tau_res = getfield(sol.stress.tau, elem_type_solid{i});
 %!                 for j=1:size(tau_res, 1)
 %!                   for k=1:size(tau_res, 2)
-%!                     assert(tau_res(j, k, :, end)(:), tau_ref, tol * norm(tau_ref));
+%!                     assert_simple(tau_res(j, k, :, end)(:), tau_ref, tol * norm(tau_ref));
 %!                   endfor
 %!                 endfor
 %!               endfor
@@ -6202,9 +6200,9 @@ endfunction
 %!                               geometry.l * geometry.h * tau_ref(2), ...
 %!                               geometry.l * geometry.w * tau_ref(3)]));
 %!               for i=1:numel(genel_data)
-%!                 assert(all(all(abs(genel_data{i}) < tol_F * Fref)));
+%!                 assert_simple(all(all(abs(genel_data{i}) < tol_F * Fref)));
 %!               endfor
-%!               assert(norm(Fsurfl_sum) < tol_F * Fref);
+%!               assert_simple(norm(Fsurfl_sum) < tol_F * Fref);
 %!               for j=1:numel(elem_type_solid)
 %!                 if (~isfield(sol.strain.epsilon, elem_type_solid{j}))
 %!                   continue;
@@ -6213,7 +6211,7 @@ endfunction
 %!                 for i=1:numel(sol.t)
 %!                   for k=1:size(epsilon_res, 1)
 %!                     for l=1:size(epsilon_res, 2)
-%!                       assert(epsilon_res(k, l, :, i)(:), epsilon(:, i), tol_epsilon);
+%!                       assert_simple(epsilon_res(k, l, :, i)(:), epsilon(:, i), tol_epsilon);
 %!                     endfor
 %!                   endfor
 %!                 endfor
@@ -6272,7 +6270,7 @@ endfunction
 %!                 Tau_res(4, :) = tau_res(1, 2, :);
 %!                 Tau_res(5, :) = tau_res(2, 3, :);
 %!                 Tau_res(6, :) = tau_res(3, 1, :);
-%!                 assert(Tau_res(:, end), tau_ref, tol * norm(tau_ref));
+%!                 assert_simple(Tau_res(:, end), tau_ref, tol * norm(tau_ref));
 %!               endswitch
 %!             endfor
 %!           endfor
@@ -7143,12 +7141,12 @@ endfunction
 %!   for j=idx_k
 %!     for k=1:rows(result_data(i, j).f_fem)
 %!       for l=1:columns(result_data(i, j).f_mbd)
-%!         assert(result_data(i, j).f_mbd(k, l), result_data(i, j).f_fem(k), tol_abs(l) + tol_rel(l) * abs(result_data(i, j).f_fem(k)));
+%!         assert_simple(result_data(i, j).f_mbd(k, l), result_data(i, j).f_fem(k), tol_abs(l) + tol_rel(l) * abs(result_data(i, j).f_fem(k)));
 %!       endfor
 %!     endfor
 %!   endfor
 %! endfor
-%! assert(all(all(err_u_modal < tol_disp_rel)));
+%! assert_simple(all(all(err_u_modal < tol_disp_rel)));
 %! for j=idx_j
 %!   for k=idx_k
 %!       tol = 2e-2;
@@ -7157,7 +7155,7 @@ endfunction
 %!       K = min(20, rows(lambda_s));
 %!       lambda_s = 1j * lambda_s(:,1) + lambda_s(:, 2);
 %!       lambda_red_s = 1j * lambda_red_s(:, 1) + lambda_red_s(:, 2);
-%!       assert(lambda_red_s(1:K), lambda_s(1:K), tol * norm(lambda_s(1:K)));
+%!       assert_simple(lambda_red_s(1:K), lambda_s(1:K), tol * norm(lambda_s(1:K)));
 %!   endfor
 %! endfor
 %! unwind_protect_cleanup
@@ -7602,11 +7600,11 @@ endfunction
 %!     ffem = sort(sol_eig(i).f(:)) * SI_unit_second^-1;
 %!     ffem = ffem(ffem >= 0);
 %!     Nfem = min(numel(fmbd),numel(ffem));
-%!     assert(fmbd(idx_mode), fref(:, i), tol * max(fref(:,i)));
-%!     assert(ffem(idx_mode), fref(:, i), tol * max(fref(:,i)));
-%!     assert(fmbd(1:Nfem), ffem(1:Nfem), tol * max(fmbd(1:Nfem)));
+%!     assert_simple(fmbd(idx_mode), fref(:, i), tol * max(fref(:,i)));
+%!     assert_simple(ffem(idx_mode), fref(:, i), tol * max(fref(:,i)));
+%!     assert_simple(fmbd(1:Nfem), ffem(1:Nfem), tol * max(fmbd(1:Nfem)));
 %!   endfor
-%!   assert(max(abs(sol_eig_diag.f/sol_eig(1).f - 1)) < 0.04);
+%!   assert_simple(max(abs(sol_eig_diag.f/sol_eig(1).f - 1)) < 0.04);
 %! unwind_protect_cleanup
 %!   if (~isempty(filename))
 %!     fn = dir([filename, "*"]);
@@ -7730,7 +7728,7 @@ endfunction
 %!   cms_opt.invariants = true;
 %!   load_case_dof.locked_dof = false(size(mesh.nodes));
 %!   load_case_dof.locked_dof(mesh.groups.quad9(grp_idx_clamp).nodes, 1:3) = true;
-%!   load_case_dof.locked_dof(cms_opt.nodes.modal.number, 1:3) = true;
+%!   load_case_dof.locked_dof(cms_opt.nodes.modal.number, :) = true; ## Avoid singular matrix
 %!   [mesh_cms, mat_ass_cms, dof_map_cms, sol_eig_cms, cms_opt, sol_tau_cms] = fem_cms_create2(mesh, load_case_dof, cms_opt);
 %!   fem_cms_export(filename, mesh_cms, dof_map_cms, mat_ass_cms, cms_opt);
 %!   pert.omega = [1e2; 3e2; 2e2] / (SI_unit_rad / SI_unit_second);
@@ -8311,9 +8309,7 @@ endfunction
 %!   endfor
 %!   load_case_dof.locked_dof = false(size(mesh.nodes));
 %!   load_case_dof.locked_dof(mesh.groups.quad9(grp_idx_clamp).nodes, 1:3) = true;
-%!   load_case_dof.locked_dof(cms_opt.nodes.modal.number, 1:3) = true;
-%!   mesh.elements.joints.nodes = cms_opt.nodes.modal.number;
-%!   mesh.elements.joints.C = eye(6);
+%!   load_case_dof.locked_dof(cms_opt.nodes.modal.number, :) = true; ## Avoid singular matrix
 %!   dof_map = fem_ass_dof_map(mesh, load_case_dof);
 %!   dof_map.parallel.threads_ass = options.number_of_threads;
 %!   load_case = struct("omega", empty_cell, ...
@@ -8517,12 +8513,12 @@ endfunction
 %!     for j=idx_k
 %!       for k=1:rows(result_data(i, j).f_fem)
 %!         for l=1:columns(result_data(i, j).f_mbd)
-%!           assert(result_data(i, j).f_mbd(k, l), result_data(i, j).f_fem(k), tol_abs(l) + tol_rel(l) * abs(result_data(i, j).f_fem(k)));
+%!           assert_simple(result_data(i, j).f_mbd(k, l), result_data(i, j).f_fem(k), tol_abs(l) + tol_rel(l) * abs(result_data(i, j).f_fem(k)));
 %!         endfor
 %!       endfor
 %!     endfor
 %!   endfor
-%!   assert(all(all(err_u_modal < tol_disp_rel)));
+%!   assert_simple(all(all(err_u_modal < tol_disp_rel)));
 %!   for j=idx_j
 %!     for k=idx_k
 %!       tol = 2e-2;
@@ -8531,7 +8527,7 @@ endfunction
 %!       K = min(20, rows(lambda_s));
 %!       lambda_s = 1j * lambda_s(:,1) + lambda_s(:, 2);
 %!       lambda_red_s = 1j * lambda_red_s(:, 1) + lambda_red_s(:, 2);
-%!       assert(lambda_red_s(1:K), lambda_s(1:K), tol * norm(lambda_s(1:K)));
+%!       assert_simple(lambda_red_s(1:K), lambda_s(1:K), tol * norm(lambda_s(1:K)));
 %!     endfor
 %!   endfor
 %! unwind_protect_cleanup
@@ -9318,9 +9314,9 @@ endfunction
 %!       solid_nodes_file = [filename, "_solid.nod"];
 %!       solid_elem_file = [filename, "_solid.elm"];
 %!       load_case = struct();
-%!       assert(mesh.nodes(cms_opt.nodes.modal.number, 1:3), [0, 0, param.o]);
-%!       assert(mesh.nodes(cms_opt.nodes.interfaces(1).number, 1:3), [0, 0, -0.5 * param.l]);
-%!       assert(mesh.nodes(cms_opt.nodes.interfaces(2).number, 1:3), [0, 0, 0.5 * param.l]);
+%!       assert_simple(mesh.nodes(cms_opt.nodes.modal.number, 1:3), [0, 0, param.o]);
+%!       assert_simple(mesh.nodes(cms_opt.nodes.interfaces(1).number, 1:3), [0, 0, -0.5 * param.l]);
+%!       assert_simple(mesh.nodes(cms_opt.nodes.interfaces(2).number, 1:3), [0, 0, 0.5 * param.l]);
 %!       opt_mbd_mesh = mbdyn_pre_solid_write_const_laws(mesh, solid_csl_file, opt_mbd_mesh);
 %!       opt_mbd_mesh = mbdyn_pre_solid_write_nodes(mesh, solid_nodes_file, opt_mbd_mesh);
 %!       opt_mbd_mesh = mbdyn_pre_solid_write_elements(mesh, load_case_dof, load_case, solid_elem_file, opt_mbd_mesh);
@@ -9553,7 +9549,7 @@ endfunction
 %!         if (~enable_filenames(j))
 %!           continue;
 %!         endif
-%!         assert(interp1(omega{i}, r{i}, omega{j}, "pchip", "extrap"), r{j}, tol * max(abs(r{j})));
+%!         assert_simple(interp1(omega{i}, r{i}, omega{j}, "pchip", "extrap"), r{j}, tol * max(abs(r{j})));
 %!       endfor
 %!     endfor
 %!   unwind_protect_cleanup
@@ -9609,7 +9605,7 @@ endfunction
 %! options.f_rbk = true;
 %! options.f_enable_modal = false;
 %! [omega2, r2] = rotordynamics_test_case(param, options, SI_unit);
-%! assert(r2{2}, r1{2}, 1e-3 * max(abs(r1{2})));
+%! assert_simple(r2{2}, r1{2}, 1e-3 * max(abs(r1{2})));
 %! options.elem_type = "iso20";
 %! options.f_enable_beam = false; ## disabled because of coarse mesh and linear elements
 %! options.f_enable_solid = true;
@@ -9620,7 +9616,7 @@ endfunction
 %! options.f_rbk = false;
 %! options.f_enable_modal = false;
 %! [omega4, r4] = rotordynamics_test_case(param, options, SI_unit);
-%! assert(r4{3}, r3{3}, 1e-3 * max(abs(r3{3})));
+%! assert_simple(r4{3}, r3{3}, 1e-3 * max(abs(r3{3})));
 
 %!test
 %! ## TEST 16
@@ -10118,7 +10114,7 @@ endfunction
 %!     f(:, i) = sort(sol_eig(i).f(:));
 %!   endfor
 %!   tol = 2e-2;
-%!   assert(f(floor(end/2+1):end,:), fref, tol * max(max(abs(fref))));
+%!   assert_simple(f(floor(end/2+1):end,:), fref, tol * max(max(abs(fref))));
 %! unwind_protect_cleanup
 %!   if (numel(filename))
 %!     fn = dir([filename, "*"]);
@@ -10552,7 +10548,7 @@ endfunction
 %!     f(:, i) = sort(sol_eig(i).f(:));
 %!   endfor
 %!   tol = 2e-2;
-%!   assert(f(floor(end/2+1):end,:), fref, tol * max(max(abs(fref))));
+%!   assert_simple(f(floor(end/2+1):end,:), fref, tol * max(max(abs(fref))));
 %! unwind_protect_cleanup
 %!   if (numel(filename))
 %!     fn = dir([filename, "*"]);
@@ -10991,7 +10987,7 @@ endfunction
 %!     f(:, i) = sort(sol_eig(i).f(:));
 %!   endfor
 %!   tol = 2e-2;
-%!   assert(f(floor(end/2+1):end,:), fref, tol * max(max(abs(fref))));
+%!   assert_simple(f(floor(end/2+1):end,:), fref, tol * max(max(abs(fref))));
 %! unwind_protect_cleanup
 %!   if (numel(filename))
 %!     fn = dir([filename, "*"]);
@@ -11263,7 +11259,7 @@ endfunction
 %!   grp_id_load = find([mesh.groups.quad9.id] == 4);
 %!   Uz = mean(sol_stat.def(mesh.groups.quad9(grp_id_load).nodes, 3));
 %!   tol = 1e-2;
-%!   assert(Uz, Uz_ref, tol * abs(Uz_ref));
+%!   assert_simple(Uz, Uz_ref, tol * abs(Uz_ref));
 %! unwind_protect_cleanup
 %!   if (~isempty(filename))
 %!     fn = dir([filename, "*"]);
@@ -11535,7 +11531,7 @@ endfunction
 %!   grp_id_load = find([mesh.groups.quad8.id] == 4);
 %!   Uz = mean(sol_stat.def(mesh.groups.quad8(grp_id_load).nodes, 3));
 %!   tol = 1e-2;
-%!   assert(Uz, Uz_ref, tol * abs(Uz_ref));
+%!   assert_simple(Uz, Uz_ref, tol * abs(Uz_ref));
 %! unwind_protect_cleanup
 %!   if (~isempty(filename))
 %!     fn = dir([filename, "*"]);
@@ -11808,7 +11804,7 @@ endfunction
 %!   grp_id_load = find([mesh.groups.quad8r.id] == 4);
 %!   Uz = mean(sol_stat.def(mesh.groups.quad8r(grp_id_load).nodes, 3));
 %!   tol = 1e-2;
-%!   assert(Uz, Uz_ref, tol * abs(Uz_ref));
+%!   assert_simple(Uz, Uz_ref, tol * abs(Uz_ref));
 %! unwind_protect_cleanup
 %!   if (~isempty(filename))
 %!     fn = dir([filename, "*"]);
@@ -12081,7 +12077,7 @@ endfunction
 %!   grp_id_load = find([mesh.groups.iso4.id] == 4);
 %!   Uz = mean(sol_stat.def(mesh.groups.iso4(grp_id_load).nodes, 3));
 %!   tol = 1e-2;
-%!   assert(Uz, Uz_ref, tol * abs(Uz_ref));
+%!   assert_simple(Uz, Uz_ref, tol * abs(Uz_ref));
 %! unwind_protect_cleanup
 %!   if (~isempty(filename))
 %!     fn = dir([filename, "*"]);
@@ -12351,7 +12347,7 @@ endfunction
 %!   grp_id_load = find([mesh.groups.quad8.id] == 4);
 %!   Uz = mean(sol_stat.def(mesh.groups.quad8(grp_id_load).nodes, 3));
 %!   tol = 1e-2;
-%!   assert(Uz, Uz_ref, tol * abs(Uz_ref));
+%!   assert_simple(Uz, Uz_ref, tol * abs(Uz_ref));
 %! unwind_protect_cleanup
 %!   if (~isempty(filename))
 %!     fn = dir([filename, "*"]);
@@ -12622,7 +12618,7 @@ endfunction
 %!   grp_id_load = find([mesh.groups.tria6h.id] == 4);
 %!   Uz = mean(sol_stat.def(mesh.groups.tria6h(grp_id_load).nodes, 3));
 %!   tol = 1e-2;
-%!   assert(Uz, Uz_ref, tol * abs(Uz_ref));
+%!   assert_simple(Uz, Uz_ref, tol * abs(Uz_ref));
 %! unwind_protect_cleanup
 %!   if (~isempty(filename))
 %!     fn = dir([filename, "*"]);
@@ -12895,7 +12891,7 @@ endfunction
 %!   grp_id_load = find([mesh.groups.quad8r.id] == 4);
 %!   Uz = mean(sol_stat.def(mesh.groups.quad8r(grp_id_load).nodes, 3));
 %!   tol = 1e-2;
-%!   assert(Uz, Uz_ref, tol * abs(Uz_ref));
+%!   assert_simple(Uz, Uz_ref, tol * abs(Uz_ref));
 %! unwind_protect_cleanup
 %!   if (~isempty(filename))
 %!     fn = dir([filename, "*"]);

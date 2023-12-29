@@ -386,11 +386,11 @@ endfunction
 %! r_a = d/2;
 %! Jx_a = param.rho*param.Ip*l;
 %! Jz_a = Jy_a = m_a * (r_a^2/4+l^2/12);
-%! assert(f, f_a, 1e-5 * abs(f_a));
-%! assert(inertia.dm, m_a, 1e-5 * abs(m_a));
-%! assert(inertia.J(1,1), Jx_a, 1e-2 * abs(Jx_a));
-%! assert(inertia.J(2,2), Jy_a, 1e-2 * abs(Jy_a));
-%! assert(inertia.J(3,3), Jz_a, 1e-2 * abs(Jz_a));
+%! assert_simple(f, f_a, 1e-5 * abs(f_a));
+%! assert_simple(inertia.dm, m_a, 1e-5 * abs(m_a));
+%! assert_simple(inertia.J(1,1), Jx_a, 1e-2 * abs(Jx_a));
+%! assert_simple(inertia.J(2,2), Jy_a, 1e-2 * abs(Jy_a));
+%! assert_simple(inertia.J(3,3), Jz_a, 1e-2 * abs(Jz_a));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(input_file);
@@ -619,11 +619,11 @@ endfunction
 %! r_a = d/2;
 %! Jx_a = param.rho*param.Ip*l;
 %! Jz_a = Jy_a = m_a * (r_a^2/4+l^2/12);
-%! assert(f, f_a, 1e-5 * abs(f_a));
-%! assert(inertia.dm, m_a, 1e-5 * abs(m_a));
-%! assert(inertia.J(1,1), Jx_a, 1e-2 * abs(Jx_a));
-%! assert(inertia.J(2,2), Jy_a, 1e-2 * abs(Jy_a));
-%! assert(inertia.J(3,3), Jz_a, 1e-2 * abs(Jz_a));
+%! assert_simple(f, f_a, 1e-5 * abs(f_a));
+%! assert_simple(inertia.dm, m_a, 1e-5 * abs(m_a));
+%! assert_simple(inertia.J(1,1), Jx_a, 1e-2 * abs(Jx_a));
+%! assert_simple(inertia.J(2,2), Jy_a, 1e-2 * abs(Jy_a));
+%! assert_simple(inertia.J(3,3), Jz_a, 1e-2 * abs(Jz_a));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(input_file);
@@ -841,11 +841,11 @@ endfunction
 %! r_a = d/2;
 %! Jx_a = param.rho*param.Ip*l;
 %! Jz_a = Jy_a = m_a * (r_a^2/4+l^2/12);
-%! assert(f, f_a, 1e-5 * abs(f_a));
-%! assert(inertia.dm, m_a, 1e-5 * abs(m_a));
-%! assert(inertia.J(1,1), Jx_a, 1e-2 * abs(Jx_a));
-%! assert(inertia.J(2,2), Jy_a, 1e-2 * abs(Jy_a));
-%! assert(inertia.J(3,3), Jz_a, 1e-2 * abs(Jz_a));
+%! assert_simple(f, f_a, 1e-5 * abs(f_a));
+%! assert_simple(inertia.dm, m_a, 1e-5 * abs(m_a));
+%! assert_simple(inertia.J(1,1), Jx_a, 1e-2 * abs(Jx_a));
+%! assert_simple(inertia.J(2,2), Jy_a, 1e-2 * abs(Jy_a));
+%! assert_simple(inertia.J(3,3), Jz_a, 1e-2 * abs(Jz_a));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(input_file);
@@ -1079,11 +1079,11 @@ endfunction
 %! r_a = d/2;
 %! Jx_a = param.rho*param.Ip*l;
 %! Jz_a = Jy_a = m_a * (r_a^2/4+l^2/12);
-%! assert(f, f_a, 1e-5 * abs(f_a));
-%! assert(inertia.dm, m_a, 1e-5 * abs(m_a));
-%! assert(inertia.J(1,1), Jx_a, 1e-2 * abs(Jx_a));
-%! assert(inertia.J(2,2), Jy_a, 1e-2 * abs(Jy_a));
-%! assert(inertia.J(3,3), Jz_a, 1e-2 * abs(Jz_a));
+%! assert_simple(f, f_a, 1e-5 * abs(f_a));
+%! assert_simple(inertia.dm, m_a, 1e-5 * abs(m_a));
+%! assert_simple(inertia.J(1,1), Jx_a, 1e-2 * abs(Jx_a));
+%! assert_simple(inertia.J(2,2), Jy_a, 1e-2 * abs(Jy_a));
+%! assert_simple(inertia.J(3,3), Jz_a, 1e-2 * abs(Jz_a));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(input_file);

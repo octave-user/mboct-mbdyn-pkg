@@ -201,17 +201,17 @@ endfunction
 %!   l2 = forces(2).arm1;
 %!   l3_1 = forces(3).arm1;
 %!   l3_2 = forces(3).arm2;
-%!   assert(force_id, int32([1,2,3]));
-%!   assert(force_node_id{1}, repmat(1, numel(t), 1));
-%!   assert(force_node_id{2}, repmat(2, numel(t), 1));
-%!   assert(force_node_id{3}, repmat([1, 2], numel(t), 1));
-%!   assert(force{1}, repmat([F1, 0, 0], numel(t), 1));
-%!   assert(force{2}, repmat([0, F2, 0], numel(t), 1));
-%!   assert(force{3}, repmat([0, 0, F3, 0, 0, -F3], numel(t), 1));
+%!   assert_simple(force_id, int32([1,2,3]));
+%!   assert_simple(force_node_id{1}, repmat(1, numel(t), 1));
+%!   assert_simple(force_node_id{2}, repmat(2, numel(t), 1));
+%!   assert_simple(force_node_id{3}, repmat([1, 2], numel(t), 1));
+%!   assert_simple(force{1}, repmat([F1, 0, 0], numel(t), 1));
+%!   assert_simple(force{2}, repmat([0, F2, 0], numel(t), 1));
+%!   assert_simple(force{3}, repmat([0, 0, F3, 0, 0, -F3], numel(t), 1));
 %!   tol = eps^0.3;
-%!   assert(arm{1}, repmat((R1 * l1 + X1).', numel(t), 1), tol);
-%!   assert(arm{2}, repmat((R2 * l2 + X2).', numel(t), 1), tol);
-%!   assert(arm{3}, repmat([(R1 * l3_1 + X1).', (R2 * l3_2 + X2).'], numel(t), 1), tol);
+%!   assert_simple(arm{1}, repmat((R1 * l1 + X1).', numel(t), 1), tol);
+%!   assert_simple(arm{2}, repmat((R2 * l2 + X2).', numel(t), 1), tol);
+%!   assert_simple(arm{3}, repmat([(R1 * l3_1 + X1).', (R2 * l3_2 + X2).'], numel(t), 1), tol);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -315,17 +315,17 @@ endfunction
 %!   l2 = forces(2).arm1;
 %!   l3_1 = forces(3).arm1;
 %!   l3_2 = forces(3).arm2;
-%!   assert(force_id, int32([1,2,3]));
-%!   assert(force_node_id{1}, repmat(1, numel(t), 1));
-%!   assert(force_node_id{2}, repmat(2, numel(t), 1));
-%!   assert(force_node_id{3}, repmat([1, 2], numel(t), 1));
-%!   assert(force{1}, repmat([F1, 0, 0], numel(t), 1));
-%!   assert(force{2}, repmat([0, F2, 0], numel(t), 1));
-%!   assert(force{3}, repmat([0, 0, F3, 0, 0, -F3], numel(t), 1));
+%!   assert_simple(force_id, int32([1,2,3]));
+%!   assert_simple(force_node_id{1}, repmat(1, numel(t), 1));
+%!   assert_simple(force_node_id{2}, repmat(2, numel(t), 1));
+%!   assert_simple(force_node_id{3}, repmat([1, 2], numel(t), 1));
+%!   assert_simple(force{1}, repmat([F1, 0, 0], numel(t), 1));
+%!   assert_simple(force{2}, repmat([0, F2, 0], numel(t), 1));
+%!   assert_simple(force{3}, repmat([0, 0, F3, 0, 0, -F3], numel(t), 1));
 %!   tol = eps^0.3;
-%!   assert(arm{1}, repmat((R1 * l1 + X1).', numel(t), 1), tol);
-%!   assert(arm{2}, repmat((R2 * l2 + X2).', numel(t), 1), tol);
-%!   assert(arm{3}, repmat([(R1 * l3_1 + X1).', (R2 * l3_2 + X2).'], numel(t), 1), tol);
+%!   assert_simple(arm{1}, repmat((R1 * l1 + X1).', numel(t), 1), tol);
+%!   assert_simple(arm{2}, repmat((R2 * l2 + X2).', numel(t), 1), tol);
+%!   assert_simple(arm{3}, repmat([(R1 * l3_1 + X1).', (R2 * l3_2 + X2).'], numel(t), 1), tol);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -418,17 +418,17 @@ endfunction
 %!   l2 = forces(2).arm1;
 %!   l3_1 = forces(3).arm1;
 %!   l3_2 = forces(3).arm2;
-%!   assert(force_id, int32([1,2,3]));
-%!   assert(force_node_id{1}, repmat(1, numel(t), 1));
-%!   assert(force_node_id{2}, repmat(2, numel(t), 1));
-%!   assert(force_node_id{3}, repmat([1, 2], numel(t), 1));
-%!   assert(force{1}, repmat([F1, 0, 0], numel(t), 1));
-%!   assert(force{2}, repmat([0, F2, 0], numel(t), 1));
-%!   assert(force{3}, repmat([0, 0, F3, 0, 0, -F3], numel(t), 1));
+%!   assert_simple(force_id, int32([1,2,3]));
+%!   assert_simple(force_node_id{1}, repmat(1, numel(t), 1));
+%!   assert_simple(force_node_id{2}, repmat(2, numel(t), 1));
+%!   assert_simple(force_node_id{3}, repmat([1, 2], numel(t), 1));
+%!   assert_simple(force{1}, repmat([F1, 0, 0], numel(t), 1));
+%!   assert_simple(force{2}, repmat([0, F2, 0], numel(t), 1));
+%!   assert_simple(force{3}, repmat([0, 0, F3, 0, 0, -F3], numel(t), 1));
 %!   tol = eps^0.3;
-%!   assert(arm{1}, repmat((R1 * l1 + X1).', numel(t), 1), tol);
-%!   assert(arm{2}, repmat((R2 * l2 + X2).', numel(t), 1), tol);
-%!   assert(arm{3}, repmat([(R1 * l3_1 + X1).', (R2 * l3_2 + X2).'], numel(t), 1), tol);
+%!   assert_simple(arm{1}, repmat((R1 * l1 + X1).', numel(t), 1), tol);
+%!   assert_simple(arm{2}, repmat((R2 * l2 + X2).', numel(t), 1), tol);
+%!   assert_simple(arm{3}, repmat([(R1 * l3_1 + X1).', (R2 * l3_2 + X2).'], numel(t), 1), tol);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -533,17 +533,17 @@ endfunction
 %!   l2 = forces(2).arm1;
 %!   l3_1 = forces(3).arm1;
 %!   l3_2 = forces(3).arm2;
-%!   assert(force_id, int32([1,2,3]));
-%!   assert(force_node_id{1}, repmat(1, numel(t), 1));
-%!   assert(force_node_id{2}, repmat(2, numel(t), 1));
-%!   assert(force_node_id{3}, repmat([1, 2], numel(t), 1));
-%!   assert(force{1}, repmat([F1, 0, 0], numel(t), 1));
-%!   assert(force{2}, repmat([0, F2, 0], numel(t), 1));
-%!   assert(force{3}, repmat([0, 0, F3, 0, 0, -F3], numel(t), 1));
+%!   assert_simple(force_id, int32([1,2,3]));
+%!   assert_simple(force_node_id{1}, repmat(1, numel(t), 1));
+%!   assert_simple(force_node_id{2}, repmat(2, numel(t), 1));
+%!   assert_simple(force_node_id{3}, repmat([1, 2], numel(t), 1));
+%!   assert_simple(force{1}, repmat([F1, 0, 0], numel(t), 1));
+%!   assert_simple(force{2}, repmat([0, F2, 0], numel(t), 1));
+%!   assert_simple(force{3}, repmat([0, 0, F3, 0, 0, -F3], numel(t), 1));
 %!   tol = eps^0.3;
-%!   assert(arm{1}, repmat((R1 * l1 + X1).', numel(t), 1), tol);
-%!   assert(arm{2}, repmat((R2 * l2 + X2).', numel(t), 1), tol);
-%!   assert(arm{3}, repmat([(R1 * l3_1 + X1).', (R2 * l3_2 + X2).'], numel(t), 1), tol);
+%!   assert_simple(arm{1}, repmat((R1 * l1 + X1).', numel(t), 1), tol);
+%!   assert_simple(arm{2}, repmat((R2 * l2 + X2).', numel(t), 1), tol);
+%!   assert_simple(arm{3}, repmat([(R1 * l3_1 + X1).', (R2 * l3_2 + X2).'], numel(t), 1), tol);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);

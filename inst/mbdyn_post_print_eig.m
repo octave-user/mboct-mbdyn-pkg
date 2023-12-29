@@ -174,7 +174,7 @@ endfunction
 %!   lambda = [lambda1; lambda2];
 %!   [dummy, idx] = sort(imag(lambda), "ascend");
 %!   lambda = lambda(idx);
-%!   assert(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
+%!   assert_simple(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
 %!   mbdyn_post_print_eig(modal, log_dat, [fname, "_res.txt"]);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
@@ -283,7 +283,7 @@ endfunction
 %!   lambda = [lambda1; lambda2];
 %!   [dummy, idx] = sort(imag(lambda), "ascend");
 %!   lambda = lambda(idx);
-%!   assert(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
+%!   assert_simple(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
 %!   mbdyn_post_print_eig(modal, log_dat, [fname, "_res.txt"]);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
@@ -381,7 +381,7 @@ endfunction
 %!   lambda = [lambda1; lambda2];
 %!   [dummy, idx] = sort(imag(lambda), "ascend");
 %!   lambda = lambda(idx);
-%!   assert(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
+%!   assert_simple(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
 %!   mbdyn_post_print_eig(modal, log_dat, [fname, "_res.txt"]);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
@@ -491,7 +491,7 @@ endfunction
 %!   lambda = [lambda1; lambda2];
 %!   [dummy, idx] = sort(imag(lambda), "ascend");
 %!   lambda = lambda(idx);
-%!   assert(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
+%!   assert_simple(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
 %!   mbdyn_post_print_eig(modal, log_dat, stdout);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)

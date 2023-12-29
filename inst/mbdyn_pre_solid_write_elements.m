@@ -235,7 +235,7 @@ function options = mbdyn_pre_solid_write_elements(mesh, load_case_dof, load_case
       warning("file \"%s\": no solid elements were generated", elem_file);
     endif
 
-    [nidx, dofidx] = find(load_case_dof.locked_dof);
+    [nidx, dofidx] = find(load_case_dof.locked_dof(:, 1:3)); ## FIXME: cannot use genels for rotation parameters
 
     if (~isempty(nidx))
       genel_format = "genel: %d, clamp, %d, structural, %d, algebraic, from node;\n";
@@ -268,6 +268,9 @@ function options = mbdyn_pre_solid_write_elements(mesh, load_case_dof, load_case
 
     if (isfield(load_case, "loads"))
       for j=1:numel(load_case)
+        if (isempty(load_case(j).loads))
+          continue;
+        endif
         fprintf(fd, "drive caller: %d, name, \"forces for load_case(%d)\", %s;\n", ++options.drive_callers.number, j, options.forces.time_function{j});
         force_format = sprintf("force: %%d, abstract, %%d, structural, %%d, mult, const, %%.16e, reference, %d;\n", options.drive_callers.number);
 
@@ -869,8 +872,8 @@ endfunction
 %!   tol_delta = 1.25e-2;
 %!   fprintf(stderr, "difference(sigam1_max)=%.2f%%\n", (sigma1_max / sigma1_max_ref - 1) * 100);
 %!   fprintf(stderr, "difference(delta)=%.2f%%\n", (delta / delta_ref - 1) * 100);
-%!   assert(sigma1_max, sigma1_max_ref, tol_sigma * abs(sigma1_max_ref));
-%!   assert(delta, delta_ref, tol_delta * abs(delta_ref));
+%!   assert_simple(sigma1_max, sigma1_max_ref, tol_sigma * abs(sigma1_max_ref));
+%!   assert_simple(delta, delta_ref, tol_delta * abs(delta_ref));
 %! unwind_protect_cleanup
 %!   if (numel(filename))
 %!     fn = dir([filename, "*"]);
@@ -1123,8 +1126,8 @@ endfunction
 %!     grid minor on;
 %!   endif
 %!   tol = 5e-3;
-%!   assert(N, Nref, tol * norm(Nref));
-%!   assert(M, Mref, tol * norm(Mref));
+%!   assert_simple(N, Nref, tol * norm(Nref));
+%!   assert_simple(M, Mref, tol * norm(Mref));
 %! unwind_protect_cleanup
 %!   if (numel(filename))
 %!     fn = dir([filename, "*"]);
@@ -1370,8 +1373,8 @@ endfunction
 %!     grid minor on;
 %!   endif
 %!   tol = 1.5e-2;
-%!   assert(N, Nref, tol * norm(Nref));
-%!   assert(M, Mref, tol * norm(Mref));
+%!   assert_simple(N, Nref, tol * norm(Nref));
+%!   assert_simple(M, Mref, tol * norm(Mref));
 %! unwind_protect_cleanup
 %!   if (numel(filename))
 %!     fn = dir([filename, "*"]);
@@ -1627,8 +1630,8 @@ endfunction
 %!     grid minor on;
 %!   endif
 %!   tol = 5e-3;
-%!   assert(N, Nref, tol * norm(Nref));
-%!   assert(M, Mref, tol * norm(Mref));
+%!   assert_simple(N, Nref, tol * norm(Nref));
+%!   assert_simple(M, Mref, tol * norm(Mref));
 %! unwind_protect_cleanup
 %!   if (numel(filename))
 %!     fn = dir([filename, "*"]);
@@ -1879,8 +1882,8 @@ endfunction
 %!     grid minor on;
 %!   endif
 %!   tol = 5e-3;
-%!   assert(N, Nref, tol * norm(Nref));
-%!   assert(M, Mref, tol * norm(Mref));
+%!   assert_simple(N, Nref, tol * norm(Nref));
+%!   assert_simple(M, Mref, tol * norm(Mref));
 %! unwind_protect_cleanup
 %!   if (numel(filename))
 %!     fn = dir([filename, "*"]);
@@ -2167,7 +2170,7 @@ endfunction
 %!     title("tangent force");
 %!   endif
 %!   tol = 2e-2;
-%!   assert(Wkin_res, Wkin_ref, tol * max(abs(Wkin_res)));
+%!   assert_simple(Wkin_res, Wkin_ref, tol * max(abs(Wkin_res)));
 %! unwind_protect_cleanup
 %!   if (numel(filename))
 %!     fn = dir([filename, "*"]);
@@ -2455,7 +2458,7 @@ endfunction
 %!     title("tangent force");
 %!   endif
 %!   tol = 2e-2;
-%!   assert(Wkin_res, Wkin_ref, tol * max(abs(Wkin_res)));
+%!   assert_simple(Wkin_res, Wkin_ref, tol * max(abs(Wkin_res)));
 %! unwind_protect_cleanup
 %!   if (numel(filename))
 %!     fn = dir([filename, "*"]);
@@ -2710,8 +2713,8 @@ endfunction
 %!     grid minor on;
 %!   endif
 %!   tol = 5e-3;
-%!   assert(N, Nref, tol * norm(Nref));
-%!   assert(M, Mref, tol * norm(Mref));
+%!   assert_simple(N, Nref, tol * norm(Nref));
+%!   assert_simple(M, Mref, tol * norm(Mref));
 %! unwind_protect_cleanup
 %!   if (numel(filename))
 %!     fn = dir([filename, "*"]);
@@ -2965,8 +2968,8 @@ endfunction
 %!     grid minor on;
 %!   endif
 %!   tol = 5e-3;
-%!   assert(N, Nref, tol * norm(Nref));
-%!   assert(M, Mref, tol * norm(Mref));
+%!   assert_simple(N, Nref, tol * norm(Nref));
+%!   assert_simple(M, Mref, tol * norm(Mref));
 %! unwind_protect_cleanup
 %!   if (numel(filename))
 %!     fn = dir([filename, "*"]);
@@ -3221,8 +3224,8 @@ endfunction
 %!     grid minor on;
 %!   endif
 %!   tol = 5e-3;
-%!   assert(N, Nref, tol * norm(Nref));
-%!   assert(M, Mref, tol * norm(Mref));
+%!   assert_simple(N, Nref, tol * norm(Nref));
+%!   assert_simple(M, Mref, tol * norm(Mref));
 %! unwind_protect_cleanup
 %!   if (numel(filename))
 %!     fn = dir([filename, "*"]);
@@ -3482,8 +3485,8 @@ endfunction
 %!     grid minor on;
 %!   endif
 %!   tol = 5e-3;
-%!   assert(N, Nref, tol * norm(Nref));
-%!   assert(M, Mref, tol * norm(Mref));
+%!   assert_simple(N, Nref, tol * norm(Nref));
+%!   assert_simple(M, Mref, tol * norm(Mref));
 %! unwind_protect_cleanup
 %!   if (numel(filename))
 %!     fn = dir([filename, "*"]);
@@ -3746,8 +3749,8 @@ endfunction
 %!     grid minor on;
 %!   endif
 %!   tol = 5e-4;
-%!   assert(N, Nref, tol * norm(Nref));
-%!   assert(M, Mref, tol * norm(Mref));
+%!   assert_simple(N, Nref, tol * norm(Nref));
+%!   assert_simple(M, Mref, tol * norm(Mref));
 %! unwind_protect_cleanup
 %!   if (numel(filename))
 %!     fn = dir([filename, "*"]);
@@ -4009,8 +4012,8 @@ endfunction
 %!     grid minor on;
 %!   endif
 %!   tol = 5e-3;
-%!   assert(N, Nref, tol * norm(Nref));
-%!   assert(M, Mref, tol * norm(Mref));
+%!   assert_simple(N, Nref, tol * norm(Nref));
+%!   assert_simple(M, Mref, tol * norm(Mref));
 %! unwind_protect_cleanup
 %!   if (numel(filename))
 %!     fn = dir([filename, "*"]);
@@ -4273,8 +4276,8 @@ endfunction
 %!     grid minor on;
 %!   endif
 %!   tol = 5e-4;
-%!   assert(N, Nref, tol * norm(Nref));
-%!   assert(M, Mref, tol * norm(Mref));
+%!   assert_simple(N, Nref, tol * norm(Nref));
+%!   assert_simple(M, Mref, tol * norm(Mref));
 %! unwind_protect_cleanup
 %!   if (numel(filename))
 %!     fn = dir([filename, "*"]);
@@ -4562,7 +4565,7 @@ endfunction
 %!     title("tangent force");
 %!   endif
 %!   tol = 2e-2;
-%!   assert(Wkin_res, Wkin_ref, tol * max(abs(Wkin_res)));
+%!   assert_simple(Wkin_res, Wkin_ref, tol * max(abs(Wkin_res)));
 %! unwind_protect_cleanup
 %!   if (numel(filename))
 %!     fn = dir([filename, "*"]);

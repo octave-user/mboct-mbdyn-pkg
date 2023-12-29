@@ -492,8 +492,8 @@ endfunction
 %!       TAU = tau(idxtens);
 %!       TAU_t = R.' * TAU * R;
 %!       U_t = R.' * U;
-%!       assert(TAU_t, TAU_t_ref, tol * norm(TAU_t_ref));
-%!       assert(U_t, U_r_ref, tol * norm(U_r_ref));
+%!       assert_simple(TAU_t, TAU_t_ref, tol * norm(TAU_t_ref));
+%!       assert_simple(U_t, U_r_ref, tol * norm(U_r_ref));
 %!     endfor
 %!   endfor
 %!   figure_list();

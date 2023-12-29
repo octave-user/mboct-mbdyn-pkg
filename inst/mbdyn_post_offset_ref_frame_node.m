@@ -165,7 +165,7 @@ endfunction
 %!   log_dat = mbdyn_post_load_log(options.output_file);
 %!   [ref.ref_id, ref.position, ref.orientation, ref.velocity, ref.angular_velocity] = mbdyn_post_load_output_rfm(options.output_file);
 %!   X = mbdyn_post_offset_ref_frame_node(ref, log_dat.nodes, log_dat.vars, "ref_id_2", "node_id_1", "node");
-%!   assert(X, [0.6; 2.1; 5.5], 1e-6);
+%!   assert_simple(X, [0.6; 2.1; 5.5], 1e-6);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -263,7 +263,7 @@ endfunction
 %!   log_dat = mbdyn_post_load_log(options.output_file);
 %!   [ref.ref_id, ref.position, ref.orientation, ref.velocity, ref.angular_velocity] = mbdyn_post_load_output_rfm(options.output_file);
 %!   X = mbdyn_post_offset_ref_frame_node(ref, log_dat.nodes, log_dat.vars, "ref_id_2", "node_id_1", "node");
-%!   assert(X, [0.6; 2.1; 5.5], 1e-6);
+%!   assert_simple(X, [0.6; 2.1; 5.5], 1e-6);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -349,7 +349,7 @@ endfunction
 %!   log_dat = mbdyn_post_load_log(options.output_file);
 %!   [ref.ref_id, ref.position, ref.orientation, ref.velocity, ref.angular_velocity] = mbdyn_post_load_output_rfm(options.output_file);
 %!   X = mbdyn_post_offset_ref_frame_node(ref, log_dat.nodes, log_dat.vars, "ref_id_2", "node_id_1", "node");
-%!   assert(X, [0.6; 2.1; 5.5], 1e-6);
+%!   assert_simple(X, [0.6; 2.1; 5.5], 1e-6);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -447,7 +447,7 @@ endfunction
 %!   log_dat = mbdyn_post_load_log(options.output_file);
 %!   [ref.ref_id, ref.position, ref.orientation, ref.velocity, ref.angular_velocity] = mbdyn_post_load_output_rfm(options.output_file);
 %!   X = mbdyn_post_offset_ref_frame_node(ref, log_dat.nodes, log_dat.vars, "ref_id_2", "node_id_1", "node");
-%!   assert(X, [0.6; 2.1; 5.5], 1e-6);
+%!   assert_simple(X, [0.6; 2.1; 5.5], 1e-6);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);

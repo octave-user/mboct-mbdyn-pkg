@@ -89,7 +89,7 @@ endfunction
 %! R = mbdyn_post_angles_to_rotation_mat(res.node_id, res, log_dat);
 %! for i=1:numel(R)
 %!   Phi = feval(func{i}, R{i}).';
-%!   assert(Phi, res.trajectory{i}(:, 4:6), sqrt(eps) * pi);
+%!   assert_simple(Phi, res.trajectory{i}(:, 4:6), sqrt(eps) * pi);
 %! endfor
 %! unwind_protect_cleanup
 %! rand("state", state);
@@ -114,7 +114,7 @@ endfunction
 %! R = mbdyn_post_angles_to_rotation_mat(res.node_id, res, log_dat, 1:2:N);
 %! for i=1:numel(R)
 %!   Phi = feval(func{i}, R{i}).';
-%!   assert(Phi, res.trajectory{i}(1:2:N, 4:6), sqrt(eps) * pi);
+%!   assert_simple(Phi, res.trajectory{i}(1:2:N, 4:6), sqrt(eps) * pi);
 %! endfor
 %! unwind_protect_cleanup
 %! rand("state", state);

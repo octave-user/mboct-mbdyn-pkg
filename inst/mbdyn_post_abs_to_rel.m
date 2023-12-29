@@ -179,10 +179,10 @@ endfunction
 %!   [t, trajectory_rel, deformation_rel, velocity_rel, acceleration_rel, node_id] = mbdyn_post_load_output_struct([options.output_file, "_rel"], 1:2);
 %!   tol = eps^0.4;
 %!   for i=1:numel(node_id)
-%!     assert(trajectory_rel{i}, repmat(trajectory_rel{i}(1,:), numel(t), 1), tol * max(max(abs(trajectory_abs{i}))));
-%!     assert(velocity_rel{i}, zeros(numel(t), 6), tol * max(max(abs(velocity_abs{i}))));
+%!     assert_simple(trajectory_rel{i}, repmat(trajectory_rel{i}(1,:), numel(t), 1), tol * max(max(abs(trajectory_abs{i}))));
+%!     assert_simple(velocity_rel{i}, zeros(numel(t), 6), tol * max(max(abs(velocity_abs{i}))));
 %!     ## FIXME: bug in abs2rel.awk?
-%!     ## assert(acceleration_rel{i}, zeros(numel(t), 6), tol * max(max(abs(acceleration_abs{i}))));
+%!     ## assert_simple(acceleration_rel{i}, zeros(numel(t), 6), tol * max(max(abs(acceleration_abs{i}))));
 %!   endfor
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
@@ -305,10 +305,10 @@ endfunction
 %!   [t, trajectory_rel, deformation_rel, velocity_rel, acceleration_rel, node_id] = mbdyn_post_load_output_struct([options.output_file, "_rel"], 1:2);
 %!   tol = eps^0.4;
 %!   for i=1:numel(node_id)
-%!     assert(trajectory_rel{i}, repmat(trajectory_rel{i}(1,:), numel(t), 1), tol * max(max(abs(trajectory_abs{i}))));
-%!     assert(velocity_rel{i}, zeros(numel(t), 6), tol * max(max(abs(velocity_abs{i}))));
+%!     assert_simple(trajectory_rel{i}, repmat(trajectory_rel{i}(1,:), numel(t), 1), tol * max(max(abs(trajectory_abs{i}))));
+%!     assert_simple(velocity_rel{i}, zeros(numel(t), 6), tol * max(max(abs(velocity_abs{i}))));
 %!     ## FIXME: bug in abs2rel.awk?
-%!     ## assert(acceleration_rel{i}, zeros(numel(t), 6), tol * max(max(abs(acceleration_abs{i}))));
+%!     ## assert_simple(acceleration_rel{i}, zeros(numel(t), 6), tol * max(max(abs(acceleration_abs{i}))));
 %!   endfor
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
@@ -420,10 +420,10 @@ endfunction
 %!   [t, trajectory_rel, deformation_rel, velocity_rel, acceleration_rel, node_id] = mbdyn_post_load_output_struct([options.output_file, "_rel"], 1:2);
 %!   tol = eps^0.4;
 %!   for i=1:numel(node_id)
-%!     assert(trajectory_rel{i}, repmat(trajectory_rel{i}(1,:), numel(t), 1), tol * max(max(abs(trajectory_abs{i}))));
-%!     assert(velocity_rel{i}, zeros(numel(t), 6), tol * max(max(abs(velocity_abs{i}))));
+%!     assert_simple(trajectory_rel{i}, repmat(trajectory_rel{i}(1,:), numel(t), 1), tol * max(max(abs(trajectory_abs{i}))));
+%!     assert_simple(velocity_rel{i}, zeros(numel(t), 6), tol * max(max(abs(velocity_abs{i}))));
 %!     ## FIXME: bug in abs2rel.awk?
-%!     ## assert(acceleration_rel{i}, zeros(numel(t), 6), tol * max(max(abs(acceleration_abs{i}))));
+%!     ## assert_simple(acceleration_rel{i}, zeros(numel(t), 6), tol * max(max(abs(acceleration_abs{i}))));
 %!   endfor
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
@@ -2462,8 +2462,8 @@ endfunction
 %!   [t, trajectory_rel, deformation_rel, velocity_rel, acceleration_rel, node_id] = mbdyn_post_load_output_struct([options.output_file, "_rel"], 1:2);
 %!   tol = eps^0.4;
 %!   for i=1:numel(node_id)
-%!     assert(trajectory_rel{i}, repmat(trajectory_rel{i}(1,:), numel(t), 1), tol * max(max(abs(trajectory_abs{i}))));
-%!     assert(velocity_rel{i}, zeros(numel(t), 6), tol * max(max(abs(velocity_abs{i}))));
+%!     assert_simple(trajectory_rel{i}, repmat(trajectory_rel{i}(1,:), numel(t), 1), tol * max(max(abs(trajectory_abs{i}))));
+%!     assert_simple(velocity_rel{i}, zeros(numel(t), 6), tol * max(max(abs(velocity_abs{i}))));
 %!   endfor
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)

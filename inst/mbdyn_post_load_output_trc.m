@@ -125,12 +125,12 @@ endfunction
 %!   F = 100;
 %!   m = 1;
 %!   tol = 1e-12;
-%!   assert(drive_value{1}, 0.5 * F / m * t.^2, tol);
-%!   assert(drive_value{2}, 0.5 * g * t.^2, tol);
-%!   assert(drive_value{3}, t * F / m, tol);
-%!   assert(drive_value{4}, g * t, tol);
-%!   assert(drive_value{5}, repmat(F / m, numel(t), 1), tol);
-%!   assert(drive_value{6}, repmat(g, numel(t), 1), tol);
+%!   assert_simple(drive_value{1}, 0.5 * F / m * t.^2, tol);
+%!   assert_simple(drive_value{2}, 0.5 * g * t.^2, tol);
+%!   assert_simple(drive_value{3}, t * F / m, tol);
+%!   assert_simple(drive_value{4}, g * t, tol);
+%!   assert_simple(drive_value{5}, repmat(F / m, numel(t), 1), tol);
+%!   assert_simple(drive_value{6}, repmat(g, numel(t), 1), tol);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -217,12 +217,12 @@ endfunction
 %!   F = 100;
 %!   m = 1;
 %!   tol = 1e-12;
-%!   assert(drive_value{1}, 0.5 * F / m * t.^2, tol);
-%!   assert(drive_value{2}, 0.5 * g * t.^2, tol);
-%!   assert(drive_value{3}, t * F / m, tol);
-%!   assert(drive_value{4}, g * t, tol);
-%!   assert(drive_value{5}, repmat(F / m, numel(t), 1), tol);
-%!   assert(drive_value{6}, repmat(g, numel(t), 1), tol);
+%!   assert_simple(drive_value{1}, 0.5 * F / m * t.^2, tol);
+%!   assert_simple(drive_value{2}, 0.5 * g * t.^2, tol);
+%!   assert_simple(drive_value{3}, t * F / m, tol);
+%!   assert_simple(drive_value{4}, g * t, tol);
+%!   assert_simple(drive_value{5}, repmat(F / m, numel(t), 1), tol);
+%!   assert_simple(drive_value{6}, repmat(g, numel(t), 1), tol);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -298,12 +298,12 @@ endfunction
 %!   F = 100;
 %!   m = 1;
 %!   tol = 1e-12;
-%!   assert(drive_value{1}, 0.5 * F / m * t.^2, tol);
-%!   assert(drive_value{2}, 0.5 * g * t.^2, tol);
-%!   assert(drive_value{3}, t * F / m, tol);
-%!   assert(drive_value{4}, g * t, tol);
-%!   assert(drive_value{5}, repmat(F / m, numel(t), 1), tol);
-%!   assert(drive_value{6}, repmat(g, numel(t), 1), tol);
+%!   assert_simple(drive_value{1}, 0.5 * F / m * t.^2, tol);
+%!   assert_simple(drive_value{2}, 0.5 * g * t.^2, tol);
+%!   assert_simple(drive_value{3}, t * F / m, tol);
+%!   assert_simple(drive_value{4}, g * t, tol);
+%!   assert_simple(drive_value{5}, repmat(F / m, numel(t), 1), tol);
+%!   assert_simple(drive_value{6}, repmat(g, numel(t), 1), tol);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -391,12 +391,12 @@ endfunction
 %!   F = 100;
 %!   m = 1;
 %!   tol = 1e-12;
-%!   assert(drive_value{1}, 0.5 * F / m * t.^2, tol);
-%!   assert(drive_value{2}, 0.5 * g * t.^2, tol);
-%!   assert(drive_value{3}, t * F / m, tol);
-%!   assert(drive_value{4}, g * t, tol);
-%!   assert(drive_value{5}, repmat(F / m, numel(t), 1), tol);
-%!   assert(drive_value{6}, repmat(g, numel(t), 1), tol);
+%!   assert_simple(drive_value{1}, 0.5 * F / m * t.^2, tol);
+%!   assert_simple(drive_value{2}, 0.5 * g * t.^2, tol);
+%!   assert_simple(drive_value{3}, t * F / m, tol);
+%!   assert_simple(drive_value{4}, g * t, tol);
+%!   assert_simple(drive_value{5}, repmat(F / m, numel(t), 1), tol);
+%!   assert_simple(drive_value{6}, repmat(g, numel(t), 1), tol);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);

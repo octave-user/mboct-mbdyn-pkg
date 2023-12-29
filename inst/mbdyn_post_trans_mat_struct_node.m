@@ -1,4 +1,4 @@
-## Copyright (C) 2014(-2020) Reinhard <octave-user@a1.net>
+## Copyright (C) 2014(-2023) Reinhard <octave-user@a1.net>
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -51,9 +51,9 @@ function T = mbdyn_post_trans_mat_struct_node(dof_info, number_dofs, node_label,
   if (nargin < 7)
     component = [];
   endif
-  
+
   node_idx = find(dof_info.struct_node_labels == node_label);
-  
+
   if (length(node_idx) == 0)
     error("node_id %d not found!", node_label);
   endif
@@ -64,14 +64,14 @@ function T = mbdyn_post_trans_mat_struct_node(dof_info, number_dofs, node_label,
     endif
 
     dof = int32(component);
-    
+
     if (any(dof < 1 | dof > 6))
       error("dof must be in range [1:6]");
     endif
   else
     dof = int32(1:6);
   endif
-  
+
   switch (type)
     case "displacement"
       dof += dof_info.struct_node_dofs( node_idx );
@@ -82,20 +82,20 @@ function T = mbdyn_post_trans_mat_struct_node(dof_info, number_dofs, node_label,
   endswitch
 
   T = sparse(1:numel(dof), dof, ones(1, numel(dof)), numel(dof), number_dofs);
-  
+
   if (numel(offset))
     if (rows(T) ~= 6)
       error("component must not be used in combination with offset");
     endif
-    
+
     T = sparse([eye(3), -skew(offset)]) * T;
   endif
-  
+
   if (numel(direction))
     if (rows(T) ~= 3)
       error("component must not be used in combination with direction");
     endif
-    
+
     direction /= norm(direction);
     T = sparse(direction.') * T;
   endif

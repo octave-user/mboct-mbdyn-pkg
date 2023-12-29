@@ -189,14 +189,14 @@ endfunction
 %!   options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
 %!   bodies = mbdyn_post_load_log_body(fname);
-%!   assert([bodies.label], int32([1,2]));
-%!   assert([bodies.node], int32([1,2]));
-%!   assert([bodies.dm], [1, 2]);
-%!   assert([bodies.Xgc], [0.1, 0.01; 0.2, 0.02; 0.3, 0.03]);
-%!   assert(bodies(1).J, diag([1.1, 1.2, 1.3]) - bodies(1).dm * skew(bodies(1).Xgc) * skew(bodies(1).Xgc), sqrt(eps) * bodies(1).dm);
-%!   assert(bodies(2).J, diag([2.1, 2.2, 2.3]) - bodies(2).dm * skew(bodies(2).Xgc) * skew(bodies(2).Xgc), sqrt(eps) * bodies(2).dm);
-%!   assert(bodies(1).type, "body");
-%!   assert(bodies(2).type, "body");
+%!   assert_simple([bodies.label], int32([1,2]));
+%!   assert_simple([bodies.node], int32([1,2]));
+%!   assert_simple([bodies.dm], [1, 2]);
+%!   assert_simple([bodies.Xgc], [0.1, 0.01; 0.2, 0.02; 0.3, 0.03]);
+%!   assert_simple(bodies(1).J, diag([1.1, 1.2, 1.3]) - bodies(1).dm * skew(bodies(1).Xgc) * skew(bodies(1).Xgc), sqrt(eps) * bodies(1).dm);
+%!   assert_simple(bodies(2).J, diag([2.1, 2.2, 2.3]) - bodies(2).dm * skew(bodies(2).Xgc) * skew(bodies(2).Xgc), sqrt(eps) * bodies(2).dm);
+%!   assert_simple(bodies(1).type, "body");
+%!   assert_simple(bodies(2).type, "body");
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -283,14 +283,14 @@ endfunction
 %!   options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
 %!   bodies = mbdyn_post_load_log_body(fname);
-%!   assert([bodies.label], int32([1,2]));
-%!   assert([bodies.node], int32([1,2]));
-%!   assert([bodies.dm], [1, 2]);
-%!   assert([bodies.Xgc], [0.1, 0.01; 0.2, 0.02; 0.3, 0.03]);
-%!   assert(bodies(1).J, diag([1.1, 1.2, 1.3]) - bodies(1).dm * skew(bodies(1).Xgc) * skew(bodies(1).Xgc), sqrt(eps) * bodies(1).dm);
-%!   assert(bodies(2).J, diag([2.1, 2.2, 2.3]) - bodies(2).dm * skew(bodies(2).Xgc) * skew(bodies(2).Xgc), sqrt(eps) * bodies(2).dm);
-%!   assert(bodies(1).type, "body");
-%!   assert(bodies(2).type, "body");
+%!   assert_simple([bodies.label], int32([1,2]));
+%!   assert_simple([bodies.node], int32([1,2]));
+%!   assert_simple([bodies.dm], [1, 2]);
+%!   assert_simple([bodies.Xgc], [0.1, 0.01; 0.2, 0.02; 0.3, 0.03]);
+%!   assert_simple(bodies(1).J, diag([1.1, 1.2, 1.3]) - bodies(1).dm * skew(bodies(1).Xgc) * skew(bodies(1).Xgc), sqrt(eps) * bodies(1).dm);
+%!   assert_simple(bodies(2).J, diag([2.1, 2.2, 2.3]) - bodies(2).dm * skew(bodies(2).Xgc) * skew(bodies(2).Xgc), sqrt(eps) * bodies(2).dm);
+%!   assert_simple(bodies(1).type, "body");
+%!   assert_simple(bodies(2).type, "body");
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -366,14 +366,14 @@ endfunction
 %!   options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
 %!   bodies = mbdyn_post_load_log_body(fname);
-%!   assert([bodies.label], int32([1,2]));
-%!   assert([bodies.node], int32([1,2]));
-%!   assert([bodies.dm], [1, 2]);
-%!   assert([bodies.Xgc], [0.1, 0.01; 0.2, 0.02; 0.3, 0.03]);
-%!   assert(bodies(1).J, diag([1.1, 1.2, 1.3]) - bodies(1).dm * skew(bodies(1).Xgc) * skew(bodies(1).Xgc), sqrt(eps) * bodies(1).dm);
-%!   assert(bodies(2).J, diag([2.1, 2.2, 2.3]) - bodies(2).dm * skew(bodies(2).Xgc) * skew(bodies(2).Xgc), sqrt(eps) * bodies(2).dm);
-%!   assert(bodies(1).type, "body");
-%!   assert(bodies(2).type, "body");
+%!   assert_simple([bodies.label], int32([1,2]));
+%!   assert_simple([bodies.node], int32([1,2]));
+%!   assert_simple([bodies.dm], [1, 2]);
+%!   assert_simple([bodies.Xgc], [0.1, 0.01; 0.2, 0.02; 0.3, 0.03]);
+%!   assert_simple(bodies(1).J, diag([1.1, 1.2, 1.3]) - bodies(1).dm * skew(bodies(1).Xgc) * skew(bodies(1).Xgc), sqrt(eps) * bodies(1).dm);
+%!   assert_simple(bodies(2).J, diag([2.1, 2.2, 2.3]) - bodies(2).dm * skew(bodies(2).Xgc) * skew(bodies(2).Xgc), sqrt(eps) * bodies(2).dm);
+%!   assert_simple(bodies(1).type, "body");
+%!   assert_simple(bodies(2).type, "body");
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -450,14 +450,14 @@ endfunction
 %!   options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
 %!   bodies = mbdyn_post_load_log_body(fname);
-%!   assert([bodies.label], int32([1,2]));
-%!   assert([bodies.node], int32([1,2]));
-%!   assert([bodies.dm], [1, 2]);
-%!   assert([bodies.Xgc], [0.1, 0.01; 0.2, 0.02; 0.3, 0.03]);
-%!   assert(bodies(1).J, diag([1.1, 1.2, 1.3]) - bodies(1).dm * skew(bodies(1).Xgc) * skew(bodies(1).Xgc), sqrt(eps) * bodies(1).dm);
-%!   assert(bodies(2).J, diag([2.1, 2.2, 2.3]) - bodies(2).dm * skew(bodies(2).Xgc) * skew(bodies(2).Xgc), sqrt(eps) * bodies(2).dm);
-%!   assert(bodies(1).type, "body");
-%!   assert(bodies(2).type, "body");
+%!   assert_simple([bodies.label], int32([1,2]));
+%!   assert_simple([bodies.node], int32([1,2]));
+%!   assert_simple([bodies.dm], [1, 2]);
+%!   assert_simple([bodies.Xgc], [0.1, 0.01; 0.2, 0.02; 0.3, 0.03]);
+%!   assert_simple(bodies(1).J, diag([1.1, 1.2, 1.3]) - bodies(1).dm * skew(bodies(1).Xgc) * skew(bodies(1).Xgc), sqrt(eps) * bodies(1).dm);
+%!   assert_simple(bodies(2).J, diag([2.1, 2.2, 2.3]) - bodies(2).dm * skew(bodies(2).Xgc) * skew(bodies(2).Xgc), sqrt(eps) * bodies(2).dm);
+%!   assert_simple(bodies(1).type, "body");
+%!   assert_simple(bodies(2).type, "body");
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);

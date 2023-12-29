@@ -132,8 +132,8 @@ endfunction
 %!   E = 0.5 * m * v.^2;
 %!   V = -m * g * s;
 %!   [node_id, abs_value, abs_deriv] = mbdyn_post_load_output_abs(options.output_file, [1, 2], numel(t));
-%!   assert(abs_value{1}, E, 1e-4);
-%!   assert(abs_value{2}, V, 1e-4);
+%!   assert_simple(abs_value{1}, E, 1e-4);
+%!   assert_simple(abs_value{2}, V, 1e-4);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -219,8 +219,8 @@ endfunction
 %!   E = 0.5 * m * v.^2;
 %!   V = -m * g * s;
 %!   [node_id, abs_value, abs_deriv] = mbdyn_post_load_output_abs(options.output_file, [1, 2], numel(t));
-%!   assert(abs_value{1}, E, 1e-4);
-%!   assert(abs_value{2}, V, 1e-4);
+%!   assert_simple(abs_value{1}, E, 1e-4);
+%!   assert_simple(abs_value{2}, V, 1e-4);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -295,8 +295,8 @@ endfunction
 %!   E = 0.5 * m * v.^2;
 %!   V = -m * g * s;
 %!   [node_id, abs_value, abs_deriv] = mbdyn_post_load_output_abs(options.output_file, [1, 2], numel(t));
-%!   assert(abs_value{1}, E, 1e-4);
-%!   assert(abs_value{2}, V, 1e-4);
+%!   assert_simple(abs_value{1}, E, 1e-4);
+%!   assert_simple(abs_value{2}, V, 1e-4);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -372,8 +372,8 @@ endfunction
 %!   E = 0.5 * m * v.^2;
 %!   V = -m * g * s;
 %!   [node_id, abs_value, abs_deriv] = mbdyn_post_load_output_abs(options.output_file, [1, 2], numel(t));
-%!   assert(abs_value{1}, E, 1e-4);
-%!   assert(abs_value{2}, V, 1e-4);
+%!   assert_simple(abs_value{1}, E, 1e-4);
+%!   assert_simple(abs_value{2}, V, 1e-4);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);

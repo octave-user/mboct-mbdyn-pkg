@@ -163,7 +163,9 @@ function mode_index = mbdyn_post_eig_to_mov_file(input_file, output_filename_tem
           fprintf(fd_mov, "%d ", nodes(j).label);
 
           if (node_idx_modal(j) > 0)
-            assert(modal.labels(node_idx_modal(j)) == nodes(j).label);
+            if (~all(modal.labels(node_idx_modal(j)) == nodes(j).label))
+              error("labels do not match");
+            endif
             
             idx = modal.idx(node_idx_modal(j));                      
 
@@ -172,8 +174,8 @@ function mode_index = mbdyn_post_eig_to_mov_file(input_file, output_filename_tem
             dX = options.scale * real(VR * exp(1j * phase(i)));
             XP = options.scale * real(lambda * VR * exp(1j * phase(i)));
 
-            X = modal.X0((node_idx_modal(j) - 1) * 6 + (1:3)) + dX(1:3);
-            Phi = modal.X0((node_idx_modal(j) - 1) * 6 + (4:6)) + dX(4:6);
+            X = modal.X0(node_idx_modal(j), 1:3).' + dX(1:3);
+            Phi = modal.X0(node_idx_modal(j), 4:6).' + dX(4:6);
             R = rotation_vector_to_rotation_matrix(Phi);
           else
             X = nodes(j).X0;
@@ -377,7 +379,7 @@ endfunction
 %!   lambda = [lambda1; lambda2];
 %!   [dummy, idx] = sort(imag(lambda), "ascend");
 %!   lambda = lambda(idx);
-%!   assert(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
+%!   assert_simple(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
 %!   options.frames = 36;
 %!   options.scale = 1;
 %!   options.mode_index = 1:numel(modal.lambda);
@@ -492,7 +494,7 @@ endfunction
 %!   lambda = [lambda1; lambda2];
 %!   [dummy, idx] = sort(imag(lambda), "ascend");
 %!   lambda = lambda(idx);
-%!   assert(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
+%!   assert_simple(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
 %!   options.frames = 36;
 %!   options.scale = 1;
 %!   options.mode_index = 1:numel(modal.lambda);
@@ -596,7 +598,7 @@ endfunction
 %!   lambda = [lambda1; lambda2];
 %!   [dummy, idx] = sort(imag(lambda), "ascend");
 %!   lambda = lambda(idx);
-%!   assert(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
+%!   assert_simple(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
 %!   options.frames = 36;
 %!   options.scale = 1;
 %!   options.mode_index = 1:numel(modal.lambda);
@@ -700,7 +702,7 @@ endfunction
 %!   lambda = [lambda1; lambda2];
 %!   [dummy, idx] = sort(imag(lambda), "ascend");
 %!   lambda = lambda(idx);
-%!   assert(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
+%!   assert_simple(modal.lambda, lambda, eps^0.9 * max(abs(lambda)));
 %!   options.frames = 36;
 %!   options.scale = 1;
 %!   options.mode_index = 1:numel(modal.lambda);

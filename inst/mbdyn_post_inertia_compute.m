@@ -194,9 +194,9 @@ endfunction
 %!   inertia = mbdyn_post_inertia_compute(body_groups, bodies, log_dat.nodes);
 %!   mbdyn_post_inertia_print(inertia, [fname, "inertia.dat"]);
 %!   tol = 1e-5;
-%!   assert(inertia(1).dm, 123.456, tol * 123.456);
-%!   assert(inertia(1).Xgc, zeros(3, 1), tol);
-%!   assert(inertia(1).J, diag([45.456, 78.789, 123.123]), tol * 123.123);
+%!   assert_simple(inertia(1).dm, 123.456, tol * 123.456);
+%!   assert_simple(inertia(1).Xgc, zeros(3, 1), tol);
+%!   assert_simple(inertia(1).J, diag([45.456, 78.789, 123.123]), tol * 123.123);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -282,9 +282,9 @@ endfunction
 %!   inertia = mbdyn_post_inertia_compute(body_groups, bodies, log_dat.nodes);
 %!   mbdyn_post_inertia_print(inertia, [fname, "inertia.dat"]);
 %!   tol = 1e-5;
-%!   assert(inertia(1).dm, 123.456, tol * 123.456);
-%!   assert(inertia(1).Xgc, zeros(3, 1), tol);
-%!   assert(inertia(1).J, diag([45.456, 78.789, 123.123]), tol * 123.123);
+%!   assert_simple(inertia(1).dm, 123.456, tol * 123.456);
+%!   assert_simple(inertia(1).Xgc, zeros(3, 1), tol);
+%!   assert_simple(inertia(1).J, diag([45.456, 78.789, 123.123]), tol * 123.123);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -359,9 +359,9 @@ endfunction
 %!   inertia = mbdyn_post_inertia_compute(body_groups, bodies, log_dat.nodes);
 %!   mbdyn_post_inertia_print(inertia, [fname, "inertia.dat"]);
 %!   tol = 1e-5;
-%!   assert(inertia(1).dm, 123.456, tol * 123.456);
-%!   assert(inertia(1).Xgc, zeros(3, 1), tol);
-%!   assert(inertia(1).J, diag([45.456, 78.789, 123.123]), tol * 123.123);
+%!   assert_simple(inertia(1).dm, 123.456, tol * 123.456);
+%!   assert_simple(inertia(1).Xgc, zeros(3, 1), tol);
+%!   assert_simple(inertia(1).J, diag([45.456, 78.789, 123.123]), tol * 123.123);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -437,9 +437,9 @@ endfunction
 %!   inertia = mbdyn_post_inertia_compute(body_groups, bodies, log_dat.nodes);
 %!   mbdyn_post_inertia_print(inertia, [fname, "inertia.dat"]);
 %!   tol = 1e-5;
-%!   assert(inertia(1).dm, 123.456, tol * 123.456);
-%!   assert(inertia(1).Xgc, zeros(3, 1), tol);
-%!   assert(inertia(1).J, diag([45.456, 78.789, 123.123]), tol * 123.123);
+%!   assert_simple(inertia(1).dm, 123.456, tol * 123.456);
+%!   assert_simple(inertia(1).Xgc, zeros(3, 1), tol);
+%!   assert_simple(inertia(1).J, diag([45.456, 78.789, 123.123]), tol * 123.123);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);

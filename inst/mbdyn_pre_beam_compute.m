@@ -145,8 +145,6 @@ function [e2, theta] = mbdyn_curved_beam_compute_e2(e1)
   e2 = [-sin(theta(3));
         cos(theta(3));
         0];
-
-  assert(abs(e2.' * e1) < sqrt(eps));
 endfunction
 
 function [X, R] = mbdyn_curved_beam_interpolation(beam, s)
@@ -195,7 +193,7 @@ endfunction
 %!       0, 0 ];
 
 %! beam = mbdyn_pre_beam_compute(R * X, N);
-%! assert(R, beam.Rn(:,:,1), sqrt(eps));
+%! assert_simple(R, beam.Rn(:,:,1), sqrt(eps));
 
 %!test
 %! N = 100;
@@ -205,7 +203,7 @@ endfunction
 %! beam = mbdyn_pre_beam_compute(X, N, 40);
 %! norm_dXn = norm(beam.Xn(:,2:end) - beam.Xn(:,1:end-1), 2, 'cols');
 %! f = max(abs(1 - norm_dXn/mean(norm_dXn)));
-%! assert(f < 1e-2);
+%! assert_simple(f < 1e-2);
 
 %!test
 %! close all;
@@ -229,7 +227,7 @@ endfunction
 %! figure("visible", "off");
 %! mbdyn_pre_beam_plot(beam,struct("s",0.001,"Rn",false,"Rg",false));
 %! title("straight beam");
-%! assert(R,beam.Rn(:,:,1),sqrt(eps));
+%! assert_simple(R,beam.Rn(:,:,1),sqrt(eps));
 
 %!test
 %! f_print_input_file = false;
@@ -351,21 +349,21 @@ endfunction
 %!   bodies = mbdyn_post_load_log_body(fname);
 %!   tol = 1e-5;
 %!   for i=1:numel(log_dat.nodes)
-%!     assert(log_dat.nodes(i).X0, beam.Xn(:, i), tol);
-%!     assert(log_dat.nodes(i).R0, beam.Rn(:, :, i), tol);
+%!     assert_simple(log_dat.nodes(i).X0, beam.Xn(:, i), tol);
+%!     assert_simple(log_dat.nodes(i).R0, beam.Rn(:, :, i), tol);
 %!   endfor
 %!   for i=1:numel(log_dat.beams3)
 %!     for j=1:3
-%!       assert(log_dat.beams3(i).nodes(j).label, int32(beam.beams(i).nidx(j)));
+%!       assert_simple(log_dat.beams3(i).nodes(j).label, int32(beam.beams(i).nidx(j)));
 %!     endfor
 %!   endfor
 %!   for i=1:numel(bodies)
-%!     assert(bodies(i).node, int32(i));
+%!     assert_simple(bodies(i).node, int32(i));
 %!   endfor
 %!   R = G * d^4 / (8 * n * D^3);
 %!   wref = -F / R;
 %!   tol = 1e-2;
-%!   assert(deformation{end}(end, 3), wref, tol * abs(wref));
+%!   assert_simple(deformation{end}(end, 3), wref, tol * abs(wref));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -495,21 +493,21 @@ endfunction
 %!   bodies = mbdyn_post_load_log_body(fname);
 %!   tol = 1e-5;
 %!   for i=1:numel(log_dat.nodes)
-%!     assert(log_dat.nodes(i).X0, beam.Xn(:, i), tol);
-%!     assert(log_dat.nodes(i).R0, beam.Rn(:, :, i), tol);
+%!     assert_simple(log_dat.nodes(i).X0, beam.Xn(:, i), tol);
+%!     assert_simple(log_dat.nodes(i).R0, beam.Rn(:, :, i), tol);
 %!   endfor
 %!   for i=1:numel(log_dat.beams3)
 %!     for j=1:3
-%!       assert(log_dat.beams3(i).nodes(j).label, int32(beam.beams(i).nidx(j)));
+%!       assert_simple(log_dat.beams3(i).nodes(j).label, int32(beam.beams(i).nidx(j)));
 %!     endfor
 %!   endfor
 %!   for i=1:numel(bodies)
-%!     assert(bodies(i).node, int32(i));
+%!     assert_simple(bodies(i).node, int32(i));
 %!   endfor
 %!   R = G * d^4 / (8 * n * D^3);
 %!   wref = -F / R;
 %!   tol = 1e-2;
-%!   assert(deformation{end}(end, 3), wref, tol * abs(wref));
+%!   assert_simple(deformation{end}(end, 3), wref, tol * abs(wref));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -628,21 +626,21 @@ endfunction
 %!   bodies = mbdyn_post_load_log_body(fname);
 %!   tol = 1e-5;
 %!   for i=1:numel(log_dat.nodes)
-%!     assert(log_dat.nodes(i).X0, beam.Xn(:, i), tol);
-%!     assert(log_dat.nodes(i).R0, beam.Rn(:, :, i), tol);
+%!     assert_simple(log_dat.nodes(i).X0, beam.Xn(:, i), tol);
+%!     assert_simple(log_dat.nodes(i).R0, beam.Rn(:, :, i), tol);
 %!   endfor
 %!   for i=1:numel(log_dat.beams3)
 %!     for j=1:3
-%!       assert(log_dat.beams3(i).nodes(j).label, int32(beam.beams(i).nidx(j)));
+%!       assert_simple(log_dat.beams3(i).nodes(j).label, int32(beam.beams(i).nidx(j)));
 %!     endfor
 %!   endfor
 %!   for i=1:numel(bodies)
-%!     assert(bodies(i).node, int32(i));
+%!     assert_simple(bodies(i).node, int32(i));
 %!   endfor
 %!   R = G * d^4 / (8 * n * D^3);
 %!   wref = -F / R;
 %!   tol = 1e-2;
-%!   assert(deformation{end}(end, 3), wref, tol * abs(wref));
+%!   assert_simple(deformation{end}(end, 3), wref, tol * abs(wref));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -675,7 +673,7 @@ endfunction
 %! stem(norm_dXn,'o-;norm(dXn);1');
 %! xlabel('node #');
 %! ylabel('norm(dXn) [m]');
-%! assert(f < 0.18);
+%! assert_simple(f < 0.18);
 %! mbdyn_pre_beam_plot(beam,struct("s",0.1,"X",true,"Rn",true,"Rg",true));
 
 %!test
@@ -830,21 +828,21 @@ endfunction
 %!   res.bodies = mbdyn_post_load_log_body(fname);
 %!   tol = 1e-5;
 %!   for i=1:numel(res.log_dat.nodes)
-%!     assert(res.log_dat.nodes(i).X0, beam.Xn(:, i), tol);
-%!     assert(res.log_dat.nodes(i).R0, beam.Rn(:, :, i), tol);
+%!     assert_simple(res.log_dat.nodes(i).X0, beam.Xn(:, i), tol);
+%!     assert_simple(res.log_dat.nodes(i).R0, beam.Rn(:, :, i), tol);
 %!   endfor
 %!   for i=1:numel(res.log_dat.beams3)
 %!     for j=1:3
-%!       assert(res.log_dat.beams3(i).nodes(j).label, int32(beam.beams(i).nidx(j)));
+%!       assert_simple(res.log_dat.beams3(i).nodes(j).label, int32(beam.beams(i).nidx(j)));
 %!     endfor
 %!   endfor
 %!   for i=1:numel(res.bodies)
-%!     assert(res.bodies(i).node, int32(i));
+%!     assert_simple(res.bodies(i).node, int32(i));
 %!   endfor
 %!   R = G * d^4 / (8 * n * D^3);
 %!   wref = -F / R;
 %!   tol = 1e-2;
-%!   assert(res.deformation{end}(end, 3), wref, tol * abs(wref));
+%!   assert_simple(res.deformation{end}(end, 3), wref, tol * abs(wref));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);

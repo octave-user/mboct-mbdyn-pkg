@@ -164,15 +164,15 @@ endfunction
 %!   mbdyn_solver_run(fname, options);
 %!   [ref_id, X, Phi, v, omega] = mbdyn_post_load_output_rfm(options.output_file, 1:2);
 %!   tol = eps^0.4;
-%!   assert(ref_id, int32([1,2]));
-%!   assert(X{1}, [1.1, 2.2, 3.3], tol);
-%!   assert(Phi{1}, [0.11, 0.22, 0.33], 2 * pi * tol);
-%!   assert(v{1}, [10.1, 20.2, 30.3], tol);
-%!   assert(omega{1}, [100.1, 200.2, 300.3], tol);
-%!   assert(X{2}, [10.1, 20.2, 30.3], tol);
-%!   assert(Phi{2}, [1.11e-2, 2.22e-2, 3.33e-2], 2 * pi * tol);
-%!   assert(v{2}, [100.1, 200.2, 300.3], tol);
-%!   assert(omega{2}, [2100.1, 2200.2, 2300.3], tol);
+%!   assert_simple(ref_id, int32([1,2]));
+%!   assert_simple(X{1}, [1.1, 2.2, 3.3], tol);
+%!   assert_simple(Phi{1}, [0.11, 0.22, 0.33], 2 * pi * tol);
+%!   assert_simple(v{1}, [10.1, 20.2, 30.3], tol);
+%!   assert_simple(omega{1}, [100.1, 200.2, 300.3], tol);
+%!   assert_simple(X{2}, [10.1, 20.2, 30.3], tol);
+%!   assert_simple(Phi{2}, [1.11e-2, 2.22e-2, 3.33e-2], 2 * pi * tol);
+%!   assert_simple(v{2}, [100.1, 200.2, 300.3], tol);
+%!   assert_simple(omega{2}, [2100.1, 2200.2, 2300.3], tol);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -258,15 +258,15 @@ endfunction
 %!   mbdyn_solver_run(fname, options);
 %!   [ref_id, X, Phi, v, omega] = mbdyn_post_load_output_rfm(options.output_file, 1:2);
 %!   tol = eps^0.4;
-%!   assert(ref_id, int32([1,2]));
-%!   assert(X{1}, [1.1, 2.2, 3.3], tol);
-%!   assert(Phi{1}, [0.11, 0.22, 0.33], 2 * pi * tol);
-%!   assert(v{1}, [10.1, 20.2, 30.3], tol);
-%!   assert(omega{1}, [100.1, 200.2, 300.3], tol);
-%!   assert(X{2}, [10.1, 20.2, 30.3], tol);
-%!   assert(Phi{2}, [1.11e-2, 2.22e-2, 3.33e-2], 2 * pi * tol);
-%!   assert(v{2}, [100.1, 200.2, 300.3], tol);
-%!   assert(omega{2}, [2100.1, 2200.2, 2300.3], tol);
+%!   assert_simple(ref_id, int32([1,2]));
+%!   assert_simple(X{1}, [1.1, 2.2, 3.3], tol);
+%!   assert_simple(Phi{1}, [0.11, 0.22, 0.33], 2 * pi * tol);
+%!   assert_simple(v{1}, [10.1, 20.2, 30.3], tol);
+%!   assert_simple(omega{1}, [100.1, 200.2, 300.3], tol);
+%!   assert_simple(X{2}, [10.1, 20.2, 30.3], tol);
+%!   assert_simple(Phi{2}, [1.11e-2, 2.22e-2, 3.33e-2], 2 * pi * tol);
+%!   assert_simple(v{2}, [100.1, 200.2, 300.3], tol);
+%!   assert_simple(omega{2}, [2100.1, 2200.2, 2300.3], tol);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -342,15 +342,15 @@ endfunction
 %!   mbdyn_solver_run(fname, options);
 %!   [ref_id, X, Phi, v, omega] = mbdyn_post_load_output_rfm(options.output_file, 1:2);
 %!   tol = eps^0.4;
-%!   assert(ref_id, int32([1,2]));
-%!   assert(X{1}, [1.1, 2.2, 3.3], tol);
-%!   assert(Phi{1}, [0.11, 0.22, 0.33], 2 * pi * tol);
-%!   assert(v{1}, [10.1, 20.2, 30.3], tol);
-%!   assert(omega{1}, [100.1, 200.2, 300.3], tol);
-%!   assert(X{2}, [10.1, 20.2, 30.3], tol);
-%!   assert(Phi{2}, [1.11e-2, 2.22e-2, 3.33e-2], 2 * pi * tol);
-%!   assert(v{2}, [100.1, 200.2, 300.3], tol);
-%!   assert(omega{2}, [2100.1, 2200.2, 2300.3], tol);
+%!   assert_simple(ref_id, int32([1,2]));
+%!   assert_simple(X{1}, [1.1, 2.2, 3.3], tol);
+%!   assert_simple(Phi{1}, [0.11, 0.22, 0.33], 2 * pi * tol);
+%!   assert_simple(v{1}, [10.1, 20.2, 30.3], tol);
+%!   assert_simple(omega{1}, [100.1, 200.2, 300.3], tol);
+%!   assert_simple(X{2}, [10.1, 20.2, 30.3], tol);
+%!   assert_simple(Phi{2}, [1.11e-2, 2.22e-2, 3.33e-2], 2 * pi * tol);
+%!   assert_simple(v{2}, [100.1, 200.2, 300.3], tol);
+%!   assert_simple(omega{2}, [2100.1, 2200.2, 2300.3], tol);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -426,15 +426,15 @@ endfunction
 %!   mbdyn_solver_run(fname, options);
 %!   [ref_id, X, Phi, v, omega] = mbdyn_post_load_output_rfm(options.output_file, 1:2);
 %!   tol = eps^0.4;
-%!   assert(ref_id, int32([1,2]));
-%!   assert(X{1}, [1.1, 2.2, 3.3], tol);
-%!   assert(Phi{1}, [0.11, 0.22, 0.33], 2 * pi * tol);
-%!   assert(v{1}, [10.1, 20.2, 30.3], tol);
-%!   assert(omega{1}, [100.1, 200.2, 300.3], tol);
-%!   assert(X{2}, [10.1, 20.2, 30.3], tol);
-%!   assert(Phi{2}, [1.11e-2, 2.22e-2, 3.33e-2], 2 * pi * tol);
-%!   assert(v{2}, [100.1, 200.2, 300.3], tol);
-%!   assert(omega{2}, [2100.1, 2200.2, 2300.3], tol);
+%!   assert_simple(ref_id, int32([1,2]));
+%!   assert_simple(X{1}, [1.1, 2.2, 3.3], tol);
+%!   assert_simple(Phi{1}, [0.11, 0.22, 0.33], 2 * pi * tol);
+%!   assert_simple(v{1}, [10.1, 20.2, 30.3], tol);
+%!   assert_simple(omega{1}, [100.1, 200.2, 300.3], tol);
+%!   assert_simple(X{2}, [10.1, 20.2, 30.3], tol);
+%!   assert_simple(Phi{2}, [1.11e-2, 2.22e-2, 3.33e-2], 2 * pi * tol);
+%!   assert_simple(v{2}, [100.1, 200.2, 300.3], tol);
+%!   assert_simple(omega{2}, [2100.1, 2200.2, 2300.3], tol);
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);

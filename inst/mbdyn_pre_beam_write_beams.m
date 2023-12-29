@@ -443,16 +443,16 @@ endfunction
 %!   bodies = mbdyn_post_load_log_body(fname);
 %!   tol = 1e-5;
 %!   for i=1:numel(log_dat.nodes)
-%!     assert(log_dat.nodes(i).X0, beam.Xn(:, i), tol);
-%!     assert(log_dat.nodes(i).R0, beam.Rn(:, :, i), tol);
+%!     assert_simple(log_dat.nodes(i).X0, beam.Xn(:, i), tol);
+%!     assert_simple(log_dat.nodes(i).R0, beam.Rn(:, :, i), tol);
 %!   endfor
 %!   for i=1:numel(log_dat.beams3)
 %!     for j=1:3
-%!       assert(log_dat.beams3(i).nodes(j).label, int32(beam.beams(i).nidx(j)));
+%!       assert_simple(log_dat.beams3(i).nodes(j).label, int32(beam.beams(i).nidx(j)));
 %!     endfor
 %!   endfor
 %!   for i=1:numel(bodies)
-%!     assert(bodies(i).node, int32(i));
+%!     assert_simple(bodies(i).node, int32(i));
 %!   endfor
 %!   w = zeros(1, numel(deformation));
 %!   for i=1:numel(w)
@@ -475,7 +475,7 @@ endfunction
 %!     ylabel("w [m]");
 %!   endif
 %!   tol = 1e-2;
-%!   assert(w, wref, tol * max(abs(wref)));
+%!   assert_simple(w, wref, tol * max(abs(wref)));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -600,16 +600,16 @@ endfunction
 %!   bodies = mbdyn_post_load_log_body(fname);
 %!   tol = 1e-5;
 %!   for i=1:numel(log_dat.nodes)
-%!     assert(log_dat.nodes(i).X0, beam.Xn(:, i), tol);
-%!     assert(log_dat.nodes(i).R0, beam.Rn(:, :, i), tol);
+%!     assert_simple(log_dat.nodes(i).X0, beam.Xn(:, i), tol);
+%!     assert_simple(log_dat.nodes(i).R0, beam.Rn(:, :, i), tol);
 %!   endfor
 %!   for i=1:numel(log_dat.beams3)
 %!     for j=1:3
-%!       assert(log_dat.beams3(i).nodes(j).label, int32(beam.beams(i).nidx(j)));
+%!       assert_simple(log_dat.beams3(i).nodes(j).label, int32(beam.beams(i).nidx(j)));
 %!     endfor
 %!   endfor
 %!   for i=1:numel(bodies)
-%!     assert(bodies(i).node, int32(i));
+%!     assert_simple(bodies(i).node, int32(i));
 %!   endfor
 %!   Xn = [log_dat.nodes.X0];
 %!   Phin = atan2(Xn(2, :), -Xn(1, :));
@@ -623,11 +623,11 @@ endfunction
 %!     U(:, i) = deformation{i}(end, 1:3).';
 %!   endfor
 %!   tol = 1e-3;
-%!   assert(U, Uref, tol * norm(Uref));
+%!   assert_simple(U, Uref, tol * norm(Uref));
 %!   wref_1 = F * R^3 / (2 * E * Iz);
 %!   w_1 = deformation{end}(end, 1);
 %!   tol = 1e-3;
-%!   assert(w_1, wref_1, tol * max(abs(wref_1)));
+%!   assert_simple(w_1, wref_1, tol * max(abs(wref_1)));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     [~] = unlink(fname);
@@ -750,16 +750,16 @@ endfunction
 %!   bodies = mbdyn_post_load_log_body(fname);
 %!   tol = 1e-5;
 %!   for i=1:numel(log_dat.nodes)
-%!     assert(log_dat.nodes(i).X0, beam.Xn(:, i), tol);
-%!     assert(log_dat.nodes(i).R0, beam.Rn(:, :, i), tol);
+%!     assert_simple(log_dat.nodes(i).X0, beam.Xn(:, i), tol);
+%!     assert_simple(log_dat.nodes(i).R0, beam.Rn(:, :, i), tol);
 %!   endfor
 %!   for i=1:numel(log_dat.beams3)
 %!     for j=1:3
-%!       assert(log_dat.beams3(i).nodes(j).label, int32(beam.beams(i).nidx(j)));
+%!       assert_simple(log_dat.beams3(i).nodes(j).label, int32(beam.beams(i).nidx(j)));
 %!     endfor
 %!   endfor
 %!   for i=1:numel(bodies)
-%!     assert(bodies(i).node, int32(i));
+%!     assert_simple(bodies(i).node, int32(i));
 %!   endfor
 %!   w = zeros(1, numel(deformation));
 %!   for i=1:numel(w)
@@ -782,7 +782,7 @@ endfunction
 %!     ylabel("w [m]");
 %!   endif
 %!   tol = 1e-2;
-%!   assert(w, wref, tol * max(abs(wref)));
+%!   assert_simple(w, wref, tol * max(abs(wref)));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -906,16 +906,16 @@ endfunction
 %!   bodies = mbdyn_post_load_log_body(fname);
 %!   tol = 1e-5;
 %!   for i=1:numel(log_dat.nodes)
-%!     assert(log_dat.nodes(i).X0, beam.Xn(:, i), tol);
-%!     assert(log_dat.nodes(i).R0, beam.Rn(:, :, i), tol);
+%!     assert_simple(log_dat.nodes(i).X0, beam.Xn(:, i), tol);
+%!     assert_simple(log_dat.nodes(i).R0, beam.Rn(:, :, i), tol);
 %!   endfor
 %!   for i=1:numel(log_dat.beams3)
 %!     for j=1:3
-%!       assert(log_dat.beams3(i).nodes(j).label, int32(beam.beams(i).nidx(j)));
+%!       assert_simple(log_dat.beams3(i).nodes(j).label, int32(beam.beams(i).nidx(j)));
 %!     endfor
 %!   endfor
 %!   for i=1:numel(bodies)
-%!     assert(bodies(i).node, int32(i));
+%!     assert_simple(bodies(i).node, int32(i));
 %!   endfor
 %!   Xn = [log_dat.nodes.X0];
 %!   Phin = atan2(Xn(2, :), -Xn(1, :));
@@ -929,11 +929,11 @@ endfunction
 %!     U(:, i) = deformation{i}(end, 1:3).';
 %!   endfor
 %!   tol = 1e-3;
-%!   assert(U, Uref, tol * norm(Uref));
+%!   assert_simple(U, Uref, tol * norm(Uref));
 %!   wref_1 = F * R^3 / (2 * E * Iz);
 %!   w_1 = deformation{end}(end, 1);
 %!   tol = 1e-3;
-%!   assert(w_1, wref_1, tol * max(abs(wref_1)));
+%!   assert_simple(w_1, wref_1, tol * max(abs(wref_1)));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -1045,16 +1045,16 @@ endfunction
 %!   bodies = mbdyn_post_load_log_body(fname);
 %!   tol = 1e-5;
 %!   for i=1:numel(log_dat.nodes)
-%!     assert(log_dat.nodes(i).X0, beam.Xn(:, i), tol);
-%!     assert(log_dat.nodes(i).R0, beam.Rn(:, :, i), tol);
+%!     assert_simple(log_dat.nodes(i).X0, beam.Xn(:, i), tol);
+%!     assert_simple(log_dat.nodes(i).R0, beam.Rn(:, :, i), tol);
 %!   endfor
 %!   for i=1:numel(log_dat.beams3)
 %!     for j=1:3
-%!       assert(log_dat.beams3(i).nodes(j).label, int32(beam.beams(i).nidx(j)));
+%!       assert_simple(log_dat.beams3(i).nodes(j).label, int32(beam.beams(i).nidx(j)));
 %!     endfor
 %!   endfor
 %!   for i=1:numel(bodies)
-%!     assert(bodies(i).node, int32(i));
+%!     assert_simple(bodies(i).node, int32(i));
 %!   endfor
 %!   w = zeros(1, numel(deformation));
 %!   for i=1:numel(w)
@@ -1077,7 +1077,7 @@ endfunction
 %!     ylabel("w [m]");
 %!   endif
 %!   tol = 1e-2;
-%!   assert(w, wref, tol * max(abs(wref)));
+%!   assert_simple(w, wref, tol * max(abs(wref)));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -1190,16 +1190,16 @@ endfunction
 %!   bodies = mbdyn_post_load_log_body(fname);
 %!   tol = 1e-5;
 %!   for i=1:numel(log_dat.nodes)
-%!     assert(log_dat.nodes(i).X0, beam.Xn(:, i), tol);
-%!     assert(log_dat.nodes(i).R0, beam.Rn(:, :, i), tol);
+%!     assert_simple(log_dat.nodes(i).X0, beam.Xn(:, i), tol);
+%!     assert_simple(log_dat.nodes(i).R0, beam.Rn(:, :, i), tol);
 %!   endfor
 %!   for i=1:numel(log_dat.beams3)
 %!     for j=1:3
-%!       assert(log_dat.beams3(i).nodes(j).label, int32(beam.beams(i).nidx(j)));
+%!       assert_simple(log_dat.beams3(i).nodes(j).label, int32(beam.beams(i).nidx(j)));
 %!     endfor
 %!   endfor
 %!   for i=1:numel(bodies)
-%!     assert(bodies(i).node, int32(i));
+%!     assert_simple(bodies(i).node, int32(i));
 %!   endfor
 %!   Xn = [log_dat.nodes.X0];
 %!   Phin = atan2(Xn(2, :), -Xn(1, :));
@@ -1213,11 +1213,11 @@ endfunction
 %!     U(:, i) = deformation{i}(end, 1:3).';
 %!   endfor
 %!   tol = 1e-3;
-%!   assert(U, Uref, tol * norm(Uref));
+%!   assert_simple(U, Uref, tol * norm(Uref));
 %!   wref_1 = F * R^3 / (2 * E * Iz);
 %!   w_1 = deformation{end}(end, 1);
 %!   tol = 1e-3;
-%!   assert(w_1, wref_1, tol * max(abs(wref_1)));
+%!   assert_simple(w_1, wref_1, tol * max(abs(wref_1)));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -1340,16 +1340,16 @@ endfunction
 %!   bodies = mbdyn_post_load_log_body(fname);
 %!   tol = 1e-5;
 %!   for i=1:numel(log_dat.nodes)
-%!     assert(log_dat.nodes(i).X0, beam.Xn(:, i), tol);
-%!     assert(log_dat.nodes(i).R0, beam.Rn(:, :, i), tol);
+%!     assert_simple(log_dat.nodes(i).X0, beam.Xn(:, i), tol);
+%!     assert_simple(log_dat.nodes(i).R0, beam.Rn(:, :, i), tol);
 %!   endfor
 %!   for i=1:numel(log_dat.beams3)
 %!     for j=1:3
-%!       assert(log_dat.beams3(i).nodes(j).label, int32(beam.beams(i).nidx(j)));
+%!       assert_simple(log_dat.beams3(i).nodes(j).label, int32(beam.beams(i).nidx(j)));
 %!     endfor
 %!   endfor
 %!   for i=1:numel(bodies)
-%!     assert(bodies(i).node, int32(i));
+%!     assert_simple(bodies(i).node, int32(i));
 %!   endfor
 %!   w = zeros(1, numel(deformation));
 %!   for i=1:numel(w)
@@ -1372,7 +1372,7 @@ endfunction
 %!     ylabel("w [m]");
 %!   endif
 %!   tol = 1e-2;
-%!   assert(w, wref, tol * max(abs(wref)));
+%!   assert_simple(w, wref, tol * max(abs(wref)));
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);

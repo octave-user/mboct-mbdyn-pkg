@@ -243,13 +243,13 @@ endfunction
 %!             fputs(fd, "         time step: 0.005 * t1;\n");
 %!             switch (autodiff{i})
 %!             case true
-%!               fputs(fd, "         linear solver: umfpack, grad, scale, iterative, always, max iterations, 50;\n");
+%!               fputs(fd, "         linear solver: umfpack, grad, pivot factor, 0.1, scale, iterative, always,  tolerance, 1e-12, max iterations, 100;\n");
 %!             otherwise
-%!               fputs(fd, "         linear solver: umfpack, map, scale, iterative, always, max iterations, 50;\n");
+%!               fputs(fd, "         linear solver: umfpack, map, pivot factor, 0.1, scale, iterative, always,  tolerance, 1e-12, max iterations, 100;\n");
 %!             endswitch
 %!             fputs(fd, "         method: implicit euler;\n");
 %!             fputs(fd, "         max iterations: 100;\n");
-%!             fputs(fd, "         tolerance: 1e-9, test, sepnorm, 1e-10, test, norm;\n");
+%!             fputs(fd, "         tolerance: 1e-9, test, sepnorm, 1e-14, test, norm;\n");
 %!             if (options.verbose)
 %!               fputs(fd, "         output: iterations, solver condition number, stat, yes;\n");
 %!             endif
@@ -258,8 +258,9 @@ endfunction
 %!             fputs(fd, "         derivatives coefficient: auto;\n");
 %!             fputs(fd, "         nonlinear solver: nox, modified, 30,\n");
 %!             fputs(fd, "             keep jacobian matrix,\n");
+%!             fputs(fd, "             use preconditioner as solver, yes,\n");
 %!             fputs(fd, "             inner iterations before assembly, 6,\n");
-%!             fputs(fd, "             jacobian operator, newton krylov,\n");
+%!             fputs(fd, "             jacobian operator, newton,\n");
 %!             fputs(fd, "             solver, line search based,\n");
 %!             fputs(fd, "             forcing term, type 2,\n");
 %!             fputs(fd, "             direction, newton,\n");
@@ -267,6 +268,7 @@ endfunction
 %!             fputs(fd, "             recovery step, 1e-6,\n");
 %!             fputs(fd, "             recovery step type, constant,\n");
 %!             fputs(fd, "             linear solver, gmres,\n");
+%!             fputs(fd, "             linear solver tolerance, 1e-12,\n");
 %!             fputs(fd, "             print convergence info, no,\n");
 %!             fputs(fd, "             linear solver max iterations, 12,\n");
 %!             fputs(fd, "             krylov subspace size, 12;\n");
@@ -371,12 +373,12 @@ endfunction
 %!                 fprintf(stderr, "%5.2f %3.2f%% %5.2f %3.2f%% %4.2f%% %4.2f%%\n", [f1(1:M).'; 100 * D1(1:M).'; f2(1:M).'; 100 * D2(1:M).'; 100 * df.'; 100 * dD.' / max(abs(D1ref(1:M))).']);
 %!               endif
 %!               try
-%!                 assert(max(abs(df)) < tolf);
-%!                 assert(max(abs(dD)) < tolD * max(abs(D1ref(1:M))));
-%!                 assert(max(max(abs(U1(:,1:3) - U2(:, 1:3)))) < tolU * max(max(abs(U2))));
+%!                 assert_simple(max(abs(df)) < tolf);
+%!                 assert_simple(max(abs(dD)) < tolD * max(abs(D1ref(1:M))));
+%!                 assert_simple(max(max(abs(U1(:,1:3) - U2(:, 1:3)))) < tolU * max(max(abs(U2))));
 %!                 for o=1:size(R1, 3)
-%!                   assert(max(max(max(abs(R1(:, :, o).' * R2(:, :, o) - eye(3))))) < tolR);
-%!                   assert(max(max(max(abs(R2(:, :, o).' * R1(:, :, o) - eye(3))))) < tolR);
+%!                   assert_simple(max(max(max(abs(R1(:, :, o).' * R2(:, :, o) - eye(3))))) < tolR);
+%!                   assert_simple(max(max(max(abs(R2(:, :, o).' * R1(:, :, o) - eye(3))))) < tolR);
 %!                 endfor
 %!               catch
 %!                 fprintf(stderr, "mbdyn_pre_beam_write_nodes:test1[%d, %d, %d, %d, %d, %d]:\n", i, j, k, l, m, n);

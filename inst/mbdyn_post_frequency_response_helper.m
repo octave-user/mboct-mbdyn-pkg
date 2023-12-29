@@ -26,17 +26,13 @@ function y = mbdyn_post_frequency_response_helper(i, df_dy, df_dy_dot, Tp, p, Tu
     print_usage();
   endif
 
-  if (columns(p) == 1)
-    b = -Tp.' * p;
-  else
-    b = -Tp.' * p(:, i); ## reduce memory usage: expand only one load vector per time
+  if (columns(p) > 1)
+    p = p(:, i); ## reduce memory usage: expand only one load vector per time
   endif
+
+  b = Tp.' * p;
 
   A = df_dy + 1j * omega(i) * df_dy_dot;
 
-  if (options.singular)
-    A = matrix_type(A, "singular");
-  endif
-
-  y = Tu * full(A \ b);
+  y = Tu * options.solver_func(A, b, options);
 endfunction

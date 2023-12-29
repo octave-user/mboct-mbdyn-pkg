@@ -159,7 +159,7 @@ jobs:
 
       - name: Install mboct-fem-pkg
         run: |
-           git clone -b assert_simple https://github.com/octave-user/mboct-fem-pkg.git
+           git clone -b master https://github.com/octave-user/mboct-fem-pkg.git
            pushd mboct-fem-pkg
            make CXXFLAGS="-Ofast -Wall -march=native" install_local
            pushd src

@@ -1113,7 +1113,7 @@ endfunction
 %!       fd = -1;
 %!     end_unwind_protect
 %!   unwind_protect_cleanup
-%!     if (numel(filename))
+%!     if (~isempty(filename))
 %!       fn = dir([filename, "*"]);
 %!       for i=1:numel(fn)
 %!         [~] = unlink(fullfile(fn(i).folder, fn(i).name));

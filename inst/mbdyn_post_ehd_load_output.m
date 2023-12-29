@@ -193,7 +193,9 @@ function bearings = mbdyn_post_ehd_load_output(mbdyn_filename, log_dat, options)
                                                                options.output_step);
 
         if (numel(bearing_data) > 0)
-          assert(bearing_label, log_dat.bearings(i).label);
+          if (~all(bearing_label == log_dat.bearings(i).label))
+            error("labels do not match");
+          endif
 
           if (length(options.output_index) == 0)
             options.output_index = 1:rows(bearing_data{1});

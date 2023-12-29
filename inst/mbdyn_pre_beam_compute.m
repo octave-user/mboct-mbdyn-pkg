@@ -145,8 +145,6 @@ function [e2, theta] = mbdyn_curved_beam_compute_e2(e1)
   e2 = [-sin(theta(3));
         cos(theta(3));
         0];
-
-  assert(abs(e2.' * e1) < sqrt(eps));
 endfunction
 
 function [X, R] = mbdyn_curved_beam_interpolation(beam, s)

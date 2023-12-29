@@ -163,7 +163,9 @@ function mode_index = mbdyn_post_eig_to_mov_file(input_file, output_filename_tem
           fprintf(fd_mov, "%d ", nodes(j).label);
 
           if (node_idx_modal(j) > 0)
-            assert(modal.labels(node_idx_modal(j)) == nodes(j).label);
+            if (~all(modal.labels(node_idx_modal(j)) == nodes(j).label))
+              error("labels do not match");
+            endif
             
             idx = modal.idx(node_idx_modal(j));                      
 

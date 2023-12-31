@@ -116,7 +116,7 @@ endfunction
 %! fd = -1;
 %! unwind_protect
 %!   unwind_protect
-%!     [fd, fname] = mkstemp(fullfile(tempdir(), "mbdyn_post_load_log_body_XXXXXX"));
+%!     [fd, fname] = mkstemp(fullfile(tempdir(), "oct-mbdyn_post_load_log_body_XXXXXX"));
 %!     if (fd == -1)
 %!       error("failed to open temporary file");
 %!     endif
@@ -211,7 +211,7 @@ endfunction
 %! fd = -1;
 %! unwind_protect
 %!   unwind_protect
-%!     [fd, fname] = mkstemp(fullfile(tempdir(), "mbdyn_post_load_log_body_XXXXXX"));
+%!     [fd, fname] = mkstemp(fullfile(tempdir(), "oct-mbdyn_post_load_log_body_XXXXXX"));
 %!     if (fd == -1)
 %!       error("failed to open temporary file");
 %!     endif
@@ -305,7 +305,7 @@ endfunction
 %! fd = -1;
 %! unwind_protect
 %!   unwind_protect
-%!     [fd, fname] = mkstemp(fullfile(tempdir(), "mbdyn_post_load_log_body_XXXXXX"));
+%!     [fd, fname] = mkstemp(fullfile(tempdir(), "oct-mbdyn_post_load_log_body_XXXXXX"));
 %!     if (fd == -1)
 %!       error("failed to open temporary file");
 %!     endif
@@ -388,7 +388,7 @@ endfunction
 %! fd = -1;
 %! unwind_protect
 %!   unwind_protect
-%!     [fd, fname] = mkstemp(fullfile(tempdir(), "mbdyn_post_load_log_body_XXXXXX"));
+%!     [fd, fname] = mkstemp(fullfile(tempdir(), "oct-mbdyn_post_load_log_body_XXXXXX"));
 %!     if (fd == -1)
 %!       error("failed to open temporary file");
 %!     endif

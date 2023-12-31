@@ -602,7 +602,7 @@ endfunction
 %! unwind_protect
 %!   unwind_protect
 %!     output_dir = tempdir();
-%!     [fd, output_file] = mkstemp(fullfile(output_dir, "mbdyn_post_ehd_load_output_XXXXXX"));
+%!     [fd, output_file] = mkstemp(fullfile(output_dir, "oct-mbdyn_post_ehd_load_output_XXXXXX"));
 %!     mbdyn_pre_write_param_file(fd, param);
 %!     fputs(fd, "set: integer node_id_rotor = 1001;\n");
 %!     fputs(fd, "set: integer node_id_stator = 1002;\n");
@@ -1056,7 +1056,7 @@ endfunction
 %! unwind_protect
 %!   unwind_protect
 %!     output_dir = tempdir();
-%!     [fd, output_file] = mkstemp(fullfile(output_dir, "mbdyn_post_ehd_load_output_XXXXXX"));
+%!     [fd, output_file] = mkstemp(fullfile(output_dir, "oct-mbdyn_post_ehd_load_output_XXXXXX"));
 %!     mbdyn_pre_write_param_file(fd, param);
 %!     fputs(fd, "set: integer node_id_rotor = 1001;\n");
 %!     fputs(fd, "set: integer node_id_stator = 1002;\n");
@@ -1513,7 +1513,7 @@ endfunction
 %! unwind_protect
 %!   unwind_protect
 %!     output_dir = tempdir();
-%!     [fd, output_file] = mkstemp(fullfile(output_dir, "mbdyn_post_ehd_load_output_XXXXXX"));
+%!     [fd, output_file] = mkstemp(fullfile(output_dir, "oct-mbdyn_post_ehd_load_output_XXXXXX"));
 %!     mbdyn_pre_write_param_file(fd, param);
 %!     fputs(fd, "set: integer node_id_rotor = 1001;\n");
 %!     fputs(fd, "set: integer node_id_stator = 1002;\n");
@@ -1958,7 +1958,7 @@ endfunction
 %! unwind_protect
 %!   unwind_protect
 %!     output_dir = tempdir();
-%!     [fd, output_file] = mkstemp(fullfile(output_dir, "mbdyn_post_ehd_load_output_XXXXXX"));
+%!     [fd, output_file] = mkstemp(fullfile(output_dir, "oct-mbdyn_post_ehd_load_output_XXXXXX"));
 %!     mbdyn_pre_write_param_file(fd, param);
 %!     fputs(fd, "set: integer node_id_rotor = 1001;\n");
 %!     fputs(fd, "set: integer node_id_stator = 1002;\n");
@@ -2354,7 +2354,7 @@ endfunction
 %! unwind_protect
 %!   unwind_protect
 %!     output_dir = tempdir();
-%!     [fd, output_file] = mkstemp(fullfile(output_dir, "mbdyn_post_ehd_load_output_XXXXXX"));
+%!     [fd, output_file] = mkstemp(fullfile(output_dir, "oct-mbdyn_post_ehd_load_output_XXXXXX"));
 %!     mbdyn_pre_write_param_file(fd, param);
 %!     fputs(fd, "set: integer node_id_rotor = 1001;\n");
 %!     fputs(fd, "set: integer node_id_stator = 1002;\n");
@@ -2711,7 +2711,7 @@ endfunction
 %! unwind_protect
 %!   unwind_protect
 %!     output_dir = tempdir();
-%!     [fd, output_file] = mkstemp(fullfile(output_dir, "mbdyn_post_ehd_load_output_XXXXXX"));
+%!     [fd, output_file] = mkstemp(fullfile(output_dir, "oct-mbdyn_post_ehd_load_output_XXXXXX"));
 %!     mbdyn_pre_write_param_file(fd, param);
 %!     fputs(fd, "set: integer node_id_rotor = 1001;\n");
 %!     fputs(fd, "set: integer node_id_stator = 1002;\n");
@@ -3069,7 +3069,7 @@ endfunction
 %! unwind_protect
 %!   unwind_protect
 %!     output_dir = tempdir();
-%!     [fd, output_file] = mkstemp(fullfile(output_dir, "mbdyn_post_ehd_load_output_XXXXXX"));
+%!     [fd, output_file] = mkstemp(fullfile(output_dir, "oct-mbdyn_post_ehd_load_output_XXXXXX"));
 %!     mbdyn_pre_write_param_file(fd, param);
 %!     fputs(fd, "set: integer node_id_rotor = 1001;\n");
 %!     fputs(fd, "set: integer node_id_stator = 1002;\n");
@@ -3505,7 +3505,7 @@ endfunction
 %! unwind_protect
 %!   unwind_protect
 %!     output_dir = tempdir();
-%!     [fd, output_file] = mkstemp(fullfile(output_dir, "mbdyn_post_ehd_load_output_XXXXXX"));
+%!     [fd, output_file] = mkstemp(fullfile(output_dir, "oct-mbdyn_post_ehd_load_output_XXXXXX"));
 %!     mbdyn_pre_write_param_file(fd, param);
 %!     fputs(fd, "set: integer node_id_rotor = 1001;\n");
 %!     fputs(fd, "set: integer node_id_stator = 1002;\n");

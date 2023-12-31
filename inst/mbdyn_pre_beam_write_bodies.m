@@ -181,7 +181,7 @@ endfunction
 %! param.rho = 7850;
 %! param.number_of_elements = 50;
 %! interpolation_points = 1000;
-%! [fd, input_file] = mkstemp(fullfile(tempdir(), "mbdyn_pre_beam_write_bodies_XXXXXX"));
+%! [fd, input_file] = mkstemp(fullfile(tempdir(), "oct-mbdyn_pre_beam_write_bodies_XXXXXX"));
 %! if (fd == -1)
 %!   error("failed to open temporary file");
 %! endif
@@ -415,7 +415,7 @@ endfunction
 %! param.rho = 7850;
 %! param.number_of_elements = 50;
 %! interpolation_points = 1000;
-%! [fd, input_file] = mkstemp(fullfile(tempdir(), "mbdyn_pre_beam_write_bodies_XXXXXX"));
+%! [fd, input_file] = mkstemp(fullfile(tempdir(), "oct-mbdyn_pre_beam_write_bodies_XXXXXX"));
 %! if (fd == -1)
 %!   error("failed to open temporary file");
 %! endif
@@ -648,7 +648,7 @@ endfunction
 %! param.rho = 7850;
 %! param.number_of_elements = 50;
 %! interpolation_points = 1000;
-%! [fd, input_file] = mkstemp(fullfile(tempdir(), "mbdyn_pre_beam_write_bodies_XXXXXX"));
+%! [fd, input_file] = mkstemp(fullfile(tempdir(), "oct-mbdyn_pre_beam_write_bodies_XXXXXX"));
 %! if (fd == -1)
 %!   error("failed to open temporary file");
 %! endif
@@ -871,7 +871,7 @@ endfunction
 %! param.number_of_elements = 50;
 %! interpolation_points = 10;
 %! unwind_protect
-%! [fd, input_file] = mkstemp(fullfile(tempdir(), "mbdyn_pre_beam_write_bodies_XXXXXX"));
+%! [fd, input_file] = mkstemp(fullfile(tempdir(), "oct-mbdyn_pre_beam_write_bodies_XXXXXX"));
 %! if (fd == -1)
 %!   error("failed to open temporary file");
 %! endif

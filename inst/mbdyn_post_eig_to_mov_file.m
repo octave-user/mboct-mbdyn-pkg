@@ -289,7 +289,7 @@ endfunction
 %!     s2 = 1000;
 %!     m2 = 3;
 %!     d2 = 20;
-%!     [fd, fname] = mkstemp(fullfile(tempdir(), "mbdyn_eig_to_mov_file_XXXXXX"));
+%!     [fd, fname] = mkstemp(fullfile(tempdir(), "oct-mbdyn_eig_to_mov_file_XXXXXX"));
 %!     if (fd == -1)
 %!       error("failed to open temporary file");
 %!     endif
@@ -405,7 +405,7 @@ endfunction
 %!     s2 = 1000;
 %!     m2 = 3;
 %!     d2 = 20;
-%!     [fd, fname] = mkstemp(fullfile(tempdir(), "mbdyn_eig_to_mov_file_XXXXXX"));
+%!     [fd, fname] = mkstemp(fullfile(tempdir(), "oct-mbdyn_eig_to_mov_file_XXXXXX"));
 %!     if (fd == -1)
 %!       error("failed to open temporary file");
 %!     endif
@@ -520,7 +520,7 @@ endfunction
 %!     s2 = 1000;
 %!     m2 = 3;
 %!     d2 = 20;
-%!     [fd, fname] = mkstemp(fullfile(tempdir(), "mbdyn_eig_to_mov_file_XXXXXX"));
+%!     [fd, fname] = mkstemp(fullfile(tempdir(), "oct-mbdyn_eig_to_mov_file_XXXXXX"));
 %!     if (fd == -1)
 %!       error("failed to open temporary file");
 %!     endif
@@ -624,7 +624,7 @@ endfunction
 %!     s2 = 1000;
 %!     m2 = 3;
 %!     d2 = 20;
-%!     [fd, fname] = mkstemp(fullfile(tempdir(), "mbdyn_eig_to_mov_file_XXXXXX"));
+%!     [fd, fname] = mkstemp(fullfile(tempdir(), "oct-mbdyn_eig_to_mov_file_XXXXXX"));
 %!     if (fd == -1)
 %!       error("failed to open temporary file");
 %!     endif

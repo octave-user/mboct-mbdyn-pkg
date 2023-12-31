@@ -190,6 +190,7 @@ endfunction
 %! solvers = {"lapack", "arpack"};
 %! cpu.total = zeros(1, numel(autodiff));
 %! res = cell(numel(autodiff), numel(damping), numel(offset), numel(orientation), numel(balance), numel(solvers));
+%! fd = -1;
 %! unwind_protect
 %!   for i=1:numel(autodiff)
 %!     for j=1:numel(damping)
@@ -211,7 +212,7 @@ endfunction
 %!           endswitch
 %!           fd = -1;
 %!           unwind_protect
-%!             [fd, fname] = mkstemp(fullfile(tempdir(), "mbdyn_pre_beam_write_beams_XXXXXX"));
+%!             [fd, fname] = mkstemp(fullfile(tempdir(), "oct-mbdyn_pre_beam_write_beams_XXXXXX"));
 %!             if (fd == -1)
 %!               error("failed to open temporary file");
 %!             endif

@@ -675,7 +675,7 @@ endfunction
 %! mbdyn_pre_beam_plot(beam,struct("Rn",true, "Rg",false, "s",param.shape.d));
 %! fd = -1;
 %! unwind_protect
-%! [fd, fname] = mkstemp(fullfile(tempdir(), "mbdyn_pre_beam_helical_shape_XXXXXX"), true);
+%! [fd, fname] = mkstemp(fullfile(tempdir(), "oct-mbdyn_pre_beam_helical_shape_XXXXXX"), true);
 %! mbdyn_pre_beam_print_nodes(beam, fd);
 %! unwind_protect_cleanup
 %! fclose(fd);

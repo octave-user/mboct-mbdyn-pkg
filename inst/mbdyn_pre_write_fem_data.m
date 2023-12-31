@@ -387,7 +387,7 @@ endfunction
 %! for i=1:numel(omega1)
 %!   unwind_protect
 %!     unwind_protect
-%!       [fd, fname1] = mkstemp(fullfile(tempdir(), "mbdyn_pre_write_fem_data1_XXXXXX"));
+%!       [fd, fname1] = mkstemp(fullfile(tempdir(), "oct-mbdyn_pre_write_fem_data1_XXXXXX"));
 %!       if (fd == -1)
 %!         error("failed to open temporary file");
 %!       endif
@@ -483,7 +483,7 @@ endfunction
 %!   fd = -1;
 %!   unwind_protect
 %!     unwind_protect
-%!       [fd, fname2] = mkstemp(fullfile(tempdir(), "mbdyn_pre_write_fem_data2_XXXXXX"));
+%!       [fd, fname2] = mkstemp(fullfile(tempdir(), "oct-mbdyn_pre_write_fem_data2_XXXXXX"));
 %!       if (fd == -1)
 %!         error("failed to open temporary file");
 %!       endif
@@ -597,7 +597,7 @@ endfunction
 %!   fd = -1;
 %!   unwind_protect
 %!     unwind_protect
-%!       [fd, fname3] = mkstemp(fullfile(tempdir(), "mbdyn_pre_write_fem_data3_XXXXXX"));
+%!       [fd, fname3] = mkstemp(fullfile(tempdir(), "oct-mbdyn_pre_write_fem_data3_XXXXXX"));
 %!       if (fd == -1)
 %!         error("failed to open temporary file");
 %!       endif
@@ -739,7 +739,7 @@ endfunction
 %! for i=1:numel(omega1)
 %!   unwind_protect
 %!     unwind_protect
-%!       [fd, fname1] = mkstemp(fullfile(tempdir(), "mbdyn_pre_write_fem_data1_XXXXXX"));
+%!       [fd, fname1] = mkstemp(fullfile(tempdir(), "oct-mbdyn_pre_write_fem_data1_XXXXXX"));
 %!       if (fd == -1)
 %!         error("failed to open temporary file");
 %!       endif
@@ -835,7 +835,7 @@ endfunction
 %!   fd = -1;
 %!   unwind_protect
 %!     unwind_protect
-%!       [fd, fname2] = mkstemp(fullfile(tempdir(), "mbdyn_pre_write_fem_data2_XXXXXX"));
+%!       [fd, fname2] = mkstemp(fullfile(tempdir(), "oct-mbdyn_pre_write_fem_data2_XXXXXX"));
 %!       if (fd == -1)
 %!         error("failed to open temporary file");
 %!       endif
@@ -949,7 +949,7 @@ endfunction
 %!   fd = -1;
 %!   unwind_protect
 %!     unwind_protect
-%!       [fd, fname3] = mkstemp(fullfile(tempdir(), "mbdyn_pre_write_fem_data3_XXXXXX"));
+%!       [fd, fname3] = mkstemp(fullfile(tempdir(), "oct-mbdyn_pre_write_fem_data3_XXXXXX"));
 %!       if (fd == -1)
 %!         error("failed to open temporary file");
 %!       endif
@@ -1091,7 +1091,7 @@ endfunction
 %! for i=1:numel(omega1)
 %!   unwind_protect
 %!     unwind_protect
-%!       [fd, fname1] = mkstemp(fullfile(tempdir(), "mbdyn_pre_write_fem_data1_XXXXXX"));
+%!       [fd, fname1] = mkstemp(fullfile(tempdir(), "oct-mbdyn_pre_write_fem_data1_XXXXXX"));
 %!       if (fd == -1)
 %!         error("failed to open temporary file");
 %!       endif
@@ -1187,7 +1187,7 @@ endfunction
 %!   fd = -1;
 %!   unwind_protect
 %!     unwind_protect
-%!       [fd, fname2] = mkstemp(fullfile(tempdir(), "mbdyn_pre_write_fem_data2_XXXXXX"));
+%!       [fd, fname2] = mkstemp(fullfile(tempdir(), "oct-mbdyn_pre_write_fem_data2_XXXXXX"));
 %!       if (fd == -1)
 %!         error("failed to open temporary file");
 %!       endif
@@ -1301,7 +1301,7 @@ endfunction
 %!   fd = -1;
 %!   unwind_protect
 %!     unwind_protect
-%!       [fd, fname3] = mkstemp(fullfile(tempdir(), "mbdyn_pre_write_fem_data3_XXXXXX"));
+%!       [fd, fname3] = mkstemp(fullfile(tempdir(), "oct-mbdyn_pre_write_fem_data3_XXXXXX"));
 %!       if (fd == -1)
 %!         error("failed to open temporary file");
 %!       endif

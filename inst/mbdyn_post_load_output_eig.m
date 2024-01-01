@@ -806,8 +806,8 @@ endfunction
 %!     fputs(fd, "         derivatives coefficient: 1e-9, auto;\n");
 %!     fputs(fd, "         output: iterations, cpu time, solver condition number, stat, yes;\n");
 %!     fputs(fd, "    nonlinear solver: nox, modified, 100, keep jacobian matrix, jacobian operator, newton krylov, forcing term, type 2, forcing term min tolerance, 1e-10, forcing term max tolerance, 1e-6, inner iterations before assembly, 30, linear solver max iterations, 60, verbose, 3;\n");
-%!     fputs(fd, "    threads: assembly, 4;\n");
-%!     fputs(fd, "    threads: solver, 4;\n");
+%!     fprintf(fd, "    threads: assembly, %d;\n", mbdyn_solver_num_threads_default());
+%!     fprintf(fd, "    threads: solver, %d;\n", mbdyn_solver_num_threads_default());
 %!     fputs(fd, "    eigenanalysis: list, 1, 0.,\n");
 %!     fputs(fd, "    output eigenvectors,\n");
 %!     fputs(fd, "        output geometry,\n");

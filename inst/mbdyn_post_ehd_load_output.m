@@ -4154,7 +4154,7 @@ endfunction
 
 %!   cms_opt.invariants = true;
 %!   cms_opt.refine_max_iter = int32(0);
-%!   cms_opt.number_of_threads = int32(4);
+%!   cms_opt.number_of_threads = mbdyn_solver_num_threads_default();
 %!   cms_opt.verbose = false;
 %!   cms_opt.modes.number = 0;
 %!   cms_opt.element.name = "elem_id_diaphragm_cms";

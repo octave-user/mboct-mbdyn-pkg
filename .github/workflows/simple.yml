@@ -41,6 +41,7 @@ jobs:
         run: |
            hg clone https://www.octave.org/hg/octave octave
            pushd octave
+           ## FIXME: Octave version 9.1.0 will fail because of this issue: https://savannah.gnu.org/bugs/?63467
            hg checkout release-8-4-0
            popd
 
@@ -178,6 +179,7 @@ jobs:
 
       - name: Run all tests
         run: |
+             export MBD_NUM_THREADS=`awk -F ':' 'BEGIN{cores=-1;}/^cpu cores\>/{cores=strtonum($2);}END {print cores;}' /proc/cpuinfo`
              /usr/bin/time --verbose --output fntests.tm make -C $GITHUB_WORKSPACE check_installed >& fntests.out
              cat ${GITHUB_WORKSPACE}/fntests.out
              cat ${GITHUB_WORKSPACE}/fntests.log

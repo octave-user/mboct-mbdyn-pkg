@@ -90,7 +90,7 @@ endfunction
 %! cms_opt.element.name = "elem_id_disk";
 %! cms_opt.nodes.modal.name = "node_id_inner_diameter";
 %! cms_opt.nodes.interfaces(1).name = "node_id_outer_diameter";
-%! cms_opt.number_of_threads = int32(4);
+%! cms_opt.number_of_threads = mbdyn_solver_num_threads_default();
 %! cms_opt.verbose = false;
 
 %! ## It is very important to have at least one mode shape which accounts for centrifugal loads!

@@ -773,8 +773,8 @@ endfunction
 %!     fputs(fd, "    initial time: 0;\n");
 %!     fputs(fd, "    final time: t1;\n");
 %!     fputs(fd, "    time step: t1 / N;\n");
-%!     fputs(fd, "         threads: assembly, 4;\n");
-%!     fputs(fd, "         threads: solver, 4;\n");
+%!     fprintf(fd, "    threads: assembly, %d;\n", mbdyn_solver_num_threads_default());
+%!     fprintf(fd, "    threads: solver, %d;\n", mbdyn_solver_num_threads_default());
 %!     fputs(fd, "    max iterations: 10000;\n");
 %!     fputs(fd, "    tolerance: 1.e-6, test, norm, 1e-6, test, norm;\n");
 %!     fputs(fd, "    linear solver: umfpack, grad, scale, iterative, always, max iterations, 0;\n");
@@ -888,7 +888,7 @@ endfunction
 %! endfor
 
 %!test
-%! ## TEST 6
+%! ## TEST 2
 %! ## torsion-tension coupling effect of an incompressible cylinder
 %! ## Viskoelastisches Materialverhalten von Elastomerwerkstoffen
 %! ## Experimentelle Untersuchung und Modellbildung
@@ -1013,8 +1013,8 @@ endfunction
 %!     fputs(fd, "    min time step: t1 / N / 100;\n");
 %!     fputs(fd, "    max time step: t1 / N;\n");
 %!     fputs(fd, " strategy: factor, 0.8, 1, 1.25, 3, 5, 10;\n");
-%!     fputs(fd, "         threads: assembly, 2;\n");
-%!     fputs(fd, "         threads: solver, 2;\n");
+%!     fprintf(fd, "    threads: assembly, %d;\n", mbdyn_solver_num_threads_default());
+%!     fprintf(fd, "    threads: solver, %d;\n", mbdyn_solver_num_threads_default());
 %!     fputs(fd, "    max iterations: 10000;\n");
 %!     fputs(fd, "    tolerance: 1.e-3, test, norm, 1e-3, test, norm;\n");
 %!     fputs(fd, "    linear solver: umfpack, grad, scale, iterative, always, max iterations, 0;\n");
@@ -1140,7 +1140,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
-%! ## TEST 7
+%! ## TEST 3
 %! ## torsion-tension coupling effect of an incompressible cylinder
 %! ## Viskoelastisches Materialverhalten von Elastomerwerkstoffen
 %! ## Experimentelle Untersuchung und Modellbildung
@@ -1260,8 +1260,8 @@ endfunction
 %!     fputs(fd, "    min time step: t1 / N / 100;\n");
 %!     fputs(fd, "    max time step: t1 / N;\n");
 %!     fputs(fd, " strategy: factor, 0.8, 1, 1.25, 3, 5, 10;\n");
-%!     fputs(fd, "         threads: assembly, 2;\n");
-%!     fputs(fd, "         threads: solver, 2;\n");
+%!     fprintf(fd, "    threads: assembly, %d;\n", mbdyn_solver_num_threads_default());
+%!     fprintf(fd, "    threads: solver, %d;\n", mbdyn_solver_num_threads_default());
 %!     fputs(fd, "    max iterations: 10000;\n");
 %!     fputs(fd, "    tolerance: 1.e-3, test, norm, 1e-3, test, norm;\n");
 %!     fputs(fd, "    linear solver: umfpack, grad, scale, iterative, always, max iterations, 0;\n");
@@ -1387,7 +1387,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
-%! ## TEST 8
+%! ## TEST 4
 %! ## torsion-tension coupling effect of an incompressible cylinder
 %! ## Viskoelastisches Materialverhalten von Elastomerwerkstoffen
 %! ## Experimentelle Untersuchung und Modellbildung
@@ -1517,8 +1517,8 @@ endfunction
 %!     fputs(fd, "    min time step: t1 / N / 100;\n");
 %!     fputs(fd, "    max time step: t1 / N;\n");
 %!     fputs(fd, " strategy: factor, 0.8, 1, 1.25, 3, 5, 10;\n");
-%!     fputs(fd, "         threads: assembly, 2;\n");
-%!     fputs(fd, "         threads: solver, 2;\n");
+%!     fprintf(fd, "    threads: assembly, %d;\n", mbdyn_solver_num_threads_default());
+%!     fprintf(fd, "    threads: solver, %d;\n", mbdyn_solver_num_threads_default());
 %!     fputs(fd, "    max iterations: 10000;\n");
 %!     fputs(fd, "    tolerance: 1.e-3, test, norm, 1e-3, test, norm;\n");
 %!     fputs(fd, "    linear solver: umfpack, grad, scale, iterative, always, max iterations, 0;\n");
@@ -1644,7 +1644,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
-%! ## TEST 9
+%! ## TEST 5
 %! ## torsion-tension coupling effect of an incompressible cylinder
 %! ## Viskoelastisches Materialverhalten von Elastomerwerkstoffen
 %! ## Experimentelle Untersuchung und Modellbildung
@@ -1769,8 +1769,8 @@ endfunction
 %!     fputs(fd, "    min time step: t1 / N / 100;\n");
 %!     fputs(fd, "    max time step: t1 / N;\n");
 %!     fputs(fd, " strategy: factor, 0.8, 1, 1.25, 3, 5, 10;\n");
-%!     fputs(fd, "         threads: assembly, 2;\n");
-%!     fputs(fd, "         threads: solver, 2;\n");
+%!     fprintf(fd, "    threads: assembly, %d;\n", mbdyn_solver_num_threads_default());
+%!     fprintf(fd, "    threads: solver, %d;\n", mbdyn_solver_num_threads_default());
 %!     fputs(fd, "    max iterations: 10000;\n");
 %!     fputs(fd, "    tolerance: 1.e-3, test, norm, 1e-3, test, norm;\n");
 %!     fputs(fd, "    linear solver: umfpack, grad, scale, iterative, always, max iterations, 0;\n");
@@ -1896,7 +1896,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
-%! ## TEST 10
+%! ## TEST 6
 %! close all;
 %! pkg load mboct-fem-pkg;
 %! ## Define the unit system
@@ -2055,8 +2055,8 @@ endfunction
 %!     fputs(fd, "         derivatives coefficient: 1e-9, auto;\n");
 %!     fputs(fd, "         output: iterations, cpu time, solver condition number, stat, yes;\n");
 %!     fputs(fd, "    nonlinear solver: mcp newton min fb;\n");
-%!     fputs(fd, "         threads: assembly, 2;\n");
-%!     fputs(fd, "         threads: solver, 2;\n");
+%!     fprintf(fd, "    threads: assembly, %d;\n", mbdyn_solver_num_threads_default());
+%!     fprintf(fd, "    threads: solver, %d;\n", mbdyn_solver_num_threads_default());
 %!     fputs(fd, " end: initial value;\n");
 %!     fputs(fd, " begin: control data;\n");
 %!     fputs(fd, "    #output meter: closest next, 0., forever, t1 / 100;\n");
@@ -2183,7 +2183,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
-%! ## TEST 11
+%! ## TEST 7
 %! close all;
 %! pkg load mboct-fem-pkg;
 %! ## Define the unit system
@@ -2343,8 +2343,8 @@ endfunction
 %!     fputs(fd, "         derivatives coefficient: 1e-9, auto;\n");
 %!     fputs(fd, "         output: iterations, cpu time, solver condition number, stat, yes;\n");
 %!     fputs(fd, "    nonlinear solver: mcp newton min fb;\n");
-%!     fputs(fd, "         threads: assembly, 2;\n");
-%!     fputs(fd, "         threads: solver, 2;\n");
+%!     fprintf(fd, "    threads: assembly, %d;\n", mbdyn_solver_num_threads_default());
+%!     fprintf(fd, "    threads: solver, %d;\n", mbdyn_solver_num_threads_default());
 %!     fputs(fd, " end: initial value;\n");
 %!     fputs(fd, " begin: control data;\n");
 %!     fputs(fd, "    #output meter: closest next, 0., forever, t1 / 100;\n");
@@ -2471,7 +2471,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
-%! ## TEST 12
+%! ## TEST 8
 %! ## torsion-tension coupling effect of an incompressible cylinder
 %! ## Viskoelastisches Materialverhalten von Elastomerwerkstoffen
 %! ## Experimentelle Untersuchung und Modellbildung
@@ -2600,8 +2600,8 @@ endfunction
 %!     fputs(fd, "    min time step: t1 / N / 100;\n");
 %!     fputs(fd, "    max time step: t1 / N;\n");
 %!     fputs(fd, " strategy: factor, 0.8, 1, 1.25, 3, 5, 10;\n");
-%!     fputs(fd, "         threads: assembly, 2;\n");
-%!     fputs(fd, "         threads: solver, 2;\n");
+%!     fprintf(fd, "    threads: assembly, %d;\n", mbdyn_solver_num_threads_default());
+%!     fprintf(fd, "    threads: solver, %d;\n", mbdyn_solver_num_threads_default());
 %!     fputs(fd, "    max iterations: 10000;\n");
 %!     fputs(fd, "    tolerance: 1.e-3, test, norm, 1e-3, test, norm;\n");
 %!     fputs(fd, "    linear solver: umfpack, grad, scale, iterative, always, max iterations, 0;\n");
@@ -2727,7 +2727,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
-%! ## TEST 13
+%! ## TEST 9
 %! ## torsion-tension coupling effect of an incompressible cylinder
 %! ## Viskoelastisches Materialverhalten von Elastomerwerkstoffen
 %! ## Experimentelle Untersuchung und Modellbildung
@@ -2855,8 +2855,8 @@ endfunction
 %!     fputs(fd, "    min time step: t1 / N / 100;\n");
 %!     fputs(fd, "    max time step: t1 / N;\n");
 %!     fputs(fd, " strategy: factor, 0.8, 1, 1.25, 3, 5, 10;\n");
-%!     fputs(fd, "         threads: assembly, 2;\n");
-%!     fputs(fd, "         threads: solver, 2;\n");
+%!     fprintf(fd, "    threads: assembly, %d;\n", mbdyn_solver_num_threads_default());
+%!     fprintf(fd, "    threads: solver, %d;\n", mbdyn_solver_num_threads_default());
 %!     fputs(fd, "    max iterations: 10000;\n");
 %!     fputs(fd, "    tolerance: 1.e-3, test, norm, 1e-3, test, norm;\n");
 %!     fputs(fd, "    linear solver: umfpack, grad, scale, iterative, always, max iterations, 0;\n");
@@ -2982,7 +2982,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
-%! ## TEST 14
+%! ## TEST 10
 %! ## torsion-tension coupling effect of an incompressible cylinder
 %! ## Viskoelastisches Materialverhalten von Elastomerwerkstoffen
 %! ## Experimentelle Untersuchung und Modellbildung
@@ -3111,8 +3111,8 @@ endfunction
 %!     fputs(fd, "    min time step: t1 / N / 100;\n");
 %!     fputs(fd, "    max time step: t1 / N;\n");
 %!     fputs(fd, " strategy: factor, 0.8, 1, 1.25, 3, 5, 10;\n");
-%!     fputs(fd, "         threads: assembly, 2;\n");
-%!     fputs(fd, "         threads: solver, 2;\n");
+%!     fprintf(fd, "    threads: assembly, %d;\n", mbdyn_solver_num_threads_default());
+%!     fprintf(fd, "    threads: solver, %d;\n", mbdyn_solver_num_threads_default());
 %!     fputs(fd, "    max iterations: 10000;\n");
 %!     fputs(fd, "    tolerance: 1.e-3, test, norm, 1e-3, test, norm;\n");
 %!     fputs(fd, "    linear solver: umfpack, grad, scale, iterative, always, max iterations, 0;\n");
@@ -3238,7 +3238,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
-%! ## TEST 15
+%! ## TEST 11
 %! ## torsion-tension coupling effect of an incompressible cylinder
 %! ## Viskoelastisches Materialverhalten von Elastomerwerkstoffen
 %! ## Experimentelle Untersuchung und Modellbildung
@@ -3372,8 +3372,8 @@ endfunction
 %!     fputs(fd, "    min time step: t1 / N / 100;\n");
 %!     fputs(fd, "    max time step: t1 / N;\n");
 %!     fputs(fd, " strategy: factor, 0.8, 1, 1.25, 3, 5, 10;\n");
-%!     fputs(fd, "         threads: assembly, 2;\n");
-%!     fputs(fd, "         threads: solver, 2;\n");
+%!     fprintf(fd, "    threads: assembly, %d;\n", mbdyn_solver_num_threads_default());
+%!     fprintf(fd, "    threads: solver, %d;\n", mbdyn_solver_num_threads_default());
 %!     fputs(fd, "    max iterations: 10000;\n");
 %!     fputs(fd, "    tolerance: 1.e-3, test, norm, 1e-3, test, norm;\n");
 %!     fputs(fd, "    linear solver: umfpack, grad, scale, iterative, always, max iterations, 0;\n");
@@ -3499,7 +3499,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
-%! ## TEST 19
+%! ## TEST 12
 %! ## torsion-tension coupling effect of an incompressible cylinder
 %! ## Viskoelastisches Materialverhalten von Elastomerwerkstoffen
 %! ## Experimentelle Untersuchung und Modellbildung
@@ -3630,8 +3630,8 @@ endfunction
 %!     fputs(fd, "    min time step: t1 / N / 100;\n");
 %!     fputs(fd, "    max time step: t1 / N;\n");
 %!     fputs(fd, " strategy: factor, 0.8, 1, 1.25, 3, 5, 10;\n");
-%!     fputs(fd, "         threads: assembly, 2;\n");
-%!     fputs(fd, "         threads: solver, 2;\n");
+%!     fprintf(fd, "    threads: assembly, %d;\n", mbdyn_solver_num_threads_default());
+%!     fprintf(fd, "    threads: solver, %d;\n", mbdyn_solver_num_threads_default());
 %!     fputs(fd, "    max iterations: 10000;\n");
 %!     fputs(fd, "    tolerance: 1.e-6, test, norm, 1e-6, test, norm;\n");
 %!     fputs(fd, "    linear solver: umfpack, grad, scale, iterative, always, max iterations, 0;\n");
@@ -3763,7 +3763,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
-%! ## TEST 18
+%! ## TEST 13
 %! ## torsion-tension coupling effect of an incompressible cylinder
 %! ## Viskoelastisches Materialverhalten von Elastomerwerkstoffen
 %! ## Experimentelle Untersuchung und Modellbildung
@@ -3882,7 +3882,7 @@ endfunction
 %!       error("failed to open file \"%s\"", mbdyn_file);
 %!     endif
 %!     fprintf(fd, " set: real t1 = %g;\n", 1 / SI_unit_second);
-%!     fputs(fd, " set: real N = 40;\n");
+%!     fputs(fd, " set: real N = 60;\n");
 %!     fputs(fd, " begin: data;\n");
 %!     fputs(fd, "    problem: initial value; # the default\n");
 %!     fputs(fd, " end: data;\n");
@@ -3890,20 +3890,21 @@ endfunction
 %!     fputs(fd, "    initial time: 0;\n");
 %!     fputs(fd, "    final time: t1;\n");
 %!     fputs(fd, "    time step: t1 / N;\n");
-%!     fputs(fd, "    min time step: t1 / N / 100;\n");
+%!     fputs(fd, "    min time step: t1 / N;\n");
 %!     fputs(fd, "    max time step: t1 / N;\n");
 %!     fputs(fd, " strategy: factor, 0.8, 1, 1.25, 3, 5, 10;\n");
-%!     fputs(fd, "         threads: assembly, 2;\n");
-%!     fputs(fd, "         threads: solver, 2;\n");
+%!     fprintf(fd, "    threads: assembly, %d;\n", mbdyn_solver_num_threads_default());
+%!     fprintf(fd, "    threads: solver, %d;\n", mbdyn_solver_num_threads_default());
 %!     fputs(fd, "    max iterations: 10000;\n");
 %!     fputs(fd, "    tolerance: 1.e-6, test, norm, 1e-6, test, norm;\n");
-%!     fputs(fd, "    linear solver: umfpack, grad, scale, iterative, always, max iterations, 0;\n");
+%!     ## Use Pardiso because of ill conditioned Jacobian matrix
+%!     fputs(fd, "    linear solver: pardiso, grad, max iterations, 100, verbose, 0;\n");
 %!     fputs(fd, "    method: implicit euler;\n");
 %!     fputs(fd, "         derivatives tolerance: 1e-4;\n");
 %!     fputs(fd, "         derivatives max iterations: 10;\n");
 %!     fputs(fd, "         derivatives coefficient: 1e-9, auto;\n");
 %!     fputs(fd, "         output: iterations, cpu time, solver condition number, stat, yes;\n");
-%!     fputs(fd, "    nonlinear solver: nox, modified, 100, keep jacobian matrix, jacobian operator, newton krylov, forcing term, type 2, forcing term min tolerance, 1e-10, forcing term max tolerance, 1e-6, inner iterations before assembly, 30;\n");
+%!     fputs(fd, "      nonlinear solver: linesearch, modified, 0, default solver options, heavy nonlinear;\n");
 %!     fputs(fd, " end: initial value;\n");
 %!     fputs(fd, " begin: control data;\n");
 %!     fputs(fd, "    model: static;\n");
@@ -4011,7 +4012,7 @@ endfunction
 %!     title("torque versus twist");
 %!     grid minor on;
 %!   endif
-%!   tol = 5e-3;
+%!   tol = 1e-2;
 %!   assert_simple(N, Nref, tol * norm(Nref));
 %!   assert_simple(M, Mref, tol * norm(Mref));
 %! unwind_protect_cleanup
@@ -4026,7 +4027,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
-%! ## TEST 17
+%! ## TEST 14
 %! ## torsion-tension coupling effect of an incompressible cylinder
 %! ## Viskoelastisches Materialverhalten von Elastomerwerkstoffen
 %! ## Experimentelle Untersuchung und Modellbildung
@@ -4157,8 +4158,8 @@ endfunction
 %!     fputs(fd, "    min time step: t1 / N / 100;\n");
 %!     fputs(fd, "    max time step: t1 / N;\n");
 %!     fputs(fd, " strategy: factor, 0.8, 1, 1.25, 3, 5, 10;\n");
-%!     fputs(fd, "         threads: assembly, 2;\n");
-%!     fputs(fd, "         threads: solver, 2;\n");
+%!     fprintf(fd, "    threads: assembly, %d;\n", mbdyn_solver_num_threads_default());
+%!     fprintf(fd, "    threads: solver, %d;\n", mbdyn_solver_num_threads_default());
 %!     fputs(fd, "    max iterations: 10000;\n");
 %!     fputs(fd, "    tolerance: 1.e-6, test, norm, 1e-6, test, norm;\n");
 %!     fputs(fd, "    linear solver: umfpack, grad, scale, iterative, always, max iterations, 0;\n");
@@ -4290,7 +4291,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
-%! ## TEST 16
+%! ## TEST 15
 %! close all;
 %! pkg load mboct-fem-pkg;
 %! ## Define the unit system
@@ -4450,8 +4451,8 @@ endfunction
 %!     fputs(fd, "         derivatives coefficient: 1e-9, auto;\n");
 %!     fputs(fd, "         output: iterations, cpu time, solver condition number, stat, yes;\n");
 %!     fputs(fd, "    nonlinear solver: mcp newton min fb;\n");
-%!     fputs(fd, "         threads: assembly, 2;\n");
-%!     fputs(fd, "         threads: solver, 2;\n");
+%!     fprintf(fd, "    threads: assembly, %d;\n", mbdyn_solver_num_threads_default());
+%!     fprintf(fd, "    threads: solver, %d;\n", mbdyn_solver_num_threads_default());
 %!     fputs(fd, " end: initial value;\n");
 %!     fputs(fd, " begin: control data;\n");
 %!     fputs(fd, "    #output meter: closest next, 0., forever, t1 / 100;\n");

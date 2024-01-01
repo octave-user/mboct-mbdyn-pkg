@@ -1433,7 +1433,7 @@ endfunction
 %!   options.plot = true;
 %!   options.verbose = false;
 %!   options.number_of_beams = int32(40);
-%!   options.number_of_threads = int32(2);
+%!   options.number_of_threads = mbdyn_solver_num_threads_default();
 %!   if (options.plot)
 %!     close all;
 %!   endif
@@ -2430,7 +2430,7 @@ endfunction
 %!                      param.OMEGAy;
 %!                      param.OMEGAz];
 %!   dof_map = fem_ass_dof_map(mesh, load_case_dof);
-%!   dof_map.parallel.threads_ass = int32(2);
+%!   dof_map.parallel.threads_ass = mbdyn_solver_num_threads_default();
 %!   [mat_ass.M, ...
 %!    mat_ass.Mdiag, ...
 %!    mat_ass.K, ...
@@ -2459,7 +2459,7 @@ endfunction
 %!   opt_solver.pre_scaling = true;
 %!   opt_solver.refine_max_iter = int32(10);
 %!   opt_solver.solver = "pardiso";
-%!   opt_solver.number_of_threads = int32(2);
+%!   opt_solver.number_of_threads = mbdyn_solver_num_threads_default();
 %!   opt_solver.symmetric = true;
 %!   sol_eig(1) = fem_sol_modal(mesh, ...
 %!                            dof_map, ...
@@ -2874,7 +2874,7 @@ endfunction
 %!                      param.OMEGAy;
 %!                      param.OMEGAz];
 %!   dof_map = fem_ass_dof_map(mesh, load_case_dof);
-%!   dof_map.parallel.threads_ass = int32(2);
+%!   dof_map.parallel.threads_ass = mbdyn_solver_num_threads_default();
 %!   [mat_ass.M, ...
 %!    mat_ass.Mdiag, ...
 %!    mat_ass.K, ...
@@ -2903,7 +2903,7 @@ endfunction
 %!   opt_solver.pre_scaling = true;
 %!   opt_solver.refine_max_iter = int32(10);
 %!   opt_solver.solver = "pardiso";
-%!   opt_solver.number_of_threads = int32(2);
+%!   opt_solver.number_of_threads = mbdyn_solver_num_threads_default();
 %!   opt_solver.symmetric = true;
 %!   sol_eig(1) = fem_sol_modal(mesh, ...
 %!                            dof_map, ...
@@ -3321,7 +3321,7 @@ endfunction
 %!                      param.OMEGAy;
 %!                      param.OMEGAz];
 %!   dof_map = fem_ass_dof_map(mesh, load_case_dof);
-%!   dof_map.parallel.threads_ass = int32(2);
+%!   dof_map.parallel.threads_ass = mbdyn_solver_num_threads_default();
 %!   [mat_ass.M, ...
 %!    mat_ass.Mdiag, ...
 %!    mat_ass.K, ...
@@ -3350,7 +3350,7 @@ endfunction
 %!   opt_solver.pre_scaling = true;
 %!   opt_solver.refine_max_iter = int32(10);
 %!   opt_solver.solver = "pardiso";
-%!   opt_solver.number_of_threads = int32(2);
+%!   opt_solver.number_of_threads = mbdyn_solver_num_threads_default();
 %!   opt_solver.symmetric = true;
 %!   sol_eig(1) = fem_sol_modal(mesh, ...
 %!                            dof_map, ...
@@ -3754,7 +3754,7 @@ endfunction
 %!                      param.OMEGAy;
 %!                      param.OMEGAz];
 %!   dof_map = fem_ass_dof_map(mesh, load_case_dof);
-%!   dof_map.parallel.threads_ass = int32(2);
+%!   dof_map.parallel.threads_ass = mbdyn_solver_num_threads_default();
 %!   [mat_ass.M, ...
 %!    mat_ass.K, ...
 %!    mat_ass.KOMEGA, ...
@@ -3781,7 +3781,7 @@ endfunction
 %!   opt_solver.pre_scaling = true;
 %!   opt_solver.refine_max_iter = int32(10);
 %!   opt_solver.solver = "pardiso";
-%!   opt_solver.number_of_threads = int32(2);
+%!   opt_solver.number_of_threads = mbdyn_solver_num_threads_default();
 %!   opt_solver.symmetric = true;
 %!   sol_eig(1) = fem_sol_modal(mesh, ...
 %!                              dof_map, ...
@@ -4179,7 +4179,7 @@ endfunction
 %!                      param.OMEGAy;
 %!                      param.OMEGAz];
 %!   dof_map = fem_ass_dof_map(mesh, load_case_dof);
-%!   dof_map.parallel.threads_ass = int32(2);
+%!   dof_map.parallel.threads_ass = mbdyn_solver_num_threads_default();
 %!   [mat_ass.M, ...
 %!    mat_ass.Mdiag, ...
 %!    mat_ass.K, ...
@@ -4208,7 +4208,7 @@ endfunction
 %!   opt_solver.pre_scaling = true;
 %!   opt_solver.refine_max_iter = int32(10);
 %!   opt_solver.solver = "pardiso";
-%!   opt_solver.number_of_threads = int32(2);
+%!   opt_solver.number_of_threads = mbdyn_solver_num_threads_default();
 %!   opt_solver.symmetric = true;
 %!   sol_eig(1) = fem_sol_modal(mesh, ...
 %!                            dof_map, ...
@@ -4509,7 +4509,7 @@ endfunction
 %!   options.plot = true;
 %!   options.verbose = false;
 %!   options.number_of_beams = int32(40);
-%!   options.number_of_threads = int32(2);
+%!   options.number_of_threads = mbdyn_solver_num_threads_default();
 %!   if (options.plot)
 %!     close all;
 %!   endif
@@ -6313,7 +6313,7 @@ endfunction
 %!   options.plot = true;
 %!   options.verbose = false;
 %!   options.number_of_beams = int32(40);
-%!   options.number_of_threads = int32(2);
+%!   options.number_of_threads = mbdyn_solver_num_threads_default();
 %!   if (options.plot)
 %!     close all;
 %!   endif
@@ -7311,7 +7311,7 @@ endfunction
 %!                      param.OMEGAy;
 %!                      param.OMEGAz];
 %!   dof_map = fem_ass_dof_map(mesh, load_case_dof);
-%!   dof_map.parallel.threads_ass = int32(4);
+%!   dof_map.parallel.threads_ass = mbdyn_solver_num_threads_default();
 %!   [mat_ass.M, ...
 %!    mat_ass.Mdiag, ...
 %!    mat_ass.K, ...
@@ -7340,7 +7340,7 @@ endfunction
 %!   opt_solver.pre_scaling = true;
 %!   opt_solver.refine_max_iter = int32(10);
 %!   opt_solver.solver = "pardiso";
-%!   opt_solver.number_of_threads = int32(4);
+%!   opt_solver.number_of_threads = mbdyn_solver_num_threads_default();
 %!   opt_solver.symmetric = true;
 %!   sol_eig(1) = fem_sol_modal(mesh, ...
 %!                            dof_map, ...
@@ -7641,7 +7641,7 @@ endfunction
 %!   options.plot = true;
 %!   options.verbose = false;
 %!   options.number_of_beams = int32(40);
-%!   options.number_of_threads = int32(2);
+%!   options.number_of_threads = mbdyn_solver_num_threads_default();
 %!   if (options.plot)
 %!     close all;
 %!   endif
@@ -8559,7 +8559,7 @@ endfunction
 %!   cms_opt.nodes.modal.name = "node_id_rotor";
 %!   cms_opt.nodes.interfaces(1).name = "node_id_bearing1";
 %!   cms_opt.nodes.interfaces(2).name = "node_id_bearing2";
-%!   cms_opt.number_of_threads = int32(2);
+%!   cms_opt.number_of_threads = mbdyn_solver_num_threads_default();
 %!   cms_opt.verbose = options.verbose;
 %!   enable_filenames = [options.f_enable_modal, options.f_enable_beam, options.f_enable_solid];
 %!   filename = "";
@@ -9361,8 +9361,8 @@ endfunction
 %!         fputs(fd, "        output: iterations, cpu time, solver condition number, stat, yes;\n");
 %!         fputs(fd, "        linear solver: umfpack, grad, scale, iterative, always, max iterations, 0;\n");
 %!         fputs(fd, "        enforce constraint equations: constraint violations;\n");
-%!         fputs(fd, "        threads: assembly, 2;\n");
-%!         fputs(fd, "        threads: solver, 2;\n");
+%!         fprintf(fd, "      threads: assembly, %d;\n", mbdyn_solver_num_threads_default());
+%!         fprintf(fd, "      threads: solver, %d;\n", mbdyn_solver_num_threads_default());
 %!         fputs(fd, "        nonlinear solver: nox, modified, 25,\n");
 %!         fputs(fd, "             keep jacobian matrix,\n");
 %!         fputs(fd, "             inner iterations before assembly, 12,\n");
@@ -9654,7 +9654,7 @@ endfunction
 %! opt_solver.pre_scaling = true;
 %! opt_solver.refine_max_iter = int32(100);
 %! opt_solver.solver = "pardiso";
-%! opt_solver.number_of_threads = int32(2);
+%! opt_solver.number_of_threads = mbdyn_solver_num_threads_default();
 %! opt_solver.symmetric = false; ## FEM_MAT_STIFFNESS_OMEGA_DOT makes it unsymmetric
 %! I1 = param.d1^4 * pi / 64;
 %! I2 = param.d2^4 * pi / 64;
@@ -10164,7 +10164,7 @@ endfunction
 %! opt_solver.pre_scaling = true;
 %! opt_solver.refine_max_iter = int32(100);
 %! opt_solver.solver = "pardiso";
-%! opt_solver.number_of_threads = int32(2);
+%! opt_solver.number_of_threads = mbdyn_solver_num_threads_default();
 %! opt_solver.symmetric = false; ## FEM_MAT_STIFFNESS_OMEGA_DOT makes it unsymmetric
 %! I1 = param.d1^4 * pi / 64;
 %! I2 = param.d2^4 * pi / 64;
@@ -10422,8 +10422,8 @@ endfunction
 %!       fputs(fd, "    initial time: 0;\n");
 %!       fputs(fd, "    final time: t1;\n");
 %!       fputs(fd, "    time step: t1 / N;\n");
-%!       fputs(fd, "         threads: assembly, 2;\n");
-%!       fputs(fd, "         threads: solver, 2;\n");
+%!       fprintf(fd, "    threads: assembly, %d;\n", mbdyn_solver_num_threads_default());
+%!       fprintf(fd, "    threads: solver, %d;\n", mbdyn_solver_num_threads_default());
 %!       fputs(fd, "    max iterations: 10000;\n");
 %!       fputs(fd, "    tolerance: 1.e-3, 1e-3;\n");
 %!       fputs(fd, "    linear solver: umfpack, grad, scale, iterative, always, max iterations, 0;\n");
@@ -10598,7 +10598,7 @@ endfunction
 %! opt_solver.pre_scaling = true;
 %! opt_solver.refine_max_iter = int32(100);
 %! opt_solver.solver = "pardiso";
-%! opt_solver.number_of_threads = int32(2);
+%! opt_solver.number_of_threads = mbdyn_solver_num_threads_default();
 %! opt_solver.symmetric = false; ## FEM_MAT_STIFFNESS_OMEGA_DOT makes it unsymmetric
 %! I1 = param.d1^4 * pi / 64;
 %! I2 = param.d2^4 * pi / 64;
@@ -10861,8 +10861,8 @@ endfunction
 %!       fputs(fd, "    initial time: 0;\n");
 %!       fputs(fd, "    final time: t1;\n");
 %!       fputs(fd, "    time step: t1 / N;\n");
-%!       fputs(fd, "         threads: assembly, 2;\n");
-%!       fputs(fd, "         threads: solver, 2;\n");
+%!       fprintf(fd, "    threads: assembly, %d;\n", mbdyn_solver_num_threads_default());
+%!       fprintf(fd, "    threads: solver, %d;\n", mbdyn_solver_num_threads_default());
 %!       fputs(fd, "    max iterations: 10000;\n");
 %!       fputs(fd, "    tolerance: 1.e-3, 1e-3;\n");
 %!       fputs(fd, "    linear solver: umfpack, grad, scale, iterative, always, max iterations, 0;\n");

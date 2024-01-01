@@ -1207,7 +1207,7 @@ endfunction
 %!   mat_ass_def.K += mat_ass_def.KTAU0;
 %!   [sol_eig_def] = fem_sol_modal(mesh_def, dof_map, mat_ass_def, param.number_of_modes, struct("solver", "pardiso", "refine_max_iter", int32(10)));
 %!   Freact = complex(zeros(3, columns(mat_ass_def.R), numel(param.omega)));
-%!   opt_factor.number_of_threads = int32(4);
+%!   opt_factor.number_of_threads = mbdyn_solver_num_threads_default();
 %!   opt_factor.verbose = int32(0);
 %!   opt_factor.solver = "pardiso";
 %!   opt_factor.refine_max_iter = int32(20);

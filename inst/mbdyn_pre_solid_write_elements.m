@@ -3790,7 +3790,7 @@ endfunction
 %! param.d1 = 10e-3 / SI_unit_meter;
 %! param.l1 = 20e-3 / SI_unit_meter;
 %! param.h = 1.25e-3 / SI_unit_meter;
-%! options.verbose = true;
+%! options.verbose = false;
 %! options.do_plot = false;
 %! filename = "";
 %! unwind_protect

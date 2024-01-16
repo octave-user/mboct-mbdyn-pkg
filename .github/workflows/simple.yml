@@ -94,7 +94,7 @@ jobs:
           cd mbdyn
           git config user.name octave-user
           git config user.email octave-user@a1.net
-          git merge origin/testsuite-fix-hfelem-PrivDriveCaller
+          git merge origin/testsuite
 
       # Runs a set of commands using the runners shell
       - name: Compile MBDyn

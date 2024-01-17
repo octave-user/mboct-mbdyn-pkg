@@ -1,0 +1,30 @@
+## mbdyn_pre_beam_helical_compute.tst:03
+%!demo
+%! close all;
+%! options.d = 1.5e-3;
+%! options.na = 1.2;
+%! options.ni = 3;
+%! options.L = 30e-3;
+%! options.Di = 10.6e-3;
+%! options.N_coil = 20;
+%! options.type = "const pitch, const diameter";
+%! number_of_elements_per_coil = 7;
+%! interpolation_points = 1;
+%! [beam, X, shape] = mbdyn_pre_beam_helical_compute(options, number_of_elements_per_coil, interpolation_points);
+%! figure("visible","off");
+%! hold on;
+%! plot(180 / pi * shape.Phi, shape.z,'-;z(Phi);1');
+%! grid on;
+%! grid minor on;
+%! xlabel('Phi [deg]');
+%! ylabel('z [m]');
+%! title('pitch versus angle');
+%! figure("visible","off");
+%! hold on;
+%! plot(shape.z, shape.D, '-;D(z);1');
+%! grid on;
+%! grid minor on;
+%! xlabel('z [m]');
+%! ylabel('D [m]');
+%! title('coil diameter versus height');
+%! figure_list();

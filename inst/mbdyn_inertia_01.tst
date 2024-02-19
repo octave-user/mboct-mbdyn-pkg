@@ -31,6 +31,8 @@
 %! param.Jyy = param.m * (param.c^2+param.a^2)/12.;
 %! param.Jzz = param.m * (param.b^2+param.a^2)/12.;
 %! methods = {"impliciteuler", "cranknicolson", "ms2,0.6", "ms3,0.6", "ms4,0.6", "ss2,0.6", "ss3,0.6", "ss4,0.6", "hope,0.6", "Bathe,0.6", "msstc3,0.6", "msstc4,0.6", "msstc5,0.6", "mssth3,0.6", "mssth4,0.6", "mssth5,0.6", "DIRK33", "DIRK43", "DIRK54", "hybrid,ms,0.6"};
+%! stages  = [              1,               1,         1,         1,         1,         1,         1,         1,          1,           2,            3,            4,            5,            3,            4,            5,        3,        4,        5,               1];
+%! info = repmat(struct(), size(methods));
 %! for idx_method=1:numel(methods)
 %! fd = -1;
 %! unwind_protect
@@ -47,11 +49,12 @@
 %!     fputs(fd, "     threads: assembly, 1;\n");
 %!     fputs(fd, "         initial time: 0;\n");
 %!     fputs(fd, "         final time: 1;\n");
-%!     fputs(fd, "         time step: 5e-5;\n");
+%!     fprintf(fd, "         time step: 1e-5 * %d;\n", stages(idx_method));
 %!     fputs(fd, "     max iterations: 10;\n");
 %!     fputs(fd, "     linear solver: naive, colamd;\n");
 %!     fputs(fd, "     nonlinear solver: nox,\n");
 %!     fputs(fd, "               modified, 100,\n");
+%!     fputs(fd, "               keep jacobian matrix,\n");
 %!     fputs(fd, "               use preconditioner as solver, no,\n");
 %!     fputs(fd, "               linesearch method, backtrack,\n");
 %!     fputs(fd, "               direction, newton,\n");
@@ -69,7 +72,7 @@
 %!     fputs(fd, "               recovery step, 1e-6,\n");
 %!     fputs(fd, "               verbose, 0,\n");
 %!     fputs(fd, "               print convergence info, no;\n");
-%!     fputs(fd, "         tolerance: 1e-12, test, sepnorm, 1e-12, test, norm;\n");
+%!     fputs(fd, "         tolerance: 1e-8, test, norm, 1e-8, test, norm;\n");
 %!     fputs(fd, "         derivatives tolerance: 1e-6, 1e-6;\n");
 %!     fputs(fd, "         derivatives max iterations: 20;\n");
 %!     fputs(fd, "         derivatives coefficient: 1e-6;\n");
@@ -84,7 +87,7 @@
 %!     fputs(fd, "     default output: all;\n");
 %!     fputs(fd, "     output results: netcdf, text;\n");
 %!     fputs(fd, "     use automatic differentiation;\n");
-%!     fputs(fd, "        tolerance: 1e-13;\n");
+%!     fputs(fd, "        tolerance: 1e-6;\n");
 %!     fputs(fd, "        max iterations: 10;\n");
 %!     fputs(fd, "         structural nodes: 2;\n");
 %!     fputs(fd, "     rigid bodies: 1;\n");
@@ -174,7 +177,7 @@
 %!   if (~options.verbose)
 %!     options.logfile = [fname, ".stdout"];
 %!   endif
-%!   mbdyn_solver_run(fname, options);
+%!   info(idx_method) = mbdyn_solver_run(fname, options);
 %!   ncfile = [options.output_file, ".nc"];
 %!   beta = ncread(ncfile, "elem.inertia.1.B");
 %!   gamma = ncread(ncfile, "elem.inertia.1.G_cm");
@@ -205,9 +208,7 @@
 %!   endif
 %! end_unwind_protect
 %! endfor
-%! for idx_method=1:numel(methods)
-%!   fprintf(stderr, "method: %-20s: %8.3e / %8.3e\n", methods{idx_method}, err_beta(idx_method), err_gamma(idx_method));
-%! endfor
+%! status = false(size(methods));
 %! for idx_method=1:numel(methods)
 %!   switch (methods{idx_method})
 %!   case {"msstc3,0.6", "msstc4,0.6", "msstc5,0.6"}
@@ -215,14 +216,19 @@
 %!   case {"mssth3,0.6", "mssth4,0.6", "mssth5,0.6"}
 %!     tol = 1e-7;
 %!   case {"Bathe,0.6"}
-%!     tol = 1e-6;
+%!     tol = 1e-7;
 %!   case {"DIRK33", "DIRK43", "DIRK54"}
 %!     tol = 1e-8;
 %!   case "impliciteuler"
 %!     tol = 1e-2;
 %!   otherwise
-%!     tol = 1e-6;
+%!     tol = 1e-7;
 %!   endswitch
-%!   assert_simple(err_gamma(idx_method) < tol);
-%!   assert_simple(err_beta(idx_method) < tol);
+%!   status_msg = "failed";
+%!   if (err_gamma(idx_method) < tol && err_beta(idx_method) < tol)
+%!     status(idx_method) = true;
+%!     status_msg = "passed";
+%!   endif
+%!   fprintf(stderr, "method: %-20s: (%6d/%4d/%4d/%3.2e/%3.3f) %8.3e / %8.3e < %5.3e - %s\n", methods{idx_method}, info(idx_method).total_steps, info(idx_method).total_iter, info(idx_method).total_jac, info(idx_method).total_err, info(idx_method).total_cpu, err_beta(idx_method), err_gamma(idx_method), tol, status_msg);
 %! endfor
+%! assert_simple(all(status));

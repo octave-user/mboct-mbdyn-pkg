@@ -104,6 +104,7 @@
 %!         fputs(fd, "                +1              # drive\n");
 %!         fputs(fd, "        ;\n");
 %!         fputs(fd, "        rigid bodies: 1;\n");
+%!         fputs(fd, "        gravity;\n");
 %!         fputs(fd, "end: control data;\n");
 %!         fputs(fd, "reference: ref_id_ground,\n");
 %!         fputs(fd, "        reference, global, null,\n");
@@ -202,6 +203,7 @@
 %!         fputs(fd, "                 orientation, reference, ref_id_rotor, eye,\n");
 %!         fputs(fd, "                 body, all, joint, all, loadable, all,\n");
 %!         fputs(fd, "                 output, both;\n");
+%!         fputs(fd, "        gravity: uniform, 0., 0., -1., g;\n");
 %!         fputs(fd, "end: elements;\n");
 %!       unwind_protect_cleanup
 %!         if (fd ~= -1)
@@ -341,6 +343,7 @@
 %!           fputs(fd, "           null,\n");
 %!           fputs(fd, "           const, (omega1 - omega0) / (final_time - initial_time);\n");
 %!         endif
+%!         fputs(fd, "          gravity;\n");
 %!         fputs(fd, "end: control data;\n");
 %!         fputs(fd, "reference: ref_id_ground,\n");
 %!         fputs(fd, "        reference, global, null,\n");
@@ -550,6 +553,7 @@
 %!         fputs(fd, "                 orientation, reference, ref_id_rotor, eye,\n");
 %!         fputs(fd, "                 body, all, joint, all, loadable, all,\n");
 %!         fputs(fd, "                 output, both;\n");
+%!         fputs(fd, "        gravity: uniform, 0., 0., -1., g;\n");
 %!         fputs(fd, "end: elements;\n");
 %!       unwind_protect_cleanup
 %!         if (fd ~= -1)
@@ -861,6 +865,7 @@
 %!           fputs(fd, "           null,\n");
 %!           fputs(fd, "           const, (omega1 - omega0) / (final_time - initial_time);\n");
 %!         endif
+%!         fputs(fd, "          gravity;\n");
 %!         fputs(fd, "end: control data;\n");
 %!         fputs(fd, "reference: ref_id_ground,\n");
 %!         fputs(fd, "        reference, global, null,\n");
@@ -954,6 +959,7 @@
 %!         fputs(fd, "                 orientation, reference, ref_id_rotor, eye,\n");
 %!         fputs(fd, "                 body, all, solid, all, loadable, all,\n");
 %!         fputs(fd, "                 output, both;\n");
+%!         fputs(fd, "        gravity: uniform, 0., 0., -1., g;\n");
 %!         fputs(fd, "end: elements;\n");
 %!       unwind_protect_cleanup
 %!         if (fd ~= -1)
@@ -1042,6 +1048,7 @@
 %! param.E = 210000e6 / SI_unit.pascal;
 %! param.nu = 0.3;
 %! param.rho = 7850 / (SI_unit.kilogram / SI_unit.meter^3);
+%! param.g = 9.81 / (SI_unit.meter / SI_unit.second^2);
 %! m1 = param.D^2 * pi / 4 * param.w * param.rho;
 %! param.dr = param.ecg * (m1 + param.dm) / param.dm;
 %! param.omega0 = 1000 * pi / 30 / (1 / SI_unit.second);

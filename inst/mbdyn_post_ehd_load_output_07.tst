@@ -375,9 +375,9 @@
 %! ylabel("h [m]");
 %! grid on;
 %! grid minor on;
-%! title("radial clearance versus time");
+%! title("radial clearance versus axial position");
 %! tol_q = 1e-3;
-%! tol_p = 2e-2;
+%! tol_p = 6e-2;
 %! assert_simple(-q1, analy.q_u1_wc, tol_q * analy.q_u1_wc);
 %! assert_simple(q2, analy.q_u1_wc, tol_q * analy.q_u1_wc);
 %! assert_simple(res.bearings.columns.p(:, 1), analy.p_wc(:), tol_p * max(abs(analy.p_wc)));

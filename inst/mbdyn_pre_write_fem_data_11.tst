@@ -2,7 +2,6 @@
 %!test
 %! ## TEST11
 %! pkg load mboct-fem-pkg;
-%! printf("fem_cms_create2: test8\n");
 %! filename = "";
 %! unwind_protect
 %!   filename = tempname();

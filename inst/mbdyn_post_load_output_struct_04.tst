@@ -2,6 +2,17 @@
 %!test
 %! ## TEST4
 %! ## TRACTA JOINT
+%! methods = {"impliciteuler", "ms2", "ms3", "ms4", "ss2", "ss3", "ss4", "hope", "Bathe", "msstc3", "msstc4", "msstc5", "mssth3", "mssth4", "mssth5", "DIRK33", "DIRK43", "DIRK54", "hybrid,ms"};
+%! stages  = [              1,     1,     1,     1,     1,     1,     1,      1,       2,        3,        4,        5,        3,        4,        5,        3,        4,        5,           1];
+%! rhoinf = 0.2;
+%! do_plot = false;
+%! autodiff = [false, true];
+%! rel_error = nan(numel(methods), numel(autodiff));
+%! if (do_plot)
+%!   close all;
+%! endif
+%! for idx_autodiff=1:numel(autodiff)
+%! for idx_method=1:numel(methods)
 %! fd = -1;
 %! unwind_protect
 %!   unwind_protect
@@ -10,12 +21,13 @@
 %!       error("failed to open temporary file");
 %!     endif
 %!     fputs(fd, " ## input parameters:\n");
-%!     fputs(fd, " set: real N = 360;                   ## number of time steps per revolution\n");
+%!     fprintf(fd, "set: integer stages = %d;\n",  stages(idx_method));
+%!     fputs(fd, " set: real N = 360./4.;                   ## number of time steps per revolution\n");
 %!     fputs(fd, " set: real omega = 40000 * pi / 30.;  ## input speed [rad/s9\n");
 %!     fputs(fd, " set: real Phiz = 80. * pi / 180.;    ## prescribed angle between input shaft and output shaft [rad]\n");
 %!     fputs(fd, " set: real t1 = 2. * pi / abs(omega); ## ramp up time to raise the angle from zero to Phiz [s]\n");
-%!     fputs(fd, " set: real t2 = 10. * t1;             ## final time [s]\n");
-%!     fputs(fd, " set: real dt = t1 / N;               ## time step [s]\n");
+%!     fputs(fd, " set: real t2 = 3. * t1;             ## final time [s]\n");
+%!     fputs(fd, " set: real dt = t1 / N * stages;      ## time step [s]\n");
 %!     fputs(fd, " set: real R1 = 100e-3;               ## position of markers for postprocessing [m]\n");
 %!     fputs(fd, " set: real R2 = 100e-3;\n");
 %!     fputs(fd, " set: real R3 = 100e-3;\n");
@@ -33,14 +45,24 @@
 %!     fputs(fd, "         tolerance: 1e-6, test, norm, 1e-6, test, norm;\n");
 %!     fputs(fd, "         derivatives tolerance: 1e-6, 1e-6;\n");
 %!     fputs(fd, "         derivatives max iterations: 10;\n");
-%!     fputs(fd, "         method: msstc5, 0.6;\n");
+%!     method = methods{idx_method};
+%!     switch (method)
+%!     case {"impliciteuler", "DIRK33", "DIRK43", "DIRK54"}
+%!     otherwise
+%!       method = sprintf("%s, %g", method, rhoinf);
+%!     endswitch
+%!     fprintf(fd, "         method: %s;\n", method);
 %!     fputs(fd, "         linear solver:naive, colamd;\n");
 %!     fputs(fd, "         nonlinear solver: nox, modified, 100,  keep jacobian matrix, inner iterations before assembly, 6, jacobian operator, newton krylov, forcing term, type2;\n");
 %!     fputs(fd, "         threads: disable;\n");
+%!     fputs(fd, "         output: iterations;\n");
 %!     fputs(fd, " end: initial value;\n");
 %!     fputs(fd, " begin: control data;\n");
+%!     fputs(fd, "       output meter: closest next, 0, forever, const, t1 / 36.;\n");
 %!     fputs(fd, "       model: static;\n");
-%!     fputs(fd, "       use automatic differentiation;\n");
+%!     if (autodiff(idx_autodiff))
+%!       fputs(fd, "       use automatic differentiation;\n");
+%!     endif
 %!     fputs(fd, "       output precision: 16;\n");
 %!     fputs(fd, "       tolerance: 1e-8;\n");
 %!     fputs(fd, "       print: equation description;\n");
@@ -294,7 +316,9 @@
 %!   end_unwind_protect
 %!   options.output_file = fname;
 %!   options.verbose = false;
-%!   options.logfile = [fname, ".stdout"];
+%!   if (~options.verbose)
+%!     options.logfile = [fname, ".stdout"];
+%!   endif
 %!   mbdyn_solver_run(fname, options);
 %!   [res.t, res.trajectory, res.deformation,res.velocity,res.acceleration,res.node_id, res.force_id, res.force_node_id, res.orientation_description]=mbdyn_post_load_output_struct (options.output_file);
 %!   log_dat = mbdyn_post_load_log(options.output_file);
@@ -312,6 +336,7 @@
 %!       Wrel{i}(:, j) = R{i}(:, :, j).' * W{i}(:,j);
 %!     endfor
 %!   end
+%!   if (do_plot)
 %!   figure("visible", "off");
 %!   hold on;
 %!   for i=1:numel(idx_node)
@@ -332,14 +357,15 @@
 %!   title("tracta joint omega1 relative frame");
 %!   grid on;
 %!   grid minor on;
-%!   figure_list();
+%!   endif
 %!   t1 = log_dat.vars.t1;
 %!   omega = log_dat.vars.omega;
-%!   idx_t = find(res.t > t1);
-%!   tol = 1e-6;
+%!   idx_t = find(res.t > 2 * t1);
+%!   rel_err = -1;
 %!   for i=[1,4]
-%!     assert_simple(max(norm(Wrel{i}(:, idx_t) - [omega; zeros(2, 1)], "cols")) < tol * abs(omega));
+%!     rel_err = max([rel_err, max(norm(Wrel{i}(:, idx_t) - [omega; zeros(2, 1)], "cols")) / abs(omega)]);
 %!   endfor
+%!   rel_error(idx_method, idx_autodiff) = rel_err;
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -349,3 +375,17 @@
 %!     endfor
 %!   endif
 %! end_unwind_protect
+%! endfor
+%! endfor
+%! if (do_plot)
+%!   figure_list();
+%! endif
+%! for idx_method=1:numel(methods)
+%!   fprintf(stderr, "%s: ", methods{idx_method});
+%!   for idx_autodiff=1:numel(autodiff)
+%!     fprintf(stderr, "%8.3e ", rel_error(idx_method, idx_autodiff));
+%!   endfor
+%!   fputs(stderr, "\n");
+%! endfor
+%! tol = 1e-7;
+%! assert_simple(all(rel_error(:) < tol));

@@ -35,7 +35,6 @@
 %! options.number_of_modes = int32(10);
 %! options.scale_def = 10e-3;
 %! options.geo_tol = sqrt(eps);
-%! options.mbdyn_command = "mbdyn";
 %! options.f_run_mbdyn = true;
 %! options.verbose = false;
 %! filename = "";
@@ -176,7 +175,6 @@
 %!   cms_data.mat_ass.Dred = param.alpha * cms_data.mat_ass.Mred + param.beta * cms_data.mat_ass.Kred;
 %!   fem_cms_export([filename, "_cms"], cms_data.mesh, cms_data.dof_map, cms_data.mat_ass, cms_opt);
 %!   options_mbd.output_file = filename;
-%!   options_mbd.mbdyn_command = options.mbdyn_command;
 %!   options_mbd.logfile = [filename, ".stdout"];
 %!   options_mbd.f_run_mbdyn2easyanim = false;
 %!   param_file = [filename, ".set"];

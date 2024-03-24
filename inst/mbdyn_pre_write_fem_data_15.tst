@@ -972,7 +972,6 @@
 %!         continue;
 %!       endif
 %!       options_mbd(i).output_file = sprintf("%s_%d", filename, i);
-%!       options_mbd(i).mbdyn_command = options.mbdyn_command;
 %!       if (~options.verbose)
 %!         options_mbd(i).logfile = sprintf("%s_%d.stdout", filename, i);
 %!       endif
@@ -1058,7 +1057,6 @@
 %! options.scale_def = 10e-3;
 %! options.geo_tol = sqrt(eps);
 %! options.code.use_package = false;
-%! options.mbdyn_command = "mbdyn";
 %! options.f_run_mbdyn = [true, true];
 %! options.verbose = false;
 %! options.elem_type = "iso20";

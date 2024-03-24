@@ -413,7 +413,6 @@
 %!         opt_mbdyn.logfile = [filename, ".stdout"];
 %!       endif
 %!       opt_mbdyn.output_file = [filename, "_mbdyn"];
-%!       opt_mbdyn.mbdyn_command = "mbdyn -C";
 %!       info_mbdyn = mbdyn_solver_run(mbdyn_file, opt_mbdyn);
 %!       [mesh_sol, sol_stat] = mbdyn_post_load_output_sol(opt_mbdyn.output_file);
 %!       delta = nan(1, numel(param.elem_type_surf));

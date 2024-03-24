@@ -289,7 +289,6 @@
 %!   end_unwind_protect
 %!   opt_sol.output_file = output_file;
 %!   opt_sol.verbose = false;
-%!   opt_sol.mbdyn_command = "mbdyn";
 %!   if (~opt_sol.verbose)
 %!     opt_sol.logfile = [output_file, ".stdout"];
 %!   endif

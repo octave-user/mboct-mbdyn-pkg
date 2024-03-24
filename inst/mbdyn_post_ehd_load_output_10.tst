@@ -110,7 +110,6 @@
 %!   opt_mesh.verbose = false;
 %!   opt_mesh.output_file = [output_file, "_msh"];
 %!   options.geo_tol = sqrt(eps);
-%!   options_mbdyn.mbdyn_command = "mbdyn";
 %!   empty_cell = cell(1, 2);
 %!   group_defs = struct("id", empty_cell, ...
 %!                       "name", empty_cell, ...

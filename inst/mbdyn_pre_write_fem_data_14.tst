@@ -652,7 +652,6 @@
 %!         if (~options.verbose)
 %!           options_mbd.logfile = [options_mbd.output_file, ".stdout"];
 %!         endif
-%!         options_mbd.mbdyn_command = "mbdyn -C";
 %!         options_eig.positive_frequencies = false;
 %!         if (options.verbose)
 %!           shell(sprintf("cat %s | nl", filename_mbdyn));

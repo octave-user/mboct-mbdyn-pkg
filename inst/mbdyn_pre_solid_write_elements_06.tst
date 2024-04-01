@@ -247,8 +247,8 @@
 %!   if (options.do_plot)
 %!     figure("visible", "off");
 %!     hold on;
-%!     plot(sol.t * SI_unit_second, Wkin_ref * SI_unit_joule, "-x;Wkin_r_e_f;0");
-%!     plot(sol.t * SI_unit_second, Wkin_res * SI_unit_joule, "-o;Wkin_r_e_s;1");
+%!     plot(sol.t * SI_unit_second, Wkin_ref * SI_unit_joule, "-x;Wkin_r_e_f;k");
+%!     plot(sol.t * SI_unit_second, Wkin_res * SI_unit_joule, "-o;Wkin_r_e_s;r");
 %!     xlabel("t [s]");
 %!     ylabel("W [J]");
 %!     grid on;
@@ -256,8 +256,8 @@
 %!     title("kinetic energy versus time");
 %!     figure("visible", "off");
 %!     hold on;
-%!     plot(sol.t * SI_unit_second, Fz_ref * SI_unit_newton, "-x;Fz_r_e_f;0");
-%!     plot(sol.t * SI_unit_second, Fz_res * SI_unit_newton, "-o;Fz_r_e_s;1");
+%!     plot(sol.t * SI_unit_second, Fz_ref * SI_unit_newton, "-x;Fz_r_e_f;k");
+%!     plot(sol.t * SI_unit_second, Fz_res * SI_unit_newton, "-o;Fz_r_e_s;r");
 %!     xlabel("t [s]");
 %!     ylabel("F [N]");
 %!     grid on;
@@ -265,8 +265,8 @@
 %!     title("normal force");
 %!     figure("visible", "off");
 %!     hold on;
-%!     plot(sol.t * SI_unit_second, Fx_ref * SI_unit_newton, "-x;Fx_r_e_f;0");
-%!     plot(sol.t * SI_unit_second, Fx_res * SI_unit_newton, "-o;Fx_r_e_s;1");
+%!     plot(sol.t * SI_unit_second, Fx_ref * SI_unit_newton, "-x;Fx_r_e_f;k");
+%!     plot(sol.t * SI_unit_second, Fx_res * SI_unit_newton, "-o;Fx_r_e_s;r");
 %!     xlabel("t [s]");
 %!     ylabel("F [N]");
 %!     grid on;

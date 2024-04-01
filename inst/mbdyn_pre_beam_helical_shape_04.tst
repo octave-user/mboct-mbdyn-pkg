@@ -1,6 +1,9 @@
 ## mbdyn_pre_beam_helical_shape.tst:04
 %!test
+%! f_plot = false;
+%! if (f_plot)
 %! close all;
+%! endif
 %! options.d = 1.5e-3;
 %! options.na = 7.25;
 %! options.ni = 0.25;
@@ -12,19 +15,20 @@
 %! interpolation_points = 1;
 %! [X, shape] = mbdyn_pre_beam_helical_shape(options);
 %! beam = mbdyn_pre_beam_compute(X,N,interpolation_points);
+%! if (f_plot)
 %! mbdyn_pre_beam_plot(beam,struct("Rn",true, "Rg",false, "s",options.d));
 %! figure("visible","off");
 %! hold on;
-%! plot(shape.Phi, shape.z,'-;z(Phi);1');
+%! plot(shape.Phi, shape.z,'-;z(Phi);r');
 %! grid on;
 %! grid minor on;
 %! xlabel('Phi [rad]');
 %! ylabel('z [m]');
 %! title('pitch versus angle');
-%! plot(shape.Phi, shape.z, 'x;z_i(Phi_i);3');
+%! plot(shape.Phi, shape.z, 'x;z_i(Phi_i);b');
 %! figure("visible","off");
 %! hold on;
-%! plot(shape.z, shape.D, '-;D(z);1');
+%! plot(shape.z, shape.D, '-;D(z);r');
 %! grid on;
 %! grid minor on;
 %! xlabel('z [m]');
@@ -39,3 +43,4 @@
 %! grid minor on;
 %! title('helical beam shape');
 %! daspect(ones(1, 3));
+%! endif

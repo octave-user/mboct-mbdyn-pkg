@@ -394,6 +394,53 @@ function options = mbdyn_pre_solid_write_elements(mesh, load_case_dof, load_case
         endfor
       endfor
     endif
+
+    ## if (isfield(mesh.elements, "unilateral_in_plane_contact"))
+    ##   elem_type_surf_load = {"iso4", "quad8", "quad9", "tria6h", "quad8r"};
+
+    ##   for i=1:numel(elem_type_surf_load)
+    ##     switch (elem_type_surf_load{i})
+    ##       case "iso4"
+    ##         elem_name = "q4";
+    ##         num_nodes = 4;
+    ##       case "quad8"
+    ##         elem_name = "q8";
+    ##         num_nodes = 8;
+    ##       case "quad9"
+    ##         elem_name = "q9";
+    ##         num_nodes = 9;
+    ##       case "quad8r"
+    ##         elem_name = "q8r";
+    ##         num_nodes = 8;
+    ##       case "tria6h"
+    ##         elem_name = "t6";
+    ##         num_nodes = 6;
+    ##     endswitch
+
+    ##     elem_name = ["unilateral in plane contact", elem_name];
+
+    ##     elem_data = getfield(mesh.elements.unilateral_in_plane, elem_type_surf_load{i});
+    ##     elem_nodes = elem_data.elements + (options.struct_nodes.number - rows(mesh.nodes));
+
+    ##     ## unilateral in plane contact q9: 1, 17, 19, 20, 16, 15, 13, 14, 24, 8, 17, 19, 20, 16, 15, 13, 14, 24, 8, 1000, offset, reference, global, ox, oy, oz, orientation, reference, global, euler123, phix, phiy, phiz, epsilon, epsilon1, scale, scale1, reference gap, reference_gap, reference pressure, reference_pressure;
+
+    ##     elem_format = sprintf("%s: %%d%s, from drives%s;\n", ...
+    ##                           elem_name, ...
+    ##                           repmat(", %d", 1, columns(elem_nodes)), ...
+    ##                           repmat(sprintf(", mult, const, %%.16e, reference, %d", ...
+    ##                                          options.drive_callers.number), 1, columns(elem_nodes)));
+
+    ##     ## Need to convert everything to double; otherwise we are truncating the pressure!
+    ##     elem_data = [double((1:rows(elem_nodes)) + options.surface_loads.number);
+    ##                  double(elem_nodes.');
+    ##                  elem_press.'];
+
+
+    ##     fprintf(fd, elem_format, elem_data);
+
+    ##     options.surface_loads.number += rows(elem_nodes);
+    ##   endfor
+    ## endif
   unwind_protect_cleanup
     if (fd ~= -1)
       fclose(fd);

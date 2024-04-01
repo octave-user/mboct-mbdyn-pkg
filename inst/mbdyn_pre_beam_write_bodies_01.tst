@@ -96,7 +96,7 @@
 %! if (f_plot_res)
 %!   figure("visible", "off");
 %!   mbdyn_pre_beam_plot(beam,struct("Rn",true,"Rg",false));
-%!   set(plot3(X(1,:),X(2,:),X(3,:),'-;X;5'),'linewidth',3);
+%!   set(plot3(X(1,:),X(2,:),X(3,:),'-;X;c'),'linewidth',3);
 %! endif
 %! mbdyn_pre_write_param_file(fd, param);
 %! fputs(fd, "begin: data;\n");

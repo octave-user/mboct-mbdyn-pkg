@@ -168,7 +168,6 @@
 %!               if (~options.verbose)
 %!                 opt_mbd.logfile = [opt_mbd.output_file, ".stdout"];
 %!               endif
-%!               opt_mbd.mbdyn_command = "mbdyn -C";
 %!               opt_mbd.f_run_mbdyn = true;
 %!               switch (elem_type)
 %!                 case {"iso8", "iso8upc"}

@@ -35,9 +35,9 @@
 %! options.number_of_modes = int32(10);
 %! options.scale_def = 10e-3;
 %! options.geo_tol = sqrt(eps);
-%! options.mbdyn_command = "mbdyn";
 %! options.f_run_mbdyn = true;
 %! options.verbose = false;
+%! f_plot = false;
 %! filename = "";
 %! unwind_protect
 %!   filename = tempname();
@@ -176,7 +176,6 @@
 %!   cms_data.mat_ass.Dred = param.alpha * cms_data.mat_ass.Mred + param.beta * cms_data.mat_ass.Kred;
 %!   fem_cms_export([filename, "_cms"], cms_data.mesh, cms_data.dof_map, cms_data.mat_ass, cms_opt);
 %!   options_mbd.output_file = filename;
-%!   options_mbd.mbdyn_command = options.mbdyn_command;
 %!   options_mbd.logfile = [filename, ".stdout"];
 %!   options_mbd.f_run_mbdyn2easyanim = false;
 %!   param_file = [filename, ".set"];
@@ -340,10 +339,11 @@
 %!     U_t = R.' * U(:, i);
 %!     u_r(i) = U_t(1);
 %!   endfor
+%!   if (f_plot)
 %!   figure("visible", "off");
 %!   hold on;
-%!   plot(res.t * SI_unit_second, tau_t * SI_unit_pascal, "-;FEM tau11;1");
-%!   plot(res.t([1, end]) * SI_unit_second, TAU_t_ref(2, 2)([1, end]) * SI_unit_pascal, "-;reference tau11;0");
+%!   plot(res.t * SI_unit_second, tau_t * SI_unit_pascal, "-;FEM tau11;r");
+%!   plot(res.t([1, end]) * SI_unit_second, TAU_t_ref(2, 2)([1, end]) * SI_unit_pascal, "-;reference tau11;k");
 %!   xlabel("t [s]");
 %!   ylabel("stress [Pa]");
 %!   grid on;
@@ -351,13 +351,15 @@
 %!   title("rotating thin ring - stress versus time");
 %!   figure("visible", "off");
 %!   hold on;
-%!   plot(res.t * SI_unit_second, u_r * SI_unit_meter, "-;FEM tau11;1");
-%!   plot(res.t([1, end]) * SI_unit_second, U_r_ref(1)([1, end]) * SI_unit_meter, "-;reference tau11;0");
+%!   plot(res.t * SI_unit_second, u_r * SI_unit_meter, "-;FEM tau11;r");
+%!   plot(res.t([1, end]) * SI_unit_second, U_r_ref(1)([1, end]) * SI_unit_meter, "-;reference tau11;k");
 %!   xlabel("t [s]");
 %!   ylabel("radial deformation [m]");
 %!   grid on;
 %!   grid minor on;
 %!   title("rotating thin ring - deformation versus time");
+%!   figure_list();
+%!   endif
 %!   for j=1:rows(cms_data_p.sol_tran.stress.taum.tet10)
 %!     for k=1:columns(cms_data_p.sol_tran.stress.taum.tet10)
 %!       inode = cms_data.mesh.elements.tet10(j, k);
@@ -375,7 +377,6 @@
 %!       assert_simple(U_t, U_r_ref, tol * norm(U_r_ref));
 %!     endfor
 %!   endfor
-%!   figure_list();
 %! unwind_protect_cleanup
 %!   if (numel(fn))
 %!     fn = dir([filename, "*"]);

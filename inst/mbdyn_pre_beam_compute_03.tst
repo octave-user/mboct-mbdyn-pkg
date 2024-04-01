@@ -1,6 +1,9 @@
 ## mbdyn_pre_beam_compute.tst:03
 %!test
-%! close all;
+%! f_plot = false;
+%! if (f_plot)
+%!   close all;
+%! endif
 %! N = 4;
 %! Theta2 = 88*pi/180;
 %! Theta3 = -10*pi/180;
@@ -14,7 +17,9 @@
 %!       0, 0;
 %!       0, 0 ];
 %! beam = mbdyn_pre_beam_compute(R*X,N);
-%! figure("visible", "off");
-%! mbdyn_pre_beam_plot(beam,struct("s",0.001,"Rn",false,"Rg",false));
-%! title("straight beam");
+%! if (f_plot)
+%!   figure("visible", "off");
+%!   mbdyn_pre_beam_plot(beam,struct("s",0.001,"Rn",false,"Rg",false));
+%!   title("straight beam");
+%! endif
 %! assert_simple(R,beam.Rn(:,:,1),sqrt(eps));

@@ -1,5 +1,9 @@
 ## mbdyn_solver_run.tst:05
-%!demo
+%!test
+%! f_plot = false;
+%! if (f_plot)
+%!   close all;
+%! endif
 %! fd = -1;
 %! unwind_protect
 %!   unwind_protect
@@ -74,28 +78,30 @@
 %!          repmat(g, numel(t), 1), ...
 %!          zeros(numel(t), 3)], ...
 %!          1e-5);
-%!   figure("visible", "off");
-%!   subplot(3, 1, 1);
-%!   plot(t, node_data{1}(:, 3), "-;x(t);1");
-%!   xlabel("t [s]");
-%!   ylabel("x [m]");
-%!   grid on;
-%!   grid minor on;
-%!   title("trajectory");
-%!   subplot(3, 1, 2);
-%!   plot(t, node_data{1}(:, 9), "-;v(t);1");
-%!   xlabel("t [s]");
-%!   ylabel("v [m/s]");
-%!   grid on;
-%!   grid minor on;
-%!   title("velocity");
-%!   subplot(3, 1, 3);
-%!   plot(t, node_data{1}(:, 15), "-;a(t);1");
-%!   xlabel("t [s]");
-%!   ylabel("a [m/s^2]");
-%!   grid on;
-%!   grid minor on;
-%!   title("acceleration");
+%!   if (f_plot)
+%!     figure("visible", "off");
+%!     subplot(3, 1, 1);
+%!     plot(t, node_data{1}(:, 3), "-;x(t);r");
+%!     xlabel("t [s]");
+%!     ylabel("x [m]");
+%!     grid on;
+%!     grid minor on;
+%!     title("trajectory");
+%!     subplot(3, 1, 2);
+%!     plot(t, node_data{1}(:, 9), "-;v(t);r");
+%!     xlabel("t [s]");
+%!     ylabel("v [m/s]");
+%!     grid on;
+%!     grid minor on;
+%!     title("velocity");
+%!     subplot(3, 1, 3);
+%!     plot(t, node_data{1}(:, 15), "-;a(t);r");
+%!     xlabel("t [s]");
+%!     ylabel("a [m/s^2]");
+%!     grid on;
+%!     grid minor on;
+%!     title("acceleration");
+%!   endif
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);

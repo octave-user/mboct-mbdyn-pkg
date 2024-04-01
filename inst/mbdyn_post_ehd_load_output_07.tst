@@ -26,6 +26,7 @@
 %! param.rho_0 = 850;
 %! param.p_amb = 1e5;
 %! param.pref = 1e6;
+%! f_plot = false;
 %! fd = -1;
 %! output_file = "";
 %! unwind_protect
@@ -289,7 +290,6 @@
 %!   end_unwind_protect
 %!   opt_sol.output_file = output_file;
 %!   opt_sol.verbose = false;
-%!   opt_sol.mbdyn_command = "mbdyn";
 %!   if (~opt_sol.verbose)
 %!     opt_sol.logfile = [output_file, ".stdout"];
 %!   endif
@@ -358,10 +358,11 @@
 %! analy.p_nc(analy.cond.exit) = analy.p_amb + analy.p_cf_nc*((1./analy.h(analy.cond.exit) - 1/analy.h_min) - analy.q_u1_nc*(1./analy.h(analy.cond.exit).^2 - 1/analy.h_min^2));
 %! analy.p_wc(analy.cond.exit) = analy.p_amb + analy.p_cf_wc*((1./analy.h(analy.cond.exit) - 1/analy.h_min) - analy.q_u1_wc*(1./analy.h(analy.cond.exit).^2 - 1/analy.h_min^2));
 %! z = res.bearings.zi(:, 1) + 0.5 * param.L_x1;
+%! if (f_plot)
 %! figure("visible", "off");
 %! hold on;
-%! plot(res.bearings.zi(:, 1) + 0.5 * param.L_x1, res.bearings.columns.p(:, 1), "-x;p(z);1");
-%! plot(analy.x1, analy.p_wc, "-;Fowell;0");
+%! plot(res.bearings.zi(:, 1) + 0.5 * param.L_x1, res.bearings.columns.p(:, 1), "-x;p(z);r");
+%! plot(analy.x1, analy.p_wc, "-;Fowell;k");
 %! xlabel("z [m]");
 %! ylabel("p [Pa]");
 %! grid on;
@@ -369,13 +370,14 @@
 %! title("axial pressure distribution");
 %! figure("visible", "off");
 %! hold on;
-%! plot(res.bearings.zi(:, 1) + 0.5 * param.L_x1, res.bearings.columns.h(:, 1), "-+;h(z);1");
-%! plot([0, param.L_x1], [param.h_max, param.h_min], "-;h_r(z);0");
+%! plot(res.bearings.zi(:, 1) + 0.5 * param.L_x1, res.bearings.columns.h(:, 1), "-+;h(z);r");
+%! plot([0, param.L_x1], [param.h_max, param.h_min], "-;h_r(z);k");
 %! xlabel("z [m]");
 %! ylabel("h [m]");
 %! grid on;
 %! grid minor on;
 %! title("radial clearance versus axial position");
+%! endif
 %! tol_q = 1e-3;
 %! tol_p = 6e-2;
 %! assert_simple(-q1, analy.q_u1_wc, tol_q * analy.q_u1_wc);

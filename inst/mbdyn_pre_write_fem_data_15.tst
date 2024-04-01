@@ -2,7 +2,10 @@
 %!test
 %! ## TEST 15
 %! pkg load mboct-fem-pkg;
-%! close all;
+%! options.f_plot = false;
+%! if (options.f_plot)
+%!   close all;
+%! endif
 %! function R2j = norm_ref_frame(R2)
 %!   e1 = R2(:, 1);
 %!   e3 = [0; 0; 1];
@@ -972,7 +975,6 @@
 %!         continue;
 %!       endif
 %!       options_mbd(i).output_file = sprintf("%s_%d", filename, i);
-%!       options_mbd(i).mbdyn_command = options.mbdyn_command;
 %!       if (~options.verbose)
 %!         options_mbd(i).logfile = sprintf("%s_%d.stdout", filename, i);
 %!       endif
@@ -988,22 +990,28 @@
 %!       [res(i).drive_id, res(i).drive_data] = mbdyn_post_load_output_drv(options_mbd(i).output_file);
 %!     endfor
 %!     r = omega = cell(1, numel(mbdyn_filenames));
-%!     figure("visible", "off");
-%!     hold on;
+%!     if (options.f_plot)
+%!       figure("visible", "off");
+%!       hold on;
+%!     endif
 %!     for i=1:numel(mbdyn_filenames)
 %!       if (~enable_filenames(i))
 %!         continue;
 %!       endif
 %!       omega{i} = res(i).drive_data{find(res(i).drive_id == res(i).log_dat.vars.drive_id_rotor_speed)};
 %!       r{i} = norm(res(i).trajectory{res(i).log_dat.vars.node_idx_rotor}(:, 1:2), "rows");
-%!       plot(omega{i} * 30 / pi * (1 / SI_unit.second), 1e3 * r{i} * SI_unit.meter, sprintf("-;%s;%d", printable_title(mbdyn_filename_suffix{i}), i));
+%!       if (options.f_plot)
+%!         plot(omega{i} * 30 / pi * (1 / SI_unit.second), 1e3 * r{i} * SI_unit.meter, sprintf("-;%s;%d", printable_title(mbdyn_filename_suffix{i}), i));
+%!       endif
 %!     endfor
-%!     xlabel("n [rpm]");
-%!     ylabel("r [mm]");
-%!     grid on;
-%!     grid minor on;
-%!     title("resonance curve center of disk versus speed - magnitude");
-%!     figure_list();
+%!     if (options.f_plot)
+%!       xlabel("n [rpm]");
+%!       ylabel("r [mm]");
+%!       grid on;
+%!       grid minor on;
+%!       title("resonance curve center of disk versus speed - magnitude");
+%!       figure_list();
+%!     endif
 %!     tol = 0.5e-2;
 %!     for i=1:numel(mbdyn_filenames)
 %!       if (~enable_filenames(i))
@@ -1058,7 +1066,6 @@
 %! options.scale_def = 10e-3;
 %! options.geo_tol = sqrt(eps);
 %! options.code.use_package = false;
-%! options.mbdyn_command = "mbdyn";
 %! options.f_run_mbdyn = [true, true];
 %! options.verbose = false;
 %! options.elem_type = "iso20";

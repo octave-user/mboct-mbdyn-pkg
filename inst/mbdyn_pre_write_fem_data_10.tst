@@ -21,7 +21,7 @@
 %!   d = 0e-3 / SI_unit_meter;
 %!   h = 2 * c;
 %!   options.interactive = false;
-%!   options.plot = true;
+%!   options.plot = false;
 %!   options.verbose = false;
 %!   options.number_of_beams = int32(40);
 %!   options.number_of_threads = mbdyn_solver_num_threads_default();
@@ -652,7 +652,6 @@
 %!         if (~options.verbose)
 %!           options_mbd.logfile = [options_mbd.output_file, ".stdout"];
 %!         endif
-%!         options_mbd.mbdyn_command = "mbdyn -C";
 %!         options_eig.positive_frequencies = false;
 %!         if (options.verbose)
 %!           shell(sprintf("cat %s | nl", filename_mbdyn));

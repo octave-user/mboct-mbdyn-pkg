@@ -81,6 +81,7 @@
 %! param.output_bearing_data = true;
 %! param.B = param.d1 * B_d_r(k);
 %! param.epsilon = epsilon_r(j);
+%! f_plot = false;
 %! fd = -1;
 %! output_file = "";
 %! unwind_protect
@@ -408,11 +409,12 @@
 %! mu_r = zeros(numel(epsilon_r), numel(B_d_r));
 %! beta_r = zeros(numel(epsilon_r), numel(B_d_r));
 %! beta_r(find(epsilon_r < 0), :) = pi;
+%! if (f_plot)
 %! for i=1:test_freq:numel(B_d_r)
 %!   figure("visible", "off");
 %!   hold("on");
-%!   semilogy(epsilon_r(1:test_freq:end), So_r(1:test_freq:end, i), "-;So_r(epsilon);0");
-%!   semilogy(epsilon_r(1:test_freq:end), So(1:test_freq:end, i), "-;So(epsilon);1");
+%!   semilogy(epsilon_r(1:test_freq:end), So_r(1:test_freq:end, i), "-;So_r(epsilon);k");
+%!   semilogy(epsilon_r(1:test_freq:end), So(1:test_freq:end, i), "-;So(epsilon);r");
 %!   xlabel("epsilon [1]");
 %!   ylabel("So [1]");
 %!   grid on;
@@ -422,8 +424,8 @@
 %! for i=1:test_freq:numel(B_d_r)
 %!   figure("visible", "off");
 %!   hold("on");
-%!   plot(epsilon_r(1:test_freq:end), 180 / pi * beta_r(1:test_freq:end, i), "-;beta_r(epsilon);0");
-%!   plot(epsilon_r(1:test_freq:end), 180 / pi * beta(1:test_freq:end, i), "-;beta(epsilon);1");
+%!   plot(epsilon_r(1:test_freq:end), 180 / pi * beta_r(1:test_freq:end, i), "-;beta_r(epsilon);k");
+%!   plot(epsilon_r(1:test_freq:end), 180 / pi * beta(1:test_freq:end, i), "-;beta(epsilon);r");
 %!   xlabel("epsilon [1]");
 %!   ylabel("beta [deg]");
 %!   grid on;
@@ -433,8 +435,8 @@
 %! for i=1:test_freq:numel(B_d_r)
 %!   figure("visible", "off");
 %!   hold("on");
-%!   plot(epsilon_r(1:test_freq:end), mu_r(1:test_freq:end, i), "-;mu_r(epsilon);0");
-%!   plot(epsilon_r(1:test_freq:end), mu(1:test_freq:end, i), "-;mu(epsilon);1");
+%!   plot(epsilon_r(1:test_freq:end), mu_r(1:test_freq:end, i), "-;mu_r(epsilon);k");
+%!   plot(epsilon_r(1:test_freq:end), mu(1:test_freq:end, i), "-;mu(epsilon);r");
 %!   xlabel("epsilon [1]");
 %!   ylabel("mu [1]");
 %!   grid on;
@@ -444,8 +446,8 @@
 %! for i=1:test_freq:numel(B_d_r)
 %!   figure("visible", "off");
 %!   hold("on");
-%!   plot(epsilon_r(1:test_freq:end), Q_r(1:test_freq:end, i), "-;Q_r(epsilon);0");
-%!   plot(epsilon_r(1:test_freq:end), Q(1:test_freq:end, i), "-;Q(epsilon);1");
+%!   plot(epsilon_r(1:test_freq:end), Q_r(1:test_freq:end, i), "-;Q_r(epsilon);k");
+%!   plot(epsilon_r(1:test_freq:end), Q(1:test_freq:end, i), "-;Q(epsilon);r");
 %!   ylim([0, ylim()(2)]);
 %!   xlabel("epsilon [1]");
 %!   ylabel("Q [1]");
@@ -453,6 +455,7 @@
 %!   grid minor on;
 %!   title(sprintf("Non-dimensional oil flow pure displacement B/d=%.2f", B_d_r(i)));
 %! endfor
+%! endif
 %! assert_simple(mean(mean(abs(So(1:test_freq:end, 1:test_freq:end) ./ So_r(1:test_freq:end,1:test_freq:end) - 1))) < 0.02);
 %! assert_simple(mean(mean(abs(beta(1:test_freq:end,1:test_freq:end) - beta_r(1:test_freq:end, 1:test_freq:end)))) < 1e-6 * pi / 180);
 %! assert_simple(mean(mean(abs(mu(1:test_freq:end,1:test_freq:end)))) < 1e-8);

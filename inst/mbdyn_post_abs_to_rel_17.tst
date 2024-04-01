@@ -124,7 +124,6 @@
 %!   if (~options.verbose)
 %!     options.logfile = [fname, ".stdout"];
 %!   endif
-%!   options.mbdyn_command = "mbdyn";
 %!   mbdyn_solver_run(fname, options);
 %!   log_dat = mbdyn_post_load_log(options.output_file);
 %!   [t, trajectory, deformation, velocity, acceleration, node_id] = mbdyn_post_load_output_struct(options.output_file);

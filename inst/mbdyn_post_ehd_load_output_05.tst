@@ -14,6 +14,7 @@
 %! param.output_bearing_data = true;
 %! param.B = 25e-3;
 %! cavitation = "mass conserving";
+%! f_plot = false;
 %! fd = -1;
 %! output_file = "";
 %! unwind_protect
@@ -322,10 +323,11 @@
 %!   dh_dt = -dh_dz * (U1z - U2z);
 %!   z = res.bearings.zi(:, 1) + 0.5 * B;
 %!   [p_ref, mdotz_ref] = reference_solution(h0, B, dh_dz, p0, p1, eta, U1z, U2z, rho, dx, dh_dt, z);
+%!   if (f_plot)
 %!   figure("visible", "off");
 %!   hold on;
-%!   plot(res.bearings.zi(:, 1) + 0.5 * B, res.bearings.columns.p(:, 1), "-;p(z);1");
-%!   plot(z, p_ref, "-;p_r;0");
+%!   plot(res.bearings.zi(:, 1) + 0.5 * B, res.bearings.columns.p(:, 1), "-;p(z);r");
+%!   plot(z, p_ref, "-;p_r;k");
 %!   xlabel("z [m]");
 %!   ylabel("p [Pa]");
 %!   grid on;
@@ -333,13 +335,14 @@
 %!   title("axial pressure distribution");
 %!   figure("visible", "off");
 %!   hold on;
-%!   plot(res.bearings.zi(:, 1) + 0.5 * B, res.bearings.columns.h(:, 1), "-;h(z);1");
-%!   plot(z, h0 + dh_dz * z, "-;h_r(z);0");
+%!   plot(res.bearings.zi(:, 1) + 0.5 * B, res.bearings.columns.h(:, 1), "-;h(z);r");
+%!   plot(z, h0 + dh_dz * z, "-;h_r(z);k");
 %!   xlabel("z [m]");
 %!   ylabel("h [m]");
 %!   grid on;
 %!   grid minor on;
 %!   title("radial clearance versus time");
+%!   endif
 %!   assert_simple(res.bearings.columns.p(:, 1), p_ref, 1e-4 * max(abs(p_ref)));
 %!   assert_simple(-mdot1, mdotz_ref(1), 0.5e-2 * abs(mdotz_ref(1)));
 %!   assert_simple(mdot2, mdotz_ref(end), 0.5e-2 * abs(mdotz_ref(end)));

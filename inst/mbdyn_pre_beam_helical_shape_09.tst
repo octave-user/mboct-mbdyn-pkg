@@ -14,7 +14,7 @@
 %! [X, shape] = mbdyn_pre_beam_helical_shape(spring);
 %! figure("visible","off");
 %! hold on;
-%! plot(shape.Phi, shape.z,'-;z(Phi);1');
+%! plot(shape.Phi, shape.z,'-;z(Phi);r');
 %! grid on;
 %! grid minor on;
 %! xlabel('Phi [rad]');
@@ -22,7 +22,7 @@
 %! title('pitch versus angle');
 %! figure("visible","off");
 %! hold on;
-%! plot(shape.z, shape.D, '-;D(z);1');
+%! plot(shape.z, shape.D, '-;D(z);r');
 %! grid on;
 %! grid minor on;
 %! xlabel('z [m]');

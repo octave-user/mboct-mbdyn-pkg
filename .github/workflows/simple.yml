@@ -42,7 +42,7 @@ jobs:
            hg clone https://www.octave.org/hg/octave octave
            pushd octave
            ## FIXME: Octave version 9.1.0 will fail because of this issue: https://savannah.gnu.org/bugs/?63467
-           hg checkout release-8-4-0
+           hg checkout stable
            popd
 
       # Runs a single command using the runners shell

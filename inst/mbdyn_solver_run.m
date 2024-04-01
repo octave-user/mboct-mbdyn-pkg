@@ -40,7 +40,7 @@
 ##
 ## @var{verbose} @dots{} If true the command is displayed before it is executed.
 ##
-## @var{mbdyn_command} @dots{} The filename of mbdyn's binary.
+## @var{mbdyn_command} @dots{} The default command to run MBDyn (e.g. "mbdyn -C").
 ##
 ## @var{output_file} @dots{} File name for output data.
 ##
@@ -50,7 +50,7 @@
 
 function info = mbdyn_solver_run(mbdyn_filename, every_or_options = 1, showAll = 1, f_run_mbdyn = true, f_run_mbdyn2easyanim = false, ...
                                  f_runEasyAnim = false, working_directory = pwd(), logfile = "", verbose = true, output_file = "", ...
-                                 f_pedantic = false, mbdyn_command = "mbdyn", f_silent = false)
+                                 f_pedantic = false, mbdyn_command = [], f_silent = false)
 
   info.total_steps = int32(-1);
   info.total_iter = int32(-1);
@@ -120,6 +120,10 @@ function info = mbdyn_solver_run(mbdyn_filename, every_or_options = 1, showAll =
     endif
   else
     every = every_or_options;
+  endif
+
+  if (isempty(mbdyn_command))
+    mbdyn_command = mbdyn_solver_command_default();
   endif
 
   logfile = mbdyn_convert_path(logfile);

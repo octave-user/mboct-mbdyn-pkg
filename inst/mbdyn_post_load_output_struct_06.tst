@@ -1,5 +1,6 @@
 ## mbdyn_post_load_output_struct.tst:06
-%!demo
+%!test
+%! f_plot = false;
 %! fd = -1;
 %! unwind_protect
 %!   unwind_protect
@@ -74,6 +75,7 @@
 %!          zeros(numel(t), 3)], ...
 %!          1e-5);
 %!  assert_simple(force{1}(:, 1:3), [repmat(F, numel(t), 1), zeros(numel(t), 2)]);
+%!  if (f_plot)
 %!  figure("visible", "off");
 %!  subplot(3, 1, 1);
 %!  hold on;
@@ -105,6 +107,7 @@
 %!  grid on;
 %!  grid minor on;
 %!  title("acceleration");
+%!  endif
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);

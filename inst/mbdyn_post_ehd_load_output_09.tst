@@ -67,6 +67,7 @@
 %! param.output_bearing_data = true;
 %! param.B = 7e-3;
 %! param.epsilon = 0.6;
+%! f_plot = false;
 %! fd = -1;
 %! output_file = "";
 %! unwind_protect
@@ -374,6 +375,7 @@
 %!   beta_ref = interp2(B_d_r, epsilon_r, beta_r, B / d, epsilon, "linear");
 %!   mu_ref = Psi * (abs((omega1z - omega2z) / omega_res) * pi / (sqrt(1 - epsilon^2) * So_ref) + sin(beta_ref) * abs(epsilon) / 2);
 %!   Q_ref = interp2(B_d_r, epsilon_r, Q_r, B / d, epsilon, "linear");
+%!   if (f_plot)
 %!   figure("visible", "off");
 %!   set(plot(res.bearings.xi(floor(end/2), :) / (0.5 * D) * 180 / pi, res.bearings.columns.p(floor(end/2), :)), "linewidth", 3);
 %!   grid on;
@@ -397,6 +399,7 @@
 %!   ylabel("rho/rho0 [1]");
 %!   title("volumetric filling ratio");
 %!   figure_list();
+%!   endif
 %!   fprintf(stderr, "So / So_ref - 1 = %.2f\n", So / So_ref - 1);
 %!   fprintf(stderr, "beta / beta_ref - 1 = %.2f\n", beta / beta_ref - 1);
 %!   fprintf(stderr, "mu / mu_ref - 1 = %.2f\n", mu / mu_ref - 1);

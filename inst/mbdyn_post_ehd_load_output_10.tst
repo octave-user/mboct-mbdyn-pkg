@@ -46,6 +46,7 @@
 %!          200,     0];
 %! output_file = "";
 %! have_mesh_size_binary = false;
+%! f_plot = false;
 %! unwind_protect
 %!   output_file = tempname();
 %!   if (ispc())
@@ -110,7 +111,6 @@
 %!   opt_mesh.verbose = false;
 %!   opt_mesh.output_file = [output_file, "_msh"];
 %!   options.geo_tol = sqrt(eps);
-%!   options_mbdyn.mbdyn_command = "mbdyn";
 %!   empty_cell = cell(1, 2);
 %!   group_defs = struct("id", empty_cell, ...
 %!                       "name", empty_cell, ...
@@ -615,25 +615,27 @@
 %!   cms_data.dof_map = dof_map;
 %!   cms_data.cms_opt = cms_opt;
 %!   res.sol_dyn = fem_post_cms_sol_import(options_mbdyn.output_file, cms_data);
+%!   Phi = res.bearings.xi(1, :) / (0.5 * param.Di);
+%!   p = interp2(res.bearings.xi, res.bearings.zi, res.bearings.columns.p(:, :, end), res.bearings.xi(1, :), 0);
+%!   w = interp2(res.bearings.xi, res.bearings.zi, res.bearings.columns.wtot(:, :, end), res.bearings.xi(1, :), 0);
+%!   ax = plotyy(180 / pi * Phi, 1e-3 * p * SI_unit_pascal, 180 / pi * Phi, 1e6 * w * SI_unit_meter);
+%!   h = interp2(res.bearings.xi, res.bearings.zi, res.bearings.columns.h(:, :, end), res.bearings.xi(1, :), 0);
+%!   if (f_plot)
 %!   figure("visible", "off");
-%!   plot(res.t * SI_unit_second, 1e-3 * max(res.bearings.columns.p_n, [], 2) * SI_unit_pascal, "-;max(p(t));1");
+%!   plot(res.t * SI_unit_second, 1e-3 * max(res.bearings.columns.p_n, [], 2) * SI_unit_pascal, "-;max(p(t));r");
 %!   xlabel("t [s]");
 %!   ylabel("p [kPa]");
 %!   grid on;
 %!   grid minor on;
 %!   title("convergence history of peak pressure");
 %!   figure("visible", "off");
-%!   plot(res.t * SI_unit_second, 1e6 * max(res.bearings.columns.wtot_n, [], 2) * SI_unit_pascal, "-;max(w(t));1");
+%!   plot(res.t * SI_unit_second, 1e6 * max(res.bearings.columns.wtot_n, [], 2) * SI_unit_pascal, "-;max(w(t));r");
 %!   xlabel("t [s]");
 %!   ylabel("w [um]");
 %!   grid on;
 %!   grid minor on;
 %!   title("convergence history of peak deformation");
 %!   figure("visible", "off");
-%!   Phi = res.bearings.xi(1, :) / (0.5 * param.Di);
-%!   p = interp2(res.bearings.xi, res.bearings.zi, res.bearings.columns.p(:, :, end), res.bearings.xi(1, :), 0);
-%!   w = interp2(res.bearings.xi, res.bearings.zi, res.bearings.columns.wtot(:, :, end), res.bearings.xi(1, :), 0);
-%!   ax = plotyy(180 / pi * Phi, 1e-3 * p * SI_unit_pascal, 180 / pi * Phi, 1e6 * w * SI_unit_meter);
 %!   xlabel("Phi [deg]");
 %!   ylabel(ax(1), "p [kPa]");
 %!   ylabel(ax(2), "w [um]");
@@ -646,8 +648,8 @@
 %!   title("midplane pressure and deformation");
 %!   figure("visible","off");
 %!   hold on;
-%!   set(plot(180 / pi * Phi, 1e6 * w * SI_unit_meter, "-;w(Phi) [um];1"), "linewidth", 5);
-%!   set(plot(ref_data_w(:, 1), ref_data_w(:, 2), "-;reference w(Phi) [um];0"), "linewidth", 3);
+%!   set(plot(180 / pi * Phi, 1e6 * w * SI_unit_meter, "-;w(Phi) [um];r"), "linewidth", 5);
+%!   set(plot(ref_data_w(:, 1), ref_data_w(:, 2), "-;reference w(Phi) [um];k"), "linewidth", 3);
 %!   xlabel("Phi [deg]");
 %!   ylabel("w [um]");
 %!   grid on;
@@ -657,8 +659,8 @@
 %!   title("midplane deformation");
 %!   figure("visible","off");
 %!   hold on;
-%!   set(plot(180 / pi * Phi, 1e-3 * p * SI_unit_pascal, "-;p(Phi) [kPa];1"), "linewidth", 5);
-%!   set(plot(ref_p(:, 1), ref_p(:, 2), "-;reference p(Phi) [kPa];0"), "linewidth", 3);
+%!   set(plot(180 / pi * Phi, 1e-3 * p * SI_unit_pascal, "-;p(Phi) [kPa];r"), "linewidth", 5);
+%!   set(plot(ref_p(:, 1), ref_p(:, 2), "-;reference p(Phi) [kPa];k"), "linewidth", 3);
 %!   xlabel("Phi [deg]");
 %!   ylabel("p* [kPa]");
 %!   grid on;
@@ -667,7 +669,7 @@
 %!   xticks(0:30:360);
 %!   title("midplane pressure");
 %!   figure("visible","off");
-%!   set(plot(180 / pi * Phi, p * param.cr^2 / (0.5 * param.Di * param.U1 * param.etal), "-;p*(Phi) [1];1"), "linewidth", 5);
+%!   set(plot(180 / pi * Phi, p * param.cr^2 / (0.5 * param.Di * param.U1 * param.etal), "-;p*(Phi) [1];r"), "linewidth", 5);
 %!   xlabel("Phi [deg]");
 %!   ylabel("p* [1]");
 %!   grid on;
@@ -677,9 +679,8 @@
 %!   title("midplane nondimensional pressure");
 %!   figure("visible", "off");
 %!   hold on;
-%!   h = interp2(res.bearings.xi, res.bearings.zi, res.bearings.columns.h(:, :, end), res.bearings.xi(1, :), 0);
-%!   set(plot(180 / pi * Phi, 1e6 * h * SI_unit_meter, "-;h(Phi) [um];1"), "linewidth", 5);
-%!   set(plot(180 / pi * Phi, 1e6 * w * SI_unit_meter, "-;w(Phi) [um];3"), "linewidth", 5);
+%!   set(plot(180 / pi * Phi, 1e6 * h * SI_unit_meter, "-;h(Phi) [um];r"), "linewidth", 5);
+%!   set(plot(180 / pi * Phi, 1e6 * w * SI_unit_meter, "-;w(Phi) [um];b"), "linewidth", 5);
 %!   xlabel("Phi [deg]");
 %!   ylabel(ax(2), "h, w [um]");
 %!   grid on;
@@ -714,6 +715,7 @@
 %!   grid minor on;
 %!   title("fractional film content [1]");
 %!   figure_list();
+%!   endif
 %!   p_int = interp1(180 / pi * Phi, 1e-3 * p * SI_unit_pascal, ref_p(:, 1), "linear");
 %!   w_int = interp1(180 / pi * Phi, 1e6 * w * SI_unit_meter, ref_data_w(:, 1), "linear");
 %!   assert_simple(p_int, ref_p(:, 2), 0.15 * max(abs(ref_p(:, 2))));

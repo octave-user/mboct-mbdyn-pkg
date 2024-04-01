@@ -133,8 +133,8 @@
 %!   if (f_plot_deformation)
 %!     figure("visible", "off");
 %!     hold on;
-%!     plot(z, wref, "-;wref;0");
-%!     plot(z, w, "-;w;1");
+%!     plot(z, wref, "-;wref;k");
+%!     plot(z, w, "-;w;r");
 %!     grid on;
 %!     grid minor on;
 %!     title("deformation of a cantilever beam");

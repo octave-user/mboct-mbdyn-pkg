@@ -1,6 +1,6 @@
 function [r, l, lambda, err, LAMBDA] = mbdyn_post_modal_decomposition(A, B, dCoef, sigma, k, opts)
   n = rows(A);
-  
+
   if (n ~= columns(A) || n ~= rows(B) || n ~= columns(B))
     error("incompatible matrix size of A and B");
   endif
@@ -16,7 +16,7 @@ function [r, l, lambda, err, LAMBDA] = mbdyn_post_modal_decomposition(A, B, dCoe
   opts.p = min(2 * k, n);
 
   rndstate = rand("state");
-  
+
   unwind_protect
     rand("seed", 0);
     [V, LAMBDA, flag] = eigs(oper_func, 2 * n, k, sigma, opts);
@@ -27,13 +27,9 @@ function [r, l, lambda, err, LAMBDA] = mbdyn_post_modal_decomposition(A, B, dCoe
   if (flag ~= 0)
     error("eigs failed with status %d", flag);
   endif
-  #lambda = (diag(LAMBDA) - 1) ./ (diag(LAMBDA) + 1) / dCoef
-  ## for i=1:columns(V)
-  ##   oper_func(V(:, i)) - LAMBDA(i,i) * V(:, i)
-  ## endfor
 
   LAMBDA = diag(LAMBDA)(1:end/2);
-  
+
   r = V(1:n, 1:end/2);
   l = V((n + 1):2 * n, 1:end/2);
 
@@ -42,14 +38,14 @@ function [r, l, lambda, err, LAMBDA] = mbdyn_post_modal_decomposition(A, B, dCoe
   for i=1:columns(r)
     s(i) = l(:, i).' * B * r(:, i);
   endfor
-  
+
   s = diag(1 ./ sqrt(s));
-  
+
   r *= s;
   l *= s;
-  
+
   err = 0;
-  
+
   for i=1:columns(r)
     v1a = A * r(:, i);
     v2a = LAMBDA(i) * B * r(:, i);
@@ -64,7 +60,7 @@ endfunction
 function Y = mbdyn_modal_operator_func(A, B, n, X)
   r = X(1:n, :);
   l = X((n + 1):2*n, :);
-  
+
   Y = [B \  (A * r);
        ((l' * A) / B).'];
 endfunction
@@ -75,33 +71,33 @@ endfunction
 %!         eye(length(M)),   zeros(length(M))];
 %!   [R,lambda] = eig(C);
 %!   lambda = diag(lambda);
-%!   [lambda_imag,i_lambda] = sort(imag(lambda),'descend');
-%!   lambda = lambda(i_lambda);
-%!   R = R(:,i_lambda);
-%!   [lambda_imag,i_lambda]     = sort(abs(imag(lambda)));
-%!   lambda = lambda(i_lambda);
-%!   R = R(:,i_lambda);
+%!   A = [abs(imag(lambda(:))), imag(lambda(:))];
+%!   [~, idx] = sortrows(A, [-1,-2]);
+%!   lambda = lambda(idx);
+%!   R = R(:, idx);
 %!   if ( nargout() >= 3 )
 %!     f = imag(lambda(2*(1:length(lambda)/2)-1)) / ( 2 * pi );
 %!   endif
 %! endfunction
+%! m1 = 10;
+%! m2 = 100;
+%! k1 = 10000;
+%! k2 = 100000;
+%! M = [1 / 3 * m1,        1 / 6 * m1,       0;
+%!      1 / 6 * m1, 1 / 3 * (m1 + m2), 1 / 6 * m2;
+%!               0,        1 / 6 * m2, 1 / 3 * m2];
 %!
-%! M = [10.5,     0, 0;
-%!          0, 20.8, 0;
-%!          0,    0,  120];
+%! K = [ k1,      -k1,        0;
+%!      -k1,  k1 + k2,      -k2;
+%!        0,      -k2,  k1 + k2];
 %!
-%! K = [ 1000, 0,     0;
-%!          0,  2000,   0;
-%!          0,  0,  2000];
-%!
-%! beta = 0.1;
+%! beta = 0.2;
 %!
 %! D = beta * K;
-%! f_constraint = false;
+%! f_constraint = true;
 %! if (f_constraint)
-%!   Phi = [-1, 1, 0];
-%!   T = [Phi;
-%!        zeros(1, 2), 1].';
+%!   Phi = [-1, 0, 1];
+%!   T = null(Phi);
 %! else
 %!   Phi = zeros(0, 3);
 %!   T = eye(3);
@@ -110,16 +106,20 @@ endfunction
 %! Kred = T.' * K * T;
 %! Dred = T.' * D * T;
 %! [PHI_ref, lambda_ref, f_ref] = damped_eigenmode(Mred, Dred, Kred);
+
 %! fmin = 0.1 * max(f_ref);
+%! if (~fmin > 0)
+%!   error("estimation for dCoef failed");
+%! endif
 %! dCoef = 5 / (2 * pi * fmin);
 %!
-%! df_dyP = [-M, zeros(3, 3), zeros(3, rows(Phi));
-%!            D, eye(3), zeros(3, rows(Phi));
-%!            zeros(rows(Phi), 6 + rows(Phi))];
+%! df_dyP = [-M, zeros(size(M)), zeros(rows(M), rows(Phi));
+%!            D, eye(columns(M)), zeros(rows(M), rows(Phi));
+%!            zeros(rows(Phi), 2 * columns(M) + rows(Phi))];
 %!
-%! df_dy = [zeros(3, 3), eye(3), zeros(3, rows(Phi));
-%!          K, zeros(3, 3), -Phi.';
-%!          Phi/dCoef, zeros(rows(Phi), 3 + rows(Phi))];
+%! df_dy = [zeros(size(M)), eye(columns(M)), zeros(rows(M), rows(Phi));
+%!          K, zeros(size(M)), -Phi.';
+%!          Phi/dCoef, zeros(rows(Phi), columns(M) + rows(Phi))];
 %!
 %! Jac = @(dCoef) -df_dyP - dCoef * df_dy;
 %! A = Jac(-dCoef);
@@ -130,7 +130,7 @@ endfunction
 %! k = 4;
 %! opts.solver = "umfpack";
 %! opts.refine_max_iter = 10;
-%! opts.pre_scaling = false;
+%! opts.pre_scaling = true;
 %! opts.maxit = 5000;
 %! opts.tol = 0;
 %! tol = sqrt(eps);
@@ -140,23 +140,4 @@ endfunction
 %! f = imag(lambda) / (2 * pi);
 %! assert(VL.' * A * VR, diag(LAMBDA), tol*norm(LAMBDA));
 %! assert(VL.' * B * VR, eye(2), tol);
-## A = [Jp, zeros(size(Jp));
-##      zeros(size(Jp)), Jp.'];
-## B = [Jm, zeros(size(Jm));
-##      zeros(size(Jm)), Jm.'];
-## [V2, LAMBDA2] = eig(B, A);
-## LAMBDA2 = diag(LAMBDA2);
-## lambda2 = (LAMBDA2 - 1) ./ (LAMBDA2 + 1) / dCoef;
-## [~, idx] = sort(imag(lambda2));
-## LAMBDA2 = LAMBDA2(idx);
-## V2 = V2(:, idx);
-## n = rows(Jp);
-## VR2 = V2(1:n, 1:4);
-## VL2 = V2((n+1):(2*n), 1:4);
-## s = zeros(1, columns(VR2));
-## for i=1:columns(VR2)
-##  s(i) = VL2(:, i).' * Jm * VR2(:, i);
-## endfor
-## VR2 *= diag(s);
-## VL2 *= diag(s);
-## VL2.'*Jp*VR2
+%! assert(lambda, lambda_ref(1:2), tol*norm(lambda_ref(1:2)));

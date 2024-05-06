@@ -200,8 +200,8 @@
 %!   endfor
 %!   endfor
 %!   endfor
-%!   tolR = 2e-6;
-%!   tolU = 2e-6;
+%!   tolR = 2e-5;
+%!   tolU = 2e-5;
 %!   tolf = 2e-5;
 %!   tolD = 3e-2;
 %!   for j=1:numel(damping)

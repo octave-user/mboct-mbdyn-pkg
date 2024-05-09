@@ -127,7 +127,7 @@ function options = mbdyn_pre_solid_write_elements(mesh, load_case_dof, load_case
       error("failed to open file \"%s\": %s", elem_file, msg);
     endif
 
-    elem_type_solid = {"iso8", "iso8upc", "iso20", "iso20upc", "iso20upcr", "iso20r", "iso27", "iso27upc", "penta15", "penta15upc", "tet10h", "tet10upc"};
+    elem_type_solid = {"iso8", "iso8f", "iso8upc", "iso20", "iso20f", "iso20upc", "iso20upcr", "iso20r", "iso20fr", "iso27", "iso27f", "iso27upc", "penta15", "penta15f", "penta15upc", "tet10h", "tet10hf", "tet10upc"};
 
     for i=1:numel(elem_type_solid)
       if (~isfield(mesh.elements, elem_type_solid{i}))
@@ -140,12 +140,18 @@ function options = mbdyn_pre_solid_write_elements(mesh, load_case_dof, load_case
         case "iso8"
           elem_name = "hexahedron8";
           num_colloc_points = 2^3;
+        case "iso8f"
+          elem_name = "hexahedron8f";
+          num_colloc_points = 2^3;
         case "iso8upc"
           elem_name = "hexahedron8upc";
           num_colloc_points = 2^3;
           elem_node_idx_upc = int32(1);
         case "iso20"
           elem_name = "hexahedron20";
+          num_colloc_points = 3^3;
+        case "iso20f"
+          elem_name = "hexahedron20f";
           num_colloc_points = 3^3;
         case "iso20upc"
           elem_name = "hexahedron20upc";
@@ -158,6 +164,9 @@ function options = mbdyn_pre_solid_write_elements(mesh, load_case_dof, load_case
         case "iso27"
           elem_name = "hexahedron27";
           num_colloc_points = 3^3;
+        case "iso27f"
+          elem_name = "hexahedron27f";
+          num_colloc_points = 3^3;
         case "iso27upc"
           elem_name = "hexahedron27upc";
           num_colloc_points = 3^3;
@@ -165,8 +174,14 @@ function options = mbdyn_pre_solid_write_elements(mesh, load_case_dof, load_case
         case "iso20r"
           elem_name = "hexahedron20r";
           num_colloc_points = 2^3;
+        case "iso20fr"
+          elem_name = "hexahedron20fr";
+          num_colloc_points = 2^3;
         case "penta15"
           elem_name = "pentahedron15";
+          num_colloc_points = 7 * 3;
+        case "penta15f"
+          elem_name = "pentahedron15f";
           num_colloc_points = 7 * 3;
         case "penta15upc"
           elem_name = "pentahedron15upc";
@@ -174,6 +189,9 @@ function options = mbdyn_pre_solid_write_elements(mesh, load_case_dof, load_case
           elem_node_idx_upc = int32(1:6);
         case "tet10h"
           elem_name = "tetrahedron10";
+          num_colloc_points = 5;
+        case "tet10hf"
+          elem_name = "tetrahedron10f";
           num_colloc_points = 5;
         case "tet10upc"
           elem_name = "tetrahedron10upc";

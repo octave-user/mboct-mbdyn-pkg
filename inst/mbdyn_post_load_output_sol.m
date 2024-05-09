@@ -78,24 +78,22 @@ function [mesh, sol] = mbdyn_post_load_output_sol(output_file)
   node_id_transl(mesh.node_id) = 1:rows(mesh.node_id);
   mesh.nodes = val(2:7, :).';
   mesh.node_type = val(8, :).';
-  elem_type = {"iso8", "iso8upc", "iso20", "iso20upc", "iso20upcr", "iso27", "iso27upc", "iso20r", "penta15", "penta15upc", "tet10h", "tet10upc", "beam2", "beam3"};
-  elem_tag = {"hexahedron8", "hexahedron8upc", "hexahedron20", "hexahedron20upc", "hexahedron20upcr", "hexahedron27", "hexahedron27upc", "hexahedron20r", "pentahedron15", "pentahedron15upc", "tetrahedron10", "tetrahedron10upc", "beam2", "beam3"};
-  num_cols = [8, 8, 20, 20, 20, 27, 27, 20, 15, 15, 10, 10, 8, 12];
-  node_cols = {[1:8], [1:8], [1:20], [1:20], [1:20], [1:27], [1:27], [1:20], [1:15], [1:15], [1:10], [1:10], [1,5], [1,5,9]};
-  node_offset = {[],[],[],[],[],[],[],[],[],[],[],[],[2:4;6:8],[2:4;6:8;10:12]};
+
+  elem_types = mbdyn_post_elem_types();
+
   mesh.elements = struct();
   mesh.elem_id = struct();
   mesh.elem_node_offset = struct();
   num_aux_nodes = 0;
 
-  for i=1:numel(elem_type)
+  for i=1:numel(elem_types)
     arg_fmt = ", $2";
 
-    for j=1:num_cols(i)
+    for j=1:elem_types(i).num_cols
       arg_fmt = [arg_fmt, sprintf(", $%d", j + 2)];
     endfor
 
-    awk_cmd = sprintf("awk -F ' ' '/^%s:/{printf(\"%%d%s\\n\"%s);}' \"%s\"", elem_tag{i}, repmat(" %g", 1, num_cols(i)), arg_fmt, log_file);
+    awk_cmd = sprintf("awk -F ' ' '/^%s:/{printf(\"%%d%s\\n\"%s);}' \"%s\"", elem_types(i).elem_tag, repmat(" %g", 1, elem_types(i).num_cols), arg_fmt, log_file);
 
     fd = -1;
 
@@ -106,20 +104,20 @@ function [mesh, sol] = mbdyn_post_load_output_sol(output_file)
         error("failed to open file \"%s\"", log_file);
       endif
 
-      [val, count, msg] = fscanf(fd, ["%d", repmat(" %g", 1, num_cols(i)), "\n"], [num_cols(i) + 1, inf]);
+      [val, count, msg] = fscanf(fd, ["%d", repmat(" %g", 1, elem_types(i).num_cols), "\n"], [elem_types(i).num_cols + 1, inf]);
 
       if (count)
         elem_id = val(1, :).';
-        elem_nodes = node_id_transl(val(1+node_cols{i}, :).');
+        elem_nodes = node_id_transl(val(1+elem_types(i).node_cols, :).');
 
-        if (~isempty(node_offset{i}))
-          elem_node_offset = reshape(val(1+node_offset{i}, :).', rows(elem_nodes), 3, columns(elem_nodes));
-          mesh.elem_node_offset = setfield(mesh.elem_node_offset, elem_type{i}, elem_node_offset);
+        if (~isempty(elem_types(i).node_offset))
+          elem_node_offset = reshape(val(1+elem_types(i).node_offset, :).', rows(elem_nodes), 3, columns(elem_nodes));
+          mesh.elem_node_offset = setfield(mesh.elem_node_offset, elem_types(i).elem_type, elem_node_offset);
           num_aux_nodes += numel(elem_nodes);
         endif
 
-        mesh.elem_id = setfield(mesh.elem_id, elem_type{i}, elem_id);
-        mesh.elements = setfield(mesh.elements, elem_type{i}, elem_nodes);
+        mesh.elem_id = setfield(mesh.elem_id, elem_types(i).elem_type, elem_id);
+        mesh.elements = setfield(mesh.elements, elem_types(i).elem_type, elem_nodes);
       endif
     unwind_protect_cleanup
       if (fd ~= -1)
@@ -167,9 +165,9 @@ function [mesh, sol] = mbdyn_post_load_output_sol(output_file)
     aux_node_idx = 0;
 
     for i=1:numel(elem_type)
-      switch (elem_type{i})
+      switch (elem_types(i).elem_type)
         case {"beam2", "beam3"}
-          elem_nodes = getfield(mesh.elements, elem_type{i});
+          elem_nodes = getfield(mesh.elements, elem_types(i).elem_type);
       endswitch
     endfor
   endif
@@ -196,17 +194,17 @@ function [mesh, sol] = mbdyn_post_load_output_sol(output_file)
   elem_stress_sum = elem_strain_sum = zeros(rows(mesh.nodes), 6, numel(sol.t));
   elem_stress_cnt = zeros(rows(mesh.nodes), 1);
 
-  for l=1:numel(elem_type)
-    switch (elem_type{l})
+  for l=1:numel(elem_types)
+    switch (elem_types(l).elem_type)
       case {"beam2", "beam3"}
         continue;
     endswitch
 
-    if (~isfield(mesh.elements, elem_type{l}))
+    if (~isfield(mesh.elements, elem_types(l).elem_type))
       continue;
     endif
 
-    elem_nodes = getfield(mesh.elements, elem_type{l});
+    elem_nodes = getfield(mesh.elements, elem_types(l).elem_type);
 
     if (have_sol_file)
       [elem_id, stress_strain] = mbdyn_post_load_output([output_file, ".sol"], columns(elem_nodes) * 6 * 2, inum_elem_solid + (1:rows(elem_nodes)), numel(sol.t));
@@ -222,8 +220,8 @@ function [mesh, sol] = mbdyn_post_load_output_sol(output_file)
         endfor
       endfor
 
-      sol.strain.epsilon = setfield(sol.strain.epsilon, elem_type{l}, elem_strain);
-      sol.stress.tau = setfield(sol.stress.tau, elem_type{l}, elem_stress);
+      sol.strain.epsilon = setfield(sol.strain.epsilon, elem_types(l).elem_type, elem_strain);
+      sol.stress.tau = setfield(sol.stress.tau, elem_types(l).elem_type, elem_stress);
 
       for k=1:columns(elem_nodes)
         for i=1:6
@@ -232,7 +230,7 @@ function [mesh, sol] = mbdyn_post_load_output_sol(output_file)
             elem_stress_sum(elem_nodes(:, k), i, j) += elem_stress(:, k, i, j);
           endfor
         endfor
-        ++elem_stress_cnt(getfield(mesh.elements,elem_type{l})(:, k));
+        ++elem_stress_cnt(getfield(mesh.elements,elem_types(l).elem_type)(:, k));
       endfor
 
       inum_elem_solid += rows(elem_nodes);
@@ -242,12 +240,12 @@ function [mesh, sol] = mbdyn_post_load_output_sol(output_file)
   if (have_sol_file)
     sol.stress.taum = sol.strain.epsilonm = struct();
 
-    for l=1:numel(elem_type)
-      if (~isfield(mesh.elements, elem_type{l}))
+    for l=1:numel(elem_types)
+      if (~isfield(mesh.elements, elem_types(l).elem_type))
         continue;
       endif
 
-      elem_nodes = getfield(mesh.elements, elem_type{l});
+      elem_nodes = getfield(mesh.elements, elem_types(l).elem_type);
       elem_stressm = elem_strainm = zeros(rows(elem_nodes), columns(elem_nodes), 6, numel(sol.t));
 
       for k=1:columns(elem_nodes)
@@ -259,8 +257,143 @@ function [mesh, sol] = mbdyn_post_load_output_sol(output_file)
         endfor
       endfor
 
-      sol.strain.epsilonm = setfield(sol.strain.epsilonm, elem_type{l}, elem_strainm);
-      sol.stress.taum = setfield(sol.stress.taum, elem_type{l}, elem_stressm);
+      sol.strain.epsilonm = setfield(sol.strain.epsilonm, elem_types(l).elem_type, elem_strainm);
+      sol.stress.taum = setfield(sol.stress.taum, elem_types(l).elem_type, elem_stressm);
     endfor
   endif
+endfunction
+
+function elem_types_out = mbdyn_post_elem_types()
+  persistent elem_types = [];
+
+  if (isempty(elem_types))
+    empty_cell = cell(1, 20);
+
+    elem_types = struct("elem_type", empty_cell, "elem_tag", empty_cell, "num_cols", empty_cell, "node_cols", empty_cell, "node_offset", empty_cell);
+
+    elem_types(1).elem_type = "iso8";
+    elem_types(1).node_cols = [1,2,3,4,5,6,7,8];
+    elem_types(1).node_offset = [];
+    elem_types(1).num_cols = 8;
+    elem_types(1).elem_tag = "hexahedron8";
+
+    elem_types(2).elem_type = "iso8upc";
+    elem_types(2).node_cols = [1,2,3,4,5,6,7,8];
+    elem_types(2).node_offset = [];
+    elem_types(2).num_cols = 8;
+    elem_types(2).elem_tag = "hexahedron8upc";
+
+    elem_types(3).elem_type = "iso20";
+    elem_types(3).node_cols = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+    elem_types(3).node_offset = [];
+    elem_types(3).num_cols = 20;
+    elem_types(3).elem_tag = "hexahedron20";
+
+    elem_types(4).elem_type = "iso20upc";
+    elem_types(4).node_cols = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+    elem_types(4).node_offset = [];
+    elem_types(4).num_cols = 20;
+    elem_types(4).elem_tag = "hexahedron20upc";
+
+    elem_types(5).elem_type = "iso20upcr";
+    elem_types(5).node_cols = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+    elem_types(5).node_offset = [];
+    elem_types(5).num_cols = 20;
+    elem_types(5).elem_tag = "hexahedron20upcr";
+
+    elem_types(6).elem_type = "iso27";
+    elem_types(6).node_cols = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27];
+    elem_types(6).node_offset = [];
+    elem_types(6).num_cols = 27;
+    elem_types(6).elem_tag = "hexahedron27";
+
+    elem_types(7).elem_type = "iso27upc";
+    elem_types(7).node_cols = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27];
+    elem_types(7).node_offset = [];
+    elem_types(7).num_cols = 27;
+    elem_types(7).elem_tag = "hexahedron27upc";
+
+    elem_types(8).elem_type = "iso20r";
+    elem_types(8).node_cols = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+    elem_types(8).node_offset = [];
+    elem_types(8).num_cols = 20;
+    elem_types(8).elem_tag = "hexahedron20r";
+
+    elem_types(9).elem_type = "penta15";
+    elem_types(9).node_cols = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+    elem_types(9).node_offset = [];
+    elem_types(9).num_cols = 15;
+    elem_types(9).elem_tag = "pentahedron15";
+
+    elem_types(10).elem_type = "penta15upc";
+    elem_types(10).node_cols = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+    elem_types(10).node_offset = [];
+    elem_types(10).num_cols = 15;
+    elem_types(10).elem_tag = "pentahedron15upc";
+
+    elem_types(11).elem_type = "tet10h";
+    elem_types(11).node_cols = [1,2,3,4,5,6,7,8,9,10];
+    elem_types(11).node_offset = [];
+    elem_types(11).num_cols = 10;
+    elem_types(11).elem_tag = "tetrahedron10";
+
+    elem_types(12).elem_type = "tet10upc";
+    elem_types(12).node_cols = [1,2,3,4,5,6,7,8,9,10];
+    elem_types(12).node_offset = [];
+    elem_types(12).num_cols = 10;
+    elem_types(12).elem_tag = "tetrahedron10upc";
+
+    elem_types(13).elem_type = "beam2";
+    elem_types(13).node_cols = [1,5];
+    elem_types(13).node_offset = [2,3,4;
+                                  6,7,8];
+    elem_types(13).num_cols = 8;
+    elem_types(13).elem_tag = "beam2";
+
+    elem_types(14).elem_type = "beam3";
+    elem_types(14).node_cols = [1,5,9];
+    elem_types(14).node_offset = [2,3,4;
+                                  6,7,8;
+                                  10,11,12];
+    elem_types(14).num_cols = 12;
+    elem_types(14).elem_tag = "beam3";
+
+    elem_types(15).elem_type = "iso8f";
+    elem_types(15).node_cols = [1,2,3,4,5,6,7,8];
+    elem_types(15).node_offset = [];
+    elem_types(15).num_cols = 8;
+    elem_types(15).elem_tag = "hexahedron8f";
+
+    elem_types(16).elem_type = "iso20f";
+    elem_types(16).node_cols = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+    elem_types(16).node_offset = [];
+    elem_types(16).num_cols = 20;
+    elem_types(16).elem_tag = "hexahedron20f";
+
+    elem_types(17).elem_type = "iso27f";
+    elem_types(17).node_cols = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27];
+    elem_types(17).node_offset = [];
+    elem_types(17).num_cols = 27;
+    elem_types(17).elem_tag = "hexahedron27f";
+
+    elem_types(18).elem_type = "iso20fr";
+    elem_types(18).node_cols = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+    elem_types(18).node_offset = [];
+    elem_types(18).num_cols = 20;
+    elem_types(18).elem_tag = "hexahedron20fr";
+
+    elem_types(19).elem_type = "penta15f";
+    elem_types(19).node_cols = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+    elem_types(19).node_offset = [];
+    elem_types(19).num_cols = 15;
+    elem_types(19).elem_tag = "pentahedron15f";
+
+    elem_types(20).elem_type = "tet10hf";
+    elem_types(20).node_cols = [1,2,3,4,5,6,7,8,9,10];
+    elem_types(20).node_offset = [];
+    elem_types(20).num_cols = 10;
+    elem_types(20).elem_tag = "tetrahedron10f";
+  endif
+
+  elem_types_out = elem_types;
 endfunction

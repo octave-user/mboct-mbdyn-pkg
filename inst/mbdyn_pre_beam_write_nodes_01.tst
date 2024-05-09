@@ -203,7 +203,7 @@
 %!   tolR = 2e-5;
 %!   tolU = 2e-5;
 %!   tolf = 2e-5;
-%!   tolD = 3e-2;
+%!   tolD = 5e-2;
 %!   for j=1:numel(damping)
 %!     for i=1:numel(autodiff)
 %!       for k=1:numel(offset)

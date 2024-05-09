@@ -82,7 +82,7 @@ function options = mbdyn_pre_solid_write_const_laws(mesh, csl_file, options)
       endif
 
       switch (mat_type)
-        case {"neo hookean elastic", "neo hookean viscoelastic", "mooney rivlin elastic", "hookean linear elastic isotropic", "hookean linear viscoelastic isotropic", "linear elastic generic", "linear viscoelastic generic", "bilinear isotropic hardening", "linear viscoelastic maxwell1", "linear viscoelastic maxwelln"}
+        case {"neo hookean elastic", "neo hookean viscoelastic", "mooney rivlin elastic", "hookean linear elastic isotropic", "hookean linear viscoelastic isotropic", "linear elastic generic", "linear viscoelastic generic", "bilinear isotropic hardening", "linear viscoelastic maxwell1", "linear viscoelastic maxwelln", "mfront small strain", "mfront finite strain"}
           switch (mat_type)
             case {"linear elastic generic", "linear viscoelastic generic", "linear viscoelastic maxwell1", "linear viscoelastic maxwelln"}
               if (f_linear_elastic_generic)
@@ -155,27 +155,61 @@ function options = mbdyn_pre_solid_write_const_laws(mesh, csl_file, options)
                                              [reshape(E1, 1, numel(E1));
                                               reshape(eta1, 1, numel(eta1))]), ...
                                      sprintf(", %.16e", C.' / E0));
+            case {"mfront small strain", "mfront finite strain"}
+              extra_format = sprintf("library path, \"%s\", name, \"%s\"", mesh.material_data(i).library_path, mesh.material_data(i).name);
+
+              var_names = {"parameters", "properties"};
+
+              for j=1:numel(var_names)
+                if (isfield(mesh.material_data(i), var_names{j}))
+                  vars = getfield(mesh.material_data(i), var_names{j});
+                  extra_format = [extra_format, sprintf(", %s, %d", var_names{j}, numel(vars))];
+                  for j=1:numel(vars)
+                    extra_format = [extra_format, ...
+                                    sprintf(", \"%s\", %.16e", ...
+                                            vars(j).name, ...
+                                            vars(j).value)];
+                  endfor
+                endif
+              endfor
           endswitch
 
           enable_csl_dim = false(MBDYN_CSL_COUNT, 1);
 
+          f_enable_compressible_mat = true;
+          f_enable_incompressible_mat = false;
+          f_enable_green_lagrange = true;
+          f_enable_deformation_gradient = false;
+
           switch (mat_type)
             case {"hookean linear elastic isotropic", "mooney rivlin elastic", "bilinear isotropic hardening"}
-              enable_csl_dim(MBDYN_CSL_IDX_INCOMPRESSIBLE) = true;
-
               if (isfield(mesh.material_data, "nu") && ~isempty(mesh.material_data(i).nu))
-                enable_csl_dim([MBDYN_CSL_IDX_COMPRESSIBLE]) = mesh.material_data(i).nu < 0.5;
+                f_enable_compressible_mat = mesh.material_data(i).nu < 0.5;
               elseif (isfield(mesh.material_data, "kappa") && ~isempty(mesh.material_data.kappa))
-                enable_csl_dim([MBDYN_CSL_IDX_COMPRESSIBLE]) = isfinite(mesh.material_data(i).kappa);
+                f_enable_compressible_mat = mesh.material_data(i).kappa < inf;
               endif
-            otherwise
-              enable_csl_dim([MBDYN_CSL_IDX_COMPRESSIBLE]) = true;
+              f_enable_incompressible_mat = true;
           endswitch
+
+          switch (mat_type)
+            case {"mooney rivlin elastic", "mfront finite strain"}
+              f_enable_deformation_gradient = true;
+          endswitch
+
+          switch (mat_type)
+            case "mfront finite strain"
+              f_enable_green_lagrange = false;
+          endswitch
+
+          enable_csl_dim(MBDYN_CSL_IDX_COMPRESSIBLE) = f_enable_compressible_mat && f_enable_green_lagrange;
+          enable_csl_dim(MBDYN_CSL_IDX_INCOMPRESSIBLE) = f_enable_incompressible_mat && f_enable_green_lagrange;
+          enable_csl_dim(MBDYN_CSL_IDX_DEF_GRAD) = f_enable_compressible_mat && f_enable_deformation_gradient;
 
           csl_format = "constitutive law: %d, name, \"solid%d\", %d, %s, %s;\n";
 
           csl_dim = int32([MBDYN_CSL_DIM_COMPRESSIBLE;
-                           MBDYN_CSL_DIM_INCOMPRESSIBLE]);
+                           MBDYN_CSL_DIM_INCOMPRESSIBLE;
+                           MBDYN_CSL_DIM_DEF_GRAD]);
 
           csl_dim = csl_dim(enable_csl_dim);
 
@@ -208,8 +242,12 @@ function idx = MBDYN_CSL_IDX_INCOMPRESSIBLE()
   idx = int32(2);
 endfunction
 
+function idx = MBDYN_CSL_IDX_DEF_GRAD()
+  idx = int32(3);
+endfunction
+
 function idx = MBDYN_CSL_COUNT()
-  idx = int32(2);
+  idx = int32(3);
 endfunction
 
 function idx = MBDYN_CSL_DIM_COMPRESSIBLE()
@@ -218,4 +256,8 @@ endfunction
 
 function idx = MBDYN_CSL_DIM_INCOMPRESSIBLE()
   idx = int32(7);
+endfunction
+
+function idx = MBDYN_CSL_DIM_DEF_GRAD()
+  idx = int32(9);
 endfunction

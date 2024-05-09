@@ -47,7 +47,7 @@
 ##
 ## @end deftypefn
 
-function F = mbdyn_post_frequency_response(modal, dof_info, excitation, response, omega, p, options)
+function [F, Tp, Tu] = mbdyn_post_frequency_response(modal, dof_info, excitation, response, omega, p, options)
   if (nargin < 6 || nargin > 7 || nargout > 1)
     print_usage();
   endif
@@ -108,7 +108,7 @@ function F = mbdyn_post_frequency_response(modal, dof_info, excitation, response
   df_dy = (modal.Aplus - modal.Aminus) / (2 * modal.dCoef);
 
   Tp = mbdyn_build_excitation_matrix(dof_info, columns(df_dy), excitation, "force");
-  Tu = mbdyn_build_excitation_matrix(dof_info, columns(df_dy), excitation, "displacement");
+  Tu = mbdyn_build_excitation_matrix(dof_info, columns(df_dy), response, "displacement");
 
   N_response = rows(Tu);
 
@@ -177,5 +177,6 @@ function Tp = mbdyn_build_excitation_matrix(dof_info, number_dofs, excitation, t
 
   for i=1:numel(excitation)
     Tp((number_of_rows + 1):(number_of_rows + rows(Tp_i{i})), :) = Tp_i{i};
+    number_of_rows += rows(Tp_i{i});
   endfor
 endfunction

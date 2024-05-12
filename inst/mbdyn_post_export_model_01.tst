@@ -1,5 +1,6 @@
 ## mbdyn_post_export_model.tst:01
 %!demo
+%! try
 %! f_print_input_file = false;
 %! f_plot_deformation = false;
 %! if (f_plot_deformation)
@@ -147,3 +148,8 @@
 %!     endfor
 %!   endif
 %! end_unwind_protect
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

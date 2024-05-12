@@ -1,5 +1,6 @@
 ## mbdyn_post_write_aster.tst:01
 %!test
+%! try
 %! f_print_output = false;
 %! fd = -1;
 %! unwind_protect
@@ -101,3 +102,8 @@
 %!     endfor
 %!   endif
 %! end_unwind_protect
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

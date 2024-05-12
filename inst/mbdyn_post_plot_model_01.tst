@@ -1,7 +1,16 @@
 ## mbdyn_post_plot_model.tst:01
 %!test
+%! try
+%! unwind_protect
+%! gtk_curr = graphics_toolkit();
+%! switch (gtk_curr)
+%! case "fltk"
+%!   gtk = "gnuplot";
+%! otherwise
+%!   gtk = gtk_curr;
+%! endswitch
 %! f_print_input_file = false;
-%! f_plot_deformation = false;
+%! f_plot_deformation = true;
 %! if (f_plot_deformation)
 %!  close("all");
 %! endif
@@ -132,7 +141,7 @@
 %!   endfor
 %!   wref = -rho * A * g * l^4 / (24 * E * Iy) * (3 - 4 * z / l + (z / l).^4);
 %!   if (f_plot_deformation)
-%!     figure("visible", "off");
+%!     graphics_toolkit(figure("visible", "off"), gtk);
 %!     hold on;
 %!     plot(z, wref, "-;wref;k");
 %!     plot(z, w, "-;w;r");
@@ -142,15 +151,12 @@
 %!     xlabel("z [m]");
 %!     ylabel("w [m]");
 %!   endif
-%!   gtk = graphics_toolkit();
-%!   unwind_protect
-%!     graphics_toolkit("gnuplot");
-%!     mbdyn_post_plot_model([fname, "_video"], res);
-%!   unwind_protect_cleanup
-%!     graphics_toolkit(gtk);
-%!   end_unwind_protect
+%!   mbdyn_post_plot_model([fname, "_video"], res, 1:10:numel(res.t), gtk);
 %!   tol = 1e-2;
 %!   assert_simple(w, wref, tol * max(abs(wref)));
+%!   unwind_protect_cleanup
+%!     graphics_toolkit(gtk_curr);
+%!   end_unwind_protect
 %! unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
@@ -160,3 +166,8 @@
 %!     endfor
 %!   endif
 %! end_unwind_protect
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

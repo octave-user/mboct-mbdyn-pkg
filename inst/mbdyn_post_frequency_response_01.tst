@@ -1,5 +1,6 @@
 ## mbdyn_post_frequency_response.tst:01
 %!test
+%! try
 %! ## TEST 1
 %! ##  Frequency response of a cantilever beam
 %! ##  Robert Gash, Klaus Knothe
@@ -242,3 +243,8 @@
 %!     endfor
 %!   endfor
 %! endfor
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

@@ -1,5 +1,6 @@
 ## mbdyn_pre_solid_write_elements.tst:16
 %!test
+%! try
 %! ## TEST 9
 %! ## torsion-tension coupling effect of an incompressible cylinder
 %! ## Viskoelastisches Materialverhalten von Elastomerwerkstoffen
@@ -253,3 +254,8 @@
 %!     endfor
 %!   endif
 %! end_unwind_protect
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

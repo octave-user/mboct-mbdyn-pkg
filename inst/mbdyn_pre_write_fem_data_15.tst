@@ -1,5 +1,6 @@
 ## mbdyn_pre_write_fem_data.tst:15
 %!test
+%! try
 %! ## TEST 15
 %! pkg load mboct-fem-pkg;
 %! options.f_plot = false;
@@ -1089,3 +1090,8 @@
 %! options.f_enable_modal = false;
 %! [omega4, r4] = rotordynamics_test_case(param, options, SI_unit);
 %! assert_simple(r4{3}, r3{3}, 1e-3 * max(abs(r3{3})));
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

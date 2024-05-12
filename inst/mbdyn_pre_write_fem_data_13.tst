@@ -1,5 +1,6 @@
 ## mbdyn_pre_write_fem_data.tst:13
 %!test
+%! try
 %! ## TEST13
 %! pkg load mboct-fem-pkg;
 %! ## Oskar Wallrapp, Richard Schwertassek, 1998
@@ -444,3 +445,8 @@
 %!     endfor
 %!   endif
 %! end_unwind_protect
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

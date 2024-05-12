@@ -1,5 +1,6 @@
 ## mbdyn_post_load_output_struct.tst:01
 %!test
+%! try
 %! ## TEST1
 %! fd = -1;
 %! unwind_protect
@@ -96,3 +97,8 @@
 %!     endfor
 %!   endif
 %! end_unwind_protect
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

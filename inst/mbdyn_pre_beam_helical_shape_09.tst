@@ -1,5 +1,6 @@
 ## mbdyn_pre_beam_helical_shape.tst:09
 %!demo
+%! try
 %! close all;
 %! spring.d = 2.6e-3;
 %! spring.L = 31.4e-3;
@@ -37,3 +38,8 @@
 %! grid minor on;
 %! title('helical beam shape');
 %! daspect(ones(1, 3));
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

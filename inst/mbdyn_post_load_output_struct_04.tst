@@ -1,5 +1,6 @@
 ## mbdyn_post_load_output_struct.tst:04
 %!test
+%! try
 %! ## TEST4
 %! ## TRACTA JOINT
 %! methods = {"impliciteuler", "ms2", "ms3", "ms4", "ss2", "ss3", "ss4", "hope", "Bathe", "msstc3", "msstc4", "msstc5", "mssth3", "mssth4", "mssth5", "DIRK33", "DIRK43", "DIRK54", "hybrid,ms"};
@@ -389,3 +390,8 @@
 %! endfor
 %! tol = 1e-7;
 %! assert_simple(all(rel_error(:) < tol));
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

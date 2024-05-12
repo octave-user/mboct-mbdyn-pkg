@@ -1,5 +1,6 @@
 ## mbdyn_post_load_output_struct.tst:04
 %!test
+%! try
 %! ## TEST 7
 %! ## CARDANO JOINT
 %! do_plot = false;
@@ -241,3 +242,8 @@
 %! tol = 1e-5;
 %! assert_simple(all(rel_error(:) < tol));
 
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

@@ -1,5 +1,6 @@
 ## mbdyn_pre_beam_write_bodies.tst:05
 %!demo
+%! try
 %! f_plot_res = true;
 %! fd = -1;
 %! unwind_protect
@@ -236,3 +237,8 @@
 %!     endfor
 %!   endif
 %! end_unwind_protect
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

@@ -1,5 +1,6 @@
 ## mbdyn_post_frequency_response.tst:05
 %!test
+%! try
 %! ##  Frequency response of a cantilever beam
 %! ##  Robert Gash, Klaus Knothe
 %! ##  Strukturdynamik Band 2
@@ -161,3 +162,8 @@
 %!     endfor
 %!   endif
 %! end_unwind_protect
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

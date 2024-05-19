@@ -1,5 +1,6 @@
 ## mbdyn_pre_beam_helical_compute.tst:03
 %!test
+%! try
 %! f_plot = false;
 %! if (f_plot)
 %!   close all;
@@ -33,3 +34,8 @@
 %! title('coil diameter versus height');
 %! figure_list();
 %! endif
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

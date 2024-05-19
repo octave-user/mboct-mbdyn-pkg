@@ -1,5 +1,6 @@
 ## mbdyn_pre_write_fem_data.tst:11
 %!test
+%! try
 %! ## TEST11
 %! pkg load mboct-fem-pkg;
 %! filename = "";
@@ -35,15 +36,21 @@
 %!   material.theta = 0.5;
 %!   material.tau = 0.5 / SI_unit_second;
 %!   elem_types = {"tet10h", ...
+%!                 "tet10hf", ...
 %!                 "tet10upc", ...
 %!                 "iso8", ...
+%!                 "iso8f", ...
 %!                 "iso8upc", ...
 %!                 "iso20", ...
+%!                 "iso20f", ...
 %!                 "iso20r", ...
+%!                 "iso20fr", ...
 %!                 "iso20upc", ...
 %!                 "iso20upcr", ...
 %!                 "iso27", ...
+%!                 "iso27f", ...
 %!                 "penta15", ...
+%!                 "penta15f", ...
 %!                 "penta15upc", ...
 %!                };
 %!   mat_types = {"linear elastic generic", ...
@@ -107,6 +114,13 @@
 %!                   ## incompressible version of constitutive law not implemented yet
 %!                   continue;
 %!                 endswitch
+%!               case {"iso8f", "iso20f", "iso20fr", "iso27f", "penta15f", "tet10hf"}
+%!                 switch (material.type)
+%!                 case {"mooney rivlin elastic"}
+%!                 otherwise
+%!                   ## FIXME: not implemented yet
+%!                   continue;
+%!                 endswitch
 %!               endswitch
 %!               switch (load_type{idx_load_type})
 %!               case "prestrain"
@@ -126,7 +140,7 @@
 %!                 endswitch
 %!               endswitch
 %!               switch (elem_type)
-%!                 case {"iso20upcr", "iso20r"}
+%!                 case {"iso20upcr", "iso20r", "iso20fr"}
 %!                   if (f_transfinite_mesh(idx_transfinite))
 %!                     elem_factor_h = [0.5; 2; 2]; ## avoid hourglass instability
 %!                   else
@@ -143,7 +157,7 @@
 %!                     case {4, 5, 6}
 %!                       ## shear deformation with those materials and elements not passed yet because the Jacobian may become singular
 %!                       switch (elem_type)
-%!                       case {"tet10h", "tet10upc", "penta15", "penta15upc"}
+%!                       case {"tet10h", "tet10hf", "tet10upc", "penta15", "penta15f", "penta15upc"}
 %!                         continue;
 %!                       otherwise
 %!                         if (~f_transfinite_mesh(idx_transfinite))
@@ -170,13 +184,17 @@
 %!               endif
 %!               opt_mbd.f_run_mbdyn = true;
 %!               switch (elem_type)
-%!                 case {"iso8", "iso8upc"}
+%!                 case {"iso8", "iso8f", "iso8upc"}
 %!                   mesh_order = 1;
 %!                   elem_type_solid = {elem_type};
 %!                   elem_type_surf = {"iso4"};
 %!                 case "iso20"
 %!                   mesh_order = 2;
 %!                   elem_type_solid = {"iso20", "penta15"};
+%!                   elem_type_surf = {"quad8", "tria6h"};
+%!                 case "iso20f"
+%!                   mesh_order = 2;
+%!                   elem_type_solid = {"iso20f", "penta15f"};
 %!                   elem_type_surf = {"quad8", "tria6h"};
 %!                 case "iso20upc"
 %!                   mesh_order = 2;
@@ -190,15 +208,23 @@
 %!                   mesh_order = 2;
 %!                   elem_type_solid = {"iso27"};
 %!                   elem_type_surf = {"quad9"};
+%!                 case "iso27f"
+%!                   mesh_order = 2;
+%!                   elem_type_solid = {"iso27f"};
+%!                   elem_type_surf = {"quad9"};
 %!                 case "iso20r"
 %!                   mesh_order = 2;
 %!                   elem_type_solid = {"iso20r", "penta15"};
 %!                   elem_type_surf = {"quad8r", "tria6h"};
-%!                 case {"penta15", "penta15upc"}
+%!                 case "iso20fr"
+%!                   mesh_order = 2;
+%!                   elem_type_solid = {"iso20fr", "penta15f"};
+%!                   elem_type_surf = {"quad8r", "tria6h"};
+%!                 case {"penta15", "penta15f", "penta15upc"}
 %!                   mesh_order = 2;
 %!                   elem_type_solid = {elem_type};
 %!                   elem_type_surf = {"quad8", "tria6h"};
-%!                 case {"tet10h", "tet10upc"}
+%!                 case {"tet10h", "tet10hf", "tet10upc"}
 %!                   mesh_order = 2;
 %!                   elem_type_solid = {elem_type};
 %!                   elem_type_surf = {"tria6h"};
@@ -219,7 +245,7 @@
 %!                   fprintf(fd, "h%s = %g;\n", {"x","y","z"}{i}, h(i) * elem_factor_h(i));
 %!                 endfor
 %!                 switch (elem_type)
-%!                   case {"iso20", "iso20upc", "iso20upcr", "iso20r", "penta15", "penta15upc"}
+%!                   case {"iso20", "iso20f", "iso20upc", "iso20upcr", "iso20r", "iso20fr", "penta15", "penta15f", "penta15upc"}
 %!                     fputs(fd, "Mesh.SecondOrderIncomplete=1;\n");
 %!                   otherwise
 %!                     fputs(fd, "Mesh.SecondOrderIncomplete=0;\n");
@@ -234,7 +260,7 @@
 %!                 fputs(fd, "Line(3) = {2,1};\n");
 %!                 fputs(fd, "Line(4) = {1,4};\n");
 %!                 switch (elem_type)
-%!                 case {"iso20upcr", "iso20r"}
+%!                 case {"iso20upcr", "iso20r", "iso20fr"}
 %!                   num_layers = 2; ## because of hourglass instability
 %!                 otherwise
 %!                   num_layers = 1;
@@ -253,7 +279,7 @@
 %!                 endif
 %!                 fputs(fd, "tmp[] = Extrude {0,0.0,c} {\n");
 %!                 switch (elem_type)
-%!                   case {"tet10h", "tet10upc"}
+%!                   case {"tet10h", "tet10hf", "tet10upc"}
 %!                     fputs(fd, "  Surface{6};\n");
 %!                   otherwise
 %!                     fprintf(fd, "  Surface{6}; Layers{Max(num_layers, Round(c/hz))}; Recombine;\n");
@@ -261,7 +287,7 @@
 %!                 fputs(fd, "};\n");
 %!                 f_unstruct_mesh_size = false;
 %!                 switch (elem_type)
-%!                   case {"iso8", "iso8upc", "iso20", "iso20r", "iso20upc", "iso20upcr", "iso27"}
+%!                   case {"iso8", "iso8f", "iso8upc", "iso20", "iso20f", "iso20r", "iso20fr", "iso20upc", "iso20upcr", "iso27", "iso27f"}
 %!                     f_unstruct_mesh_size = ~f_transfinite_mesh(idx_transfinite);
 %!                     fputs(fd, "Recombine Surface{6, tmp[0]};\n");
 %!                   otherwise
@@ -271,7 +297,7 @@
 %!                   fprintf(fd, "MeshSize{PointsOf{Volume{tmp[1]};}} = %.16e;\n", 2 * mean(h .* elem_factor_h));
 %!                 endif
 %!                 switch (elem_type)
-%!                   case {"tet10h", "tet10upc"}
+%!                   case {"tet10h", "tet10hf", "tet10upc"}
 %!                     if (~f_transfinite_mesh(idx_transfinite))
 %!                       fputs(fd, "Mesh.HighOrderOptimize=2;\n");
 %!                       fputs(fd, "Mesh.OptimizeThreshold=0.99;\n");
@@ -876,3 +902,8 @@
 %!     endfor
 %!   endif
 %! end_unwind_protect
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

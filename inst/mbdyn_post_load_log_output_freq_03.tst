@@ -1,5 +1,6 @@
 ## mbdyn_post_load_log_output_freq.tst:03
 %!test
+%! try
 %! fd = -1;
 %! unwind_protect
 %!   unwind_protect
@@ -75,3 +76,8 @@
 %!     endfor
 %!   endif
 %! end_unwind_protect
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

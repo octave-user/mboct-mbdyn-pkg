@@ -1,5 +1,6 @@
 ## mbdyn_pre_beam_compute.tst:08
 %!test
+%! try
 %! f_plot = false;
 %! if (f_plot)
 %!   close all;
@@ -39,3 +40,8 @@
 %!   hold on;
 %!   plot3(X(1,:),X(2,:),X(3,:),'--;curve;k');
 %! endif
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

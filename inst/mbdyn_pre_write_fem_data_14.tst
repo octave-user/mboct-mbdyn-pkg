@@ -1,5 +1,6 @@
 ## mbdyn_pre_write_fem_data.tst:14
 %!test
+%! try
 %! ## TEST14
 %! pkg load mboct-fem-pkg;
 %! printf("fem_cms_create2: test7\n");
@@ -922,3 +923,8 @@
 %!     endfor
 %!   endif
 %! end_unwind_protect
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

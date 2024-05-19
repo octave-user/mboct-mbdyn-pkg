@@ -1,5 +1,6 @@
 ## mbdyn_post_abs_to_rel.tst:07
 %!test
+%! try
 %! ## TEST7
 %! fd = -1;
 %! unwind_protect
@@ -138,3 +139,8 @@
 %!     endfor
 %!   endif
 %! end_unwind_protect
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

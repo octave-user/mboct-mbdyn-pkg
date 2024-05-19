@@ -1,5 +1,6 @@
 ## mbdyn_post_rigid_body_kinematics.tst:02
 %!test
+%! try
 %! t = linspace(0, 10, 100);
 %! x0 = 1;
 %! v0 = 10;
@@ -29,3 +30,8 @@
 %! tol = eps;
 %! assert_simple(a1{1}, a.', tol * norm(a));
 %! assert_simple(v1{1}, v.', tol * norm(v));
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

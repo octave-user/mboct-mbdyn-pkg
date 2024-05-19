@@ -1,5 +1,6 @@
 ## mbdyn_post_rigid_body_kinematics.tst:05
 %!demo
+%! try
 %! r1 = 15e-3;
 %! omega0 = 100;
 %! Phi0 = 30 * pi / 180;
@@ -49,3 +50,8 @@
 %! assert_simple(v{3}, zeros(length(res.t), 1), tol * norm(v_tan));
 %! assert_simple(a{4}, -a_tan.', tol * norm(a_tan));
 %! assert_simple(v{4}, -v_tan.', tol * norm(v_tan));
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

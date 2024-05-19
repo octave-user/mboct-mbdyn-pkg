@@ -1,5 +1,6 @@
 ## mbdyn_pre_solid_write_elements.tst:01
 %!test
+%! try
 %! ## TEST 1
 %! close all;
 %! pkg load mboct-fem-pkg;
@@ -481,3 +482,8 @@
 %!     end_unwind_protect
 %!   endfor
 %! endfor
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

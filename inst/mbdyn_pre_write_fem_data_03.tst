@@ -1,5 +1,6 @@
 ## mbdyn_pre_write_fem_data.tst:03
 %!test
+%! try
 %! ## TEST3
 %! fd = -1;
 %! omega1 = [  0,  0,  0,  0,   0];
@@ -338,3 +339,8 @@
 %!     assert_simple(acceleration3{j}, acceleration1{j}, tol * max(max(abs(acceleration1{j}))));
 %!   endfor
 %! endfor
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

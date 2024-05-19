@@ -1,5 +1,6 @@
 ## mbdyn_pre_beam_compute.tst:07
 %!test
+%! try
 %! f_plot = false;
 %! if (f_plot)
 %!   close all;
@@ -28,3 +29,8 @@
 %! endif
 %! assert_simple(f < 0.18);
 %! mbdyn_pre_beam_plot(beam,struct("s",0.1,"X",true,"Rn",true,"Rg",true));
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

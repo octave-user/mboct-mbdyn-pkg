@@ -1,5 +1,6 @@
 ## mbdyn_post_frequency_response.tst:06
 %!test
+%! try
 %! ## TEST 4
 %! pkg load mboct-fem-pkg;
 %! close all;
@@ -368,3 +369,8 @@
 %! for i=1:numel(Freact)
 %!   assert_simple(max(max(max(abs(Freact_mbd{i}(:, :, 2:end) ./ Freact{i}(:, :, 2:end) - 1)))) < 1e-4);
 %! endfor
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

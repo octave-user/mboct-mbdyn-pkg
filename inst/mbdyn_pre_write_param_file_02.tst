@@ -1,5 +1,6 @@
 ## mbdyn_pre_write_param_file.tst:02
 %!test
+%! try
 %! fd = -1;
 %! unwind_protect
 %!   unwind_protect
@@ -68,3 +69,8 @@
 %!     unlink(fullfile(files(i).folder, files(i).name));
 %!   endfor
 %! end_unwind_protect
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

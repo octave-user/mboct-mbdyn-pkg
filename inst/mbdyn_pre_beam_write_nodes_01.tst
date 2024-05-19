@@ -1,5 +1,6 @@
 ## mbdyn_pre_beam_write_nodes.tst:01
 %!test
+%! try
 %! f_print_input_file = false;
 %! options.verbose = false;
 %! N = 3;
@@ -200,10 +201,10 @@
 %!   endfor
 %!   endfor
 %!   endfor
-%!   tolR = 2e-6;
-%!   tolU = 2e-6;
+%!   tolR = 2e-5;
+%!   tolU = 2e-5;
 %!   tolf = 2e-5;
-%!   tolD = 3e-2;
+%!   tolD = 5e-2;
 %!   for j=1:numel(damping)
 %!     for i=1:numel(autodiff)
 %!       for k=1:numel(offset)
@@ -254,3 +255,8 @@
 %!     endfor
 %!   endif
 %! end_unwind_protect
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

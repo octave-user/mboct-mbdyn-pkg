@@ -1,4 +1,5 @@
 %!test
+%! try
 %! ## TEST1
 %! status = pkg("list", "netcdf");
 %! if (~status{1}.loaded)
@@ -232,3 +233,8 @@
 %!   fprintf(stderr, "method: %-20s: (%6d/%4d/%4d/%3.2e/%3.3f) %8.3e / %8.3e < %5.3e - %s\n", methods{idx_method}, info(idx_method).total_steps, info(idx_method).total_iter, info(idx_method).total_jac, info(idx_method).total_err, info(idx_method).total_cpu, err_beta(idx_method), err_gamma(idx_method), tol, status_msg);
 %! endfor
 %! assert_simple(all(status));
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

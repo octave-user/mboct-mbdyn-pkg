@@ -1,5 +1,6 @@
 ## mbdyn_post_ehd_plot_nodal.tst:01
 %!demo
+%! try
 %! close all;
 %! ## References:
 %! ## Hans Juergen Butenschoen
@@ -402,3 +403,8 @@
 %!     endfor
 %!   endif
 %! end_unwind_protect
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

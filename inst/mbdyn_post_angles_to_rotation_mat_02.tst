@@ -1,5 +1,6 @@
 ## mbdyn_post_angles_to_rotation_mat.tst:02
 %!test
+%! try
 %! state = rand("state");
 %! unwind_protect
 %! rand("seed", 0);
@@ -23,3 +24,8 @@
 %! unwind_protect_cleanup
 %! rand("state", state);
 %! end_unwind_protect
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

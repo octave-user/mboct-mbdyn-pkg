@@ -1,5 +1,6 @@
 ## mbdyn_post_load_output_prm.tst:03
 %!test
+%! try
 %! fd = -1;
 %! unwind_protect
 %!   unwind_protect
@@ -73,6 +74,11 @@
 %!     endfor
 %!   endif
 %! end_unwind_protect
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch
 %!error mbdyn_post_load_output_prm
 %!error mbdyn_post_load_output_prm
 %!error mbdyn_post_load_output_prm(1, 2, 3)

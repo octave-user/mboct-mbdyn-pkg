@@ -1,5 +1,6 @@
 ## mbdyn_pre_beam_compute.tst:02
 %!test
+%! try
 %! N = 100;
 %! X = [ 1,2,3,4;
 %!       0,3,0,0;
@@ -8,3 +9,8 @@
 %! norm_dXn = norm(beam.Xn(:,2:end) - beam.Xn(:,1:end-1), 2, 'cols');
 %! f = max(abs(1 - norm_dXn/mean(norm_dXn)));
 %! assert_simple(f < 1e-2);
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

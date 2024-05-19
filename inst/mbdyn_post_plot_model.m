@@ -14,19 +14,23 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} mbdyn_post_plot_model(@var{output_file}, @var{res}, @var{idx_t})
+## @deftypefn {Function File} mbdyn_post_plot_model(@var{output_file}, @var{res}, @var{idx_t}, @var{graphics_toolkit_name})
 ##
 ## Plot the deformed shape of an MBDyn model (currently only beam elements are plotted).
 ##
 ## @end deftypefn
 
-function mbdyn_post_plot_model(output_file, res, idx_t)
-  if (nargin < 2 || nargin > 3 || nargout > 0)
+function mbdyn_post_plot_model(output_file, res, idx_t, graphics_toolkit_name)
+  if (nargin < 2 || nargin > 4 || nargout > 0)
     print_usage();
   endif
 
   if (nargin < 3)
     idx_t = 1:numel(res.t);
+  endif
+
+  if (nargin < 4)
+    graphics_toolkit_name = [];
   endif
 
   R = mbdyn_post_angles_to_rotation_mat([res.log_dat.nodes.label], res, res.log_dat);
@@ -62,6 +66,10 @@ function mbdyn_post_plot_model(output_file, res, idx_t)
 
   unwind_protect
     hfig = figure("visible", "off");
+
+    if (~isempty(graphics_toolkit_name))
+      graphics_toolkit(hfig, graphics_toolkit_name);
+    endif
 
     for k=1:numel(idx_t)
       clf;

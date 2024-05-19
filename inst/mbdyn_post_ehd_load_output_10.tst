@@ -1,5 +1,6 @@
 ## mbdyn_post_ehd_load_output.tst:10
 %!test
+%! try
 %! ############################################################################################################################
 %! ## EHD TEST CASE according
 %! ## Freund, Norman Owen, A thermo-elasto-hydrodynamic study of journal bearings, Doctor of Philosophy thesis, University of
@@ -734,3 +735,8 @@
 %!     endfor
 %!   endif
 %! end_unwind_protect
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

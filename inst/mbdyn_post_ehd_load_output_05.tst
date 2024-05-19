@@ -1,5 +1,6 @@
 ## mbdyn_post_ehd_load_output.tst:05
 %!test
+%! try
 %! ## TEST 5
 %! function [p, mdotz] = reference_solution(h0, B, dh_dz, p0, p1, eta, U1z, U2z, rho, dx, dh_dt, z)
 %!    p = "(dh_dz*h0^2*p1*z^2+2*B*dh_dz^2*h0*p1*z^2+B^2*dh_dz^3*p1*z^2-dh_dz*h0^2*p0*z^2+6*B*U2z*dh_dz*eta*z^2+6*B*U1z*dh_dz*eta*z^2+12*B*dh_dt*eta*z^2+2*h0^3*p1*z+4*B*dh_dz*h0^2*p1*z+2*B^2*dh_dz^2*h0*p1*z-2*h0^3*p0*z-6*B^2*U2z*dh_dz*eta*z-6*B^2*U1z*dh_dz*eta*z-12*B^2*dh_dt*eta*z+2*B*h0^3*p0+B^2*dh_dz*h0^2*p0)/(B*(2*h0+B*dh_dz)*(dh_dz*z+h0)^2)";
@@ -358,3 +359,8 @@
 %!     endfor
 %!   endif
 %! end_unwind_protect
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

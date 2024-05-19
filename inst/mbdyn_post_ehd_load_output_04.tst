@@ -1,5 +1,6 @@
 ## mbdyn_post_ehd_load_output.tst:04
 %!test
+%! try
 %! ## TEST 4
 %! ## References:
 %! ## Hans Juergen Butenschoen
@@ -464,3 +465,8 @@
 %! assert_simple(max(max(abs(beta(1:test_freq:end,1:test_freq:end) - beta_r(1:test_freq:end,1:test_freq:end)))) < 1e-6 * pi / 180);
 %! assert_simple(max(max(abs(mu(1:test_freq:end,1:test_freq:end)))) < 1e-8);
 %! assert_simple(max(max(abs(Q(1:test_freq:end,1:test_freq:end) ./ Q_r(1:test_freq:end,1:test_freq:end) - 1))) < 0.07);
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

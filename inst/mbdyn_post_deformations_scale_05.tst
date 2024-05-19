@@ -1,5 +1,6 @@
 ## mbdyn_post_deformations_scale.tst:05
 %!demo
+%! try
 %! f_print_input_file = false;
 %! F = 10;
 %! d = 1e-3;
@@ -135,3 +136,8 @@
 %!     endfor
 %!   endif
 %! end_unwind_protect
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

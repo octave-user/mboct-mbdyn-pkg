@@ -1,5 +1,6 @@
 ## mbdyn_pre_beam_helical_compute.tst:01
 %!test
+%! try
 %! f_plot = false;
 %! if (f_plot)
 %!   close all;
@@ -45,3 +46,8 @@
 %! title('helical beam shape');
 %! set(gca(),"DataAspectRatio",[1,1,1]);
 %! endif
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

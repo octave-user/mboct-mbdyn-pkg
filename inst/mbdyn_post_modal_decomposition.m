@@ -8,7 +8,7 @@ function [r, l, lambda, err, LAMBDA] = mbdyn_post_modal_decomposition(A, B, dCoe
   if (~(isreal(A) && isreal(B)))
     error("A and B must be real matrices");
   endif
-  
+
   pkg load mboct-fem-pkg;
 
   Bfact = fem_sol_factor(B, opts);
@@ -34,9 +34,9 @@ function [r, l, lambda, err, LAMBDA] = mbdyn_post_modal_decomposition(A, B, dCoe
   if (flag ~= 0)
     error("eigs failed with status %d", flag);
   endif
-  
+
   LAMBDA = diag(LAMBDA);
-  
+
   r = V(1:n, :);
   l = V((n + 1):2 * n, :);
 
@@ -56,7 +56,7 @@ function [r, l, lambda, err, LAMBDA] = mbdyn_post_modal_decomposition(A, B, dCoe
   if (~isfield(opts, "tol_ortho"))
     opts.tol_ortho = eps^0.5;
   endif
-  
+
   for i=1:columns(ortho)
     for j=i + 1:columns(ortho)
       if (ortho(j))
@@ -68,10 +68,10 @@ function [r, l, lambda, err, LAMBDA] = mbdyn_post_modal_decomposition(A, B, dCoe
   idx = find(ortho);
 
   LAMBDA = LAMBDA(idx);
-  
+
   r = r(:, idx);
   l = l(:, idx);
-  
+
   err = 0;
 
   for i=1:columns(r)

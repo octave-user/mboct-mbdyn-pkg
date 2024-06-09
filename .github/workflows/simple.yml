@@ -114,27 +114,7 @@ jobs:
       - name: Check MBDyn
         run: |
           pushd mbdyn
-          for cmd in "libraries/libmbmath/sp_gradient_test" \
-                     "libraries/libmbmath/dgeequtest" \
-                     "libraries/libmbmath/itertest" \
-                     "libraries/libmbmath/matmultest" \
-                     "libraries/libmbmath/subtest" \
-                     "libraries/libmbwrap/arptest" \
-                     "libraries/libmbwrap/cctest -m umfpack" \
-                     "libraries/libmbwrap/cctest -m y12" \
-                     "libraries/libmbwrap/wraptest -m umfpack" \
-                     "libraries/libmbwrap/wraptest -m pardiso" \
-                     "libraries/libmbwrap/wraptest -m pardiso_64" \
-                     "libraries/libmbwrap/wraptest -m naive" \
-                     "libraries/libmbwrap/wraptest -m lapack" \
-                     "libraries/libmbwrap/wraptest -m qr" \
-                     "libraries/libmbwrap/wraptest -m spqr" \
-                     "libraries/liby12/y12test" ; do
-               printf "running command: \"%s\"\n" "${cmd}"
-               ${cmd}
-               rc=$?
-               printf "status: %d\n" ${rc}
-          done
+          make -i test
           popd
 
       # Runs a set of commands using the runners shell

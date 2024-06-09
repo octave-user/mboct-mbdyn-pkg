@@ -50,7 +50,7 @@ jobs:
         run: |
            pushd octave
            ./bootstrap
-           ./configure --disable-java
+           ./configure CXX=g++-10 CC=gcc-10 FC=gfortran-10 F77=gfortran-10 --disable-java
            make -j4
            popd
 
@@ -101,7 +101,7 @@ jobs:
         run: |
           pushd mbdyn
           ./bootstrap.sh
-          ./configure --with-static-modules \
+          ./configure CXX=g++-10 CC=gcc-10 FC=gfortran-10 F77=gfortran-10 --with-static-modules \
           --enable-octave \
           --disable-Werror CXXFLAGS="-Ofast -Wall -march=native -mtune=native" \
           CPPFLAGS="-I/usr/include/mkl -I/usr/lib/x86_64-linux-gnu/openmpi/include -I/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi/ompi/mpi/cxx -I/usr/include/trilinos -I/usr/include/suitesparse" \

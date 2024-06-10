@@ -34,7 +34,7 @@ jobs:
            sudo apt-get install mercurial \
            libsuitesparse-dev libarpack2-dev libmumps-seq-dev \
            libmetis-dev libnlopt-dev libnetcdf-c++4-dev \
-           trilinos-all-dev libopenmpi-dev libptscotch-dev libsuitesparse-dev libqrupdate-dev
+           trilinos-all-dev libopenmpi-dev libptscotch-dev libsuitesparse-dev libqrupdate-dev gdb
 
       # Runs a single command using the runners shell
       - name: Clone GNU/Octave
@@ -116,6 +116,8 @@ jobs:
           pushd mbdyn
           make -i test
           popd
+          gdb --batch --eval-command run --eval-command "bt full" --args libraries/libmbmath/sp_gradient_test
+          gdb --batch --eval-command run --eval-command "bt full" --args libraries/libmbwrap/wraptest
 
       # Runs a set of commands using the runners shell
       - name: Install MBDyn

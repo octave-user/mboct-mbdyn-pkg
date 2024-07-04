@@ -34,7 +34,7 @@ jobs:
            sudo apt-get install mercurial \
            libsuitesparse-dev libarpack2-dev libmumps-seq-dev \
            libmetis-dev libnlopt-dev libnetcdf-c++4-dev \
-           trilinos-all-dev libopenmpi-dev libptscotch-dev libsuitesparse-dev libqrupdate-dev
+           trilinos-all-dev libopenmpi-dev libptscotch-dev libsuitesparse-dev libqrupdate-dev gdb
 
       # Runs a single command using the runners shell
       - name: Clone GNU/Octave
@@ -50,7 +50,7 @@ jobs:
         run: |
            pushd octave
            ./bootstrap
-           ./configure --disable-java
+           ./configure CXX=g++-10 CC=gcc-10 FC=gfortran-10 F77=gfortran-10 --disable-java
            make -j4
            popd
 
@@ -94,15 +94,15 @@ jobs:
           # cd mbdyn
           # git config user.name octave-user
           # git config user.email octave-user@a1.net
-          # git merge origin/solid-unilateral-contact-mcp_a
+          # git merge origin/mbdyn-tests-private
 
       # Runs a set of commands using the runners shell
       - name: Compile MBDyn
         run: |
           pushd mbdyn
           ./bootstrap.sh
-          ./configure --with-static-modules \
-          --enable-octave \
+          ./configure CXX=g++-10 CC=gcc-10 FC=gfortran-10 F77=gfortran-10 --with-static-modules \
+          --enable-octave-utils \
           --disable-Werror CXXFLAGS="-Ofast -Wall -march=native -mtune=native" \
           CPPFLAGS="-I/usr/include/mkl -I/usr/lib/x86_64-linux-gnu/openmpi/include -I/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi/ompi/mpi/cxx -I/usr/include/trilinos -I/usr/include/suitesparse" \
           LDFLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/openmpi" \
@@ -114,27 +114,7 @@ jobs:
       - name: Check MBDyn
         run: |
           pushd mbdyn
-          for cmd in "libraries/libmbmath/sp_gradient_test" \
-                     "libraries/libmbmath/dgeequtest" \
-                     "libraries/libmbmath/itertest" \
-                     "libraries/libmbmath/matmultest" \
-                     "libraries/libmbmath/subtest" \
-                     "libraries/libmbwrap/arptest" \
-                     "libraries/libmbwrap/cctest -m umfpack" \
-                     "libraries/libmbwrap/cctest -m y12" \
-                     "libraries/libmbwrap/wraptest -m umfpack" \
-                     "libraries/libmbwrap/wraptest -m pardiso" \
-                     "libraries/libmbwrap/wraptest -m pardiso_64" \
-                     "libraries/libmbwrap/wraptest -m naive" \
-                     "libraries/libmbwrap/wraptest -m lapack" \
-                     "libraries/libmbwrap/wraptest -m qr" \
-                     "libraries/libmbwrap/wraptest -m spqr" \
-                     "libraries/liby12/y12test" ; do
-               printf "running command: \"%s\"\n" "${cmd}"
-               ${cmd}
-               rc=$?
-               printf "status: %d\n" ${rc}
-          done
+          make test
           popd
 
       # Runs a set of commands using the runners shell

@@ -34,7 +34,7 @@ jobs:
            sudo apt-get install mercurial \
            libsuitesparse-dev libarpack2-dev libmumps-seq-dev \
            libmetis-dev libnlopt-dev libnetcdf-c++4-dev \
-           trilinos-all-dev libopenmpi-dev libptscotch-dev libsuitesparse-dev libqrupdate-dev gdb
+           trilinos-all-dev libopenmpi-dev libptscotch-dev libsuitesparse-dev libqrupdate-dev
 
       # Runs a single command using the runners shell
       - name: Clone GNU/Octave

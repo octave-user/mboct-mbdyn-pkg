@@ -13,6 +13,10 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+env:
+  MBD_NUM_THREADS: 4
+  OCT_PKG_LIST: "mboct-mbdyn-pkg:yes:master:yes:unlimited"
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -51,7 +55,7 @@ jobs:
            pushd octave
            ./bootstrap
            ./configure CXX=g++-10 CC=gcc-10 FC=gfortran-10 F77=gfortran-10 --disable-java
-           make -j4
+           make -j${MBD_NUM_THREADS}
            popd
 
       # Runs a single command using the runners shell
@@ -107,60 +111,53 @@ jobs:
           CPPFLAGS="-I/usr/include/mkl -I/usr/lib/x86_64-linux-gnu/openmpi/include -I/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi/ompi/mpi/cxx -I/usr/include/trilinos -I/usr/include/suitesparse" \
           LDFLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/openmpi" \
           --with-arpack --with-umfpack --with-klu --with-arpack --with-lapack --without-metis --with-mpi --with-trilinos --with-pardiso --with-suitesparseqr --with-qrupdate --enable-netcdf
-          make -j4
+          make -j${MBD_NUM_THREADS}
           popd
 
       # Runs a set of commands using the runners shell
       - name: Check MBDyn
-        run: |
-          pushd mbdyn
-          make test
-          popd
+        run: make -j${MBD_NUM_THREADS} -C mbdyn test
 
       # Runs a set of commands using the runners shell
       - name: Install MBDyn
         run: |
-          pushd mbdyn
-          sudo make install
-          popd
+          sudo make -C mbdyn install
 
       - name: Install mboct-octave-pkg
         run: |
-           git clone -b master https://github.com/octave-user/mboct-octave-pkg.git && \
-           pushd mboct-octave-pkg && \
-           make install_local && popd
+           git clone -b master https://github.com/octave-user/mboct-octave-pkg.git
+           make -C mboct-octave-pkg -j${MBD_NUM_THREADS} install_local
 
       - name: Install mboct-numerical-pkg
         run: |
-           git clone -b master https://github.com/octave-user/mboct-numerical-pkg.git && \
-           pushd mboct-numerical-pkg && \
-           make install_local && popd
+           git clone -b master https://github.com/octave-user/mboct-numerical-pkg.git
+           make -C mboct-numerical-pkg -j${MBD_NUM_THREADS} install_local
 
       - name: Create distribution
         run: make -C $GITHUB_WORKSPACE dist
 
       - name: Install the package
-        run: make -C $GITHUB_WORKSPACE CXXFLAGS="-Ofast -Wall -march=native" install_local
+        run: make -C $GITHUB_WORKSPACE -j${MBD_NUM_THREADS} CXXFLAGS="-Ofast -Wall -march=native" install_local
 
       - name: Install mboct-fem-pkg
         run: |
            git clone -b master https://github.com/octave-user/mboct-fem-pkg.git
            pushd mboct-fem-pkg
-           make CXXFLAGS="-Ofast -Wall -march=native" install_local
+           make -j${MBD_NUM_THREADS} CXXFLAGS="-Ofast -Wall -march=native" install_local
            pushd src
            ./bootstrap
            ./configure
-           make
+           make -j${MBD_NUM_THREADS}
            sudo make install
            popd
            popd
 
       - name: Run all tests
-        run: |
-             export MBD_NUM_THREADS=`awk -F ':' 'BEGIN{cores=-1;}/^cpu cores\>/{cores=strtonum($2);}END {print cores;}' /proc/cpuinfo`
-             /usr/bin/time --verbose --output fntests.tm make -C $GITHUB_WORKSPACE check_installed >& fntests.out
-             cat ${GITHUB_WORKSPACE}/fntests.out
-             cat ${GITHUB_WORKSPACE}/fntests.log
-             cat fntests.tm
-             tail -n 14 fntests.out
-             awk -F ' ' 'BEGIN{ failed=9999; } /^  FAIL\>/{ failed = $2; } END { if (failed != 0) exit 1; }' fntests.out
+        run: mbdyn/testsuite/octave_pkg_testsuite.sh --octave-pkg-test-mode single --tasks ${MBD_NUM_THREADS} --octave-pkg-list "${OCT_PKG_LIST}"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: octave_pkg_testsuite
+          path: mbdyn/testsuite/var/**/fntests.*
+          retention-days: 5

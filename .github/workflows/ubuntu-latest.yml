@@ -109,8 +109,7 @@ jobs:
              popd
 
       - name: Run all tests
-        run: |
-             mbdyn/testsuite/octave_pkg_testsuite.sh --octave-pkg-test-mode single --tasks ${MBD_NUM_THREADS} --octave-pkg-list "${OCT_PKG_LIST}"
+        run: mbdyn/testsuite/octave_pkg_testsuite.sh --octave-pkg-test-mode single --tasks ${MBD_NUM_THREADS} --octave-pkg-list "${OCT_PKG_LIST}"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4

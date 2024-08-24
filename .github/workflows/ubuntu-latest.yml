@@ -95,7 +95,7 @@ jobs:
       - name: Install mboct-fem-pkg
         run: |
            git clone -b master https://github.com/octave-user/mboct-fem-pkg.git
-           make -j${MBD_NUM_THREADS} -C mboct-mbdyn-pkg CXXFLAGS="-Ofast -Wall -march=native" install_local
+           make -j${MBD_NUM_THREADS} -C mboct-fem-pkg CXXFLAGS="-Ofast -Wall -march=native" install_local
 
 
       - name: Install fem_pre_mesh_size

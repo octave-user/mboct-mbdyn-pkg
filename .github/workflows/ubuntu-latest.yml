@@ -39,7 +39,7 @@ jobs:
         run: |
            sudo apt-get install octave octave-dev octave-nurbs octave-netcdf \
            libsuitesparse-dev libarpack2-dev libmumps-seq-dev \
-           libmetis-dev libnlopt-dev \
+           libmetis-dev libnlopt-dev libgtest-dev \
            trilinos-all-dev libopenmpi-dev libptscotch-dev libsuitesparse-dev libqrupdate-dev
 
       # Runs a single command using the runners shell
@@ -63,7 +63,7 @@ jobs:
           --disable-Werror CXXFLAGS="-Ofast -Wall -march=native -mtune=native" \
           CPPFLAGS="-I/usr/include/mkl -I/usr/lib/x86_64-linux-gnu/openmpi/include -I/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi/ompi/mpi/cxx -I/usr/include/trilinos -I/usr/include/suitesparse" \
           LDFLAGS="-L/usr/lib/x86_64-linux-gnu/hdf5/openmpi" \
-          --with-arpack --with-umfpack --with-klu --with-arpack --with-lapack --without-metis --with-mpi --with-trilinos --with-pardiso --with-suitesparseqr --with-qrupdate
+          --with-arpack --with-umfpack --with-klu --with-arpack --with-lapack --without-metis --with-mpi --with-trilinos --with-pardiso --with-suitesparseqr --with-qrupdate --with-gtest
           make -j${MBD_NUM_THREADS}
           popd
 

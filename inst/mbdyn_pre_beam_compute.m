@@ -79,7 +79,23 @@ function beam = mbdyn_pre_beam_compute(X, N, interpolation_points)
   beam.sg(2:2:end) = beam.si(end) / (2 * N) * (2 * (1:N) - 1 + 1 / sqrt(3));
 
   [beam.Xn, beam.Rn] = mbdyn_curved_beam_interpolation(beam, beam.sn);
+
+  beam.cosPhi = ones(1, size(beam.Rn, 3));
+
   [beam.Xg, beam.Rg] = mbdyn_curved_beam_interpolation(beam, beam.sg);
+
+  for i=1:size(beam.Rn, 3) - 1
+    R1 = beam.Rn(:, :, i);
+    R2 = beam.Rg(:, :, i);
+    R3 = beam.Rn(:, :, i + 1);
+
+    [R2, cosPhi2] = mbdyn_pre_beam_orient_smooth(R1, R2);
+    [R3, cosPhi3] = mbdyn_pre_beam_orient_smooth(R2, R3);
+
+    beam.Rg(:, :, i) = R2;
+    beam.Rn(:, :, i + 1) = R3;
+    beam.cosPhi(i + 1) = cosPhi3;
+  endfor
 
   for i=1:N
     beam.beams(i).nidx = [2 * i - 1, 2 * i, 2 * i + 1];
@@ -172,4 +188,31 @@ function ds = mbdyn_curved_beam_segment_length_ds(beam, t)
   [X, jac] = nrbdeval(beam.crv, beam.dcrv, beam.dcrv2, t);
 
   ds = sqrt(sum(jac.^2,1));
+endfunction
+
+function [R2s, cosPhi] = mbdyn_pre_beam_orient_smooth(R1, R2)
+  e1 = R2(:, 1);
+  e3 = cross(R2(:, 1), R1(:, 2));
+  e2 = cross(R1(:, 3), R2(:, 1));
+
+  e3a = cross(e1, e2);
+  e2a = cross(e3a, e1);
+
+  e2b = cross(e3, e1);
+  e3b = cross(e1, e2b);
+
+  cosPhi2a = e2a.' * e2 / (norm(e2a) * norm(e2));
+  cosPhi3b = e3b.' * e3 / (norm(e3b) * norm(e3));
+
+  if (cosPhi2a > cosPhi3b)
+    cosPhi = cosPhi2a;
+    R2s = [e1, e2a, e3a];
+  else
+    cosPhi = cosPhi3b;
+    R2s = [e1, e2b, e3b];
+  endif
+
+  R2s *= diag(1 ./ norm(R2s, "cols"));
+
+  mbdyn_pre_beam_check_rotation_matrix(R2s);
 endfunction

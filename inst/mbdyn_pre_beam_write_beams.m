@@ -130,7 +130,7 @@ function mbdyn_pre_beam_write_beams(beam, output_file, options)
   endif
 
   if (~isfield(options, "reorient_cross_sections"))
-    options.reorient_cross_sections = false;
+    options.reorient_cross_sections = true;
   endif
 
   if (~isfield(options, "output_Vi"))

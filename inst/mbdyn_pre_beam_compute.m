@@ -26,8 +26,8 @@
 ##
 ## @end deftypefn
 
-function beam = mbdyn_pre_beam_compute(X, N, interpolation_points)
-  if (nargin < 2 || nargin > 3 || nargout > 1)
+function beam = mbdyn_pre_beam_compute(X, N, interpolation_points, options)
+  if (nargin < 2 || nargin > 4 || nargout > 1)
     print_usage();
   endif
 
@@ -55,6 +55,14 @@ function beam = mbdyn_pre_beam_compute(X, N, interpolation_points)
     error("interpolation_points must be an integer >= 1");
   endif
 
+  if (nargin < 4)
+    options = struct();
+  endif
+
+  if (~isfield(options, "smooth_curvature"))
+    options.smooth_curvature = false;
+  endif
+
   interpolation_points = double(interpolation_points);
 
   beam.X = X;
@@ -80,22 +88,24 @@ function beam = mbdyn_pre_beam_compute(X, N, interpolation_points)
 
   [beam.Xn, beam.Rn] = mbdyn_curved_beam_interpolation(beam, beam.sn);
 
-  beam.cosPhi = ones(1, size(beam.Rn, 3));
-
   [beam.Xg, beam.Rg] = mbdyn_curved_beam_interpolation(beam, beam.sg);
 
-  for i=1:size(beam.Rn, 3) - 1
-    R1 = beam.Rn(:, :, i);
-    R2 = beam.Rg(:, :, i);
-    R3 = beam.Rn(:, :, i + 1);
+  if (options.smooth_curvature)
+    beam.cosPhi = ones(1, size(beam.Rn, 3));
 
-    [R2, cosPhi2] = mbdyn_pre_beam_orient_smooth(R1, R2);
-    [R3, cosPhi3] = mbdyn_pre_beam_orient_smooth(R2, R3);
+    for i=1:size(beam.Rn, 3) - 1
+      R1 = beam.Rn(:, :, i);
+      R2 = beam.Rg(:, :, i);
+      R3 = beam.Rn(:, :, i + 1);
 
-    beam.Rg(:, :, i) = R2;
-    beam.Rn(:, :, i + 1) = R3;
-    beam.cosPhi(i + 1) = cosPhi3;
-  endfor
+      [R2, cosPhi2] = mbdyn_pre_beam_orient_smooth(R1, R2);
+      [R3, cosPhi3] = mbdyn_pre_beam_orient_smooth(R2, R3);
+
+      beam.Rg(:, :, i) = R2;
+      beam.Rn(:, :, i + 1) = R3;
+      beam.cosPhi(i + 1) = cosPhi3;
+    endfor
+  endif
 
   for i=1:N
     beam.beams(i).nidx = [2 * i - 1, 2 * i, 2 * i + 1];

@@ -20,6 +20,7 @@
 %!      z1, z2, z3];
 %! opts.smooth_curvature = true;
 %! beam = mbdyn_pre_beam_compute(X, N, 1, opts);
+%! assert(max(abs(beam.cosPhi - 1)) < sqrt(eps));
 %! opts.Rn = true;
 %! opts.Rg = true;
 %! mbdyn_pre_beam_plot(beam, opts);
@@ -46,6 +47,7 @@
 %!      z1];
 %! opts.smooth_curvature = true;
 %! beam = mbdyn_pre_beam_compute(X, N, 1, opts);
+%! assert(max(abs(beam.cosPhi - 1)) < sqrt(eps));
 %! opts.Rn = true;
 %! opts.Rg = true;
 %! mbdyn_pre_beam_plot(beam, opts);
@@ -70,6 +72,7 @@
 %!      z1];
 %! opts.smooth_curvature = true;
 %! beam = mbdyn_pre_beam_compute(X, N, 1, opts);
+%! assert(max(abs(beam.cosPhi - 1)) < sqrt(eps));
 %! opts.Rn = true;
 %! opts.Rg = true;
 %! mbdyn_pre_beam_plot(beam, opts);

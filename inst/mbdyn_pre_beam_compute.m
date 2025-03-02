@@ -134,6 +134,14 @@ endfunction
 function [X, R] = mbdyn_curved_beam_position_orientation(beam, t)
   [X, jac, hess] = mbdyn_curved_beam_nurbs_interpolation(beam, t);
 
+  if (iscell(jac))
+    jac = jac{:};
+  endif
+
+  if (iscell(hess))
+    hess = hess{:};
+  endif
+
   R = zeros(3, 3, columns(X));
 
   for i=1:columns(X)
@@ -196,6 +204,10 @@ endfunction
 
 function ds = mbdyn_curved_beam_segment_length_ds(beam, t)
   [X, jac] = nrbdeval(beam.crv, beam.dcrv, beam.dcrv2, t);
+
+  if (iscell(jac))
+    jac = jac{:};
+  endif
 
   ds = sqrt(sum(jac.^2,1));
 endfunction

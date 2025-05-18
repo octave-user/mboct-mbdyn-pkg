@@ -102,7 +102,7 @@ jobs:
           MBD_ARGS_ENABLE="--enable-octave --enable-multithread --disable-Werror --enable-install_test_progs"
           MBD_REPO="https://public.gitlab.polimi.it/DAER/mbdyn.git"
           LDFLAGS="-L/usr/local/lib -Wl,-rpath=/usr/local/lib"
-          git clone -b develop ${MBD_REPO} "${RUNNER_TEMP}/mbdyn"
+          git clone -b automatic-modal ${MBD_REPO} "${RUNNER_TEMP}/mbdyn"
           pushd "${RUNNER_TEMP}/mbdyn"
           ./bootstrap.sh
           ./configure CPPFLAGS="${MBD_CPPFLAGS}" LDFLAGS="${LDFLAGS} ${MBD_FLAGS}" CXXFLAGS="${MBD_FLAGS} ${MBD_CXXFLAGS}" CFLAGS="${MBD_FLAGS}" FCFLAGS="${MBD_FLAGS}" F77FLAGS="${MBD_FLAGS}" ${MBD_ARGS_WITH} ${MBD_ARGS_ENABLE}

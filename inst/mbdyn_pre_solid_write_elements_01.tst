@@ -18,7 +18,7 @@
 %! param.analysis = "plain strain";
 %! param.transfinite = true;
 %! options.verbose = false;
-%! elem_types = {"tet10h", "tet10upc", "iso8upc", "penta15", "penta15upc", "iso20", "iso20upc", "iso20upcr", "iso20r", "iso27"};
+%! elem_types = {"tet20", "tet10h", "tet10upc", "iso8upc", "penta15", "penta15upc", "iso20", "iso20upc", "iso20upcr", "iso20r", "iso27"};
 %! nu_val = [0.3, 0.499];
 %! for idx_elem_type=1:numel(elem_types)
 %!   param.elem_type = elem_types{idx_elem_type};
@@ -198,7 +198,7 @@
 %!           fprintf(fd, "Transfinite Surface(12) = {PointsOf{Surface{12};}};\n");
 %!         endif
 %!         switch (param.elem_type)
-%!           case {"tet10h", "tet10upc"}
+%!           case {"tet20", "tet10h", "tet10upc"}
 %!             extrude_opt = "";
 %!           otherwise
 %!             extrude_opt = "Layers{1}; Recombine;";
@@ -239,7 +239,7 @@
 %!         fprintf(fd, "Physical Surface(\"bottom\", 7) = {v1[0],v2[0],v3[0],v4[0],v5[0],v6[0],v7[0],v8[0],v9[0],v10[0],v11[0],v12[0]};\n");
 %!         fprintf(fd, "Physical Curve(\"clampedge\", 8) = {40, 269};\n");
 %!         switch (param.elem_type)
-%!           case {"tet10h", "tet10upc"}
+%!           case {"tet20", "tet10h", "tet10upc"}
 %!             f_use_mesh_size = true;
 %!           otherwise
 %!             f_use_mesh_size = ~param.transfinite;
@@ -255,7 +255,7 @@
 %!         endswitch
 %!         if (~param.transfinite)
 %!           switch (param.elem_type)
-%!             case {"tet10h", "tet10upc", "penta15", "penta15upc"}
+%!             case {"tet20", "tet10h", "tet10upc", "penta15", "penta15upc"}
 %!               fputs(fd, "Mesh.HighOrderOptimize = 2;\n");
 %!           endswitch
 %!         endif

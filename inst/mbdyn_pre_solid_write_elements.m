@@ -127,7 +127,7 @@ function options = mbdyn_pre_solid_write_elements(mesh, load_case_dof, load_case
       error("failed to open file \"%s\": %s", elem_file, msg);
     endif
 
-    elem_type_solid = {"iso8", "iso8f", "iso8upc", "iso20", "iso20f", "iso20upc", "iso20upcr", "iso20r", "iso20fr", "iso27", "iso27f", "iso27upc", "penta15", "penta15f", "penta15upc", "tet10h", "tet10hf", "tet10upc"};
+    elem_type_solid = {"iso8", "iso8f", "iso8upc", "iso20", "iso20f", "iso20upc", "iso20upcr", "iso20r", "iso20fr", "iso27", "iso27f", "iso27upc", "penta15", "penta15f", "penta15upc", "tet10h", "tet10hf", "tet10upc", "tet20"};
 
     for i=1:numel(elem_type_solid)
       if (~isfield(mesh.elements, elem_type_solid{i}))
@@ -197,6 +197,9 @@ function options = mbdyn_pre_solid_write_elements(mesh, load_case_dof, load_case
           elem_name = "tetrahedron10upc";
           num_colloc_points = 5;
           elem_node_idx_upc = int32(1:4);
+        case "tet20"
+          elem_name = "tetrahedron20";
+          num_colloc_points = 11;
       endswitch
 
       elem_nodes = getfield(mesh.elements, elem_type_solid{i}) + (options.struct_nodes.number - rows(mesh.nodes));
@@ -318,7 +321,7 @@ function options = mbdyn_pre_solid_write_elements(mesh, load_case_dof, load_case
     endif
 
     if (isfield(load_case, "pressure") || isfield(load_case, "traction"))
-      elem_type_surf_load = {"iso4", "quad8", "quad9", "tria6h", "quad8r"};
+      elem_type_surf_load = {"iso4", "quad8", "quad9", "tria6h", "quad8r", "tria10"};
       surf_load_type = {"pressure", "traction", "traction_abs"};
       surf_load_elem_prefix = {"pressure", "traction", "traction"};
 
@@ -351,6 +354,9 @@ function options = mbdyn_pre_solid_write_elements(mesh, load_case_dof, load_case
               case "tria6h"
                 elem_name = "t6";
                 num_nodes = 6;
+              case "tria10"
+                elem_name = "t10";
+                num_nodes = 10;
             endswitch
 
             elem_name = [surf_load_elem_prefix{l}, elem_name];

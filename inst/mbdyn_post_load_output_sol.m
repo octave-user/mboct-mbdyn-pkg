@@ -393,6 +393,12 @@ function elem_types_out = mbdyn_post_elem_types()
     elem_types(20).node_offset = [];
     elem_types(20).num_cols = 10;
     elem_types(20).elem_tag = "tetrahedron10f";
+
+    elem_types(21).elem_type = "tet20";
+    elem_types(21).node_cols = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+    elem_types(21).node_offset = [];
+    elem_types(21).num_cols = 20;
+    elem_types(21).elem_tag = "tetrahedron20";
   endif
 
   elem_types_out = elem_types;

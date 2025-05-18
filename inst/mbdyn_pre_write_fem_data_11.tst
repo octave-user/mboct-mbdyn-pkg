@@ -35,7 +35,8 @@
 %!   material.delta = 0.25;
 %!   material.theta = 0.5;
 %!   material.tau = 0.5 / SI_unit_second;
-%!   elem_types = {"tet10h", ...
+%!   elem_types = {"tet20", ...
+%!                 "tet10h", ...
 %!                 "tet10hf", ...
 %!                 "tet10upc", ...
 %!                 "iso8", ...
@@ -114,7 +115,7 @@
 %!                   ## incompressible version of constitutive law not implemented yet
 %!                   continue;
 %!                 endswitch
-%!               case {"iso8f", "iso20f", "iso20fr", "iso27f", "penta15f", "tet10hf"}
+%!               case {"iso8f", "iso20f", "iso20fr", "iso27f", "penta15f", "tet10hf","tet20"}
 %!                 switch (material.type)
 %!                 case {"mooney rivlin elastic"}
 %!                 otherwise
@@ -157,7 +158,7 @@
 %!                     case {4, 5, 6}
 %!                       ## shear deformation with those materials and elements not passed yet because the Jacobian may become singular
 %!                       switch (elem_type)
-%!                       case {"tet10h", "tet10hf", "tet10upc", "penta15", "penta15f", "penta15upc"}
+%!                       case {"tet10h", "tet10hf", "tet10upc", "penta15", "penta15f", "penta15upc","tet20"}
 %!                         continue;
 %!                       otherwise
 %!                         if (~f_transfinite_mesh(idx_transfinite))
@@ -228,6 +229,10 @@
 %!                   mesh_order = 2;
 %!                   elem_type_solid = {elem_type};
 %!                   elem_type_surf = {"tria6h"};
+%!                 case "tet20"
+%!                   mesh_order = 3;
+%!                   elem_type_solid = {elem_type};
+%!                   elem_type_surf = {"tria10"};
 %!                 otherwise
 %!                   error("unknown element type \"%s\"", elem_type);
 %!               endswitch
@@ -279,7 +284,7 @@
 %!                 endif
 %!                 fputs(fd, "tmp[] = Extrude {0,0.0,c} {\n");
 %!                 switch (elem_type)
-%!                   case {"tet10h", "tet10hf", "tet10upc"}
+%!                   case {"tet10h", "tet10hf", "tet10upc", "tet20"}
 %!                     fputs(fd, "  Surface{6};\n");
 %!                   otherwise
 %!                     fprintf(fd, "  Surface{6}; Layers{Max(num_layers, Round(c/hz))}; Recombine;\n");
@@ -297,7 +302,7 @@
 %!                   fprintf(fd, "MeshSize{PointsOf{Volume{tmp[1]};}} = %.16e;\n", 2 * mean(h .* elem_factor_h));
 %!                 endif
 %!                 switch (elem_type)
-%!                   case {"tet10h", "tet10hf", "tet10upc"}
+%!                   case {"tet10h", "tet10hf", "tet10upc", "tet20"}
 %!                     if (~f_transfinite_mesh(idx_transfinite))
 %!                       fputs(fd, "Mesh.HighOrderOptimize=2;\n");
 %!                       fputs(fd, "Mesh.OptimizeThreshold=0.99;\n");

@@ -214,8 +214,8 @@ function [mesh, sol] = mbdyn_post_load_output_sol(output_file)
       for i=1:numel(elem_id)
         for j=1:columns(elem_nodes)
           for k=1:6
-            elem_strain(elem_id(i) - inum_elem_solid, j, k, :) = stress_strain{i}(:, (j - 1) * 12 + k);
-            elem_stress(elem_id(i) - inum_elem_solid, j, k, :) = stress_strain{i}(:, (j - 1) * 12 + 6 + k);
+            elem_strain(elem_id(i) - inum_elem_solid, j, k, 1:rows(stress_strain{i})) = stress_strain{i}(:, (j - 1) * 12 + k);
+            elem_stress(elem_id(i) - inum_elem_solid, j, k, 1:rows(stress_strain{i})) = stress_strain{i}(:, (j - 1) * 12 + 6 + k);
           endfor
         endfor
       endfor

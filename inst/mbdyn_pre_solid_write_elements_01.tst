@@ -27,13 +27,15 @@
 %!     switch (idx_nu)
 %!       case 2
 %!         switch (param.elem_type)
-%!           case {"tet10h", "iso8", "penta15", "iso20", "iso27"}
+%!           case {"tet20", "tet10h", "iso8", "penta15", "iso20", "iso27"}
 %!             continue;
 %!         endswitch
 %!     endswitch
 %!     switch (param.elem_type)
 %!       case {"iso8", "iso8upc"}
 %!         param.h = 10e-3 / 32 / SI_unit_meter;
+%!       case "tet20"
+%!         param.h = 10e-3 / 5 / SI_unit_meter;
 %!       otherwise
 %!         param.h = 10e-3 / 16 / SI_unit_meter;
 %!     endswitch
@@ -262,6 +264,8 @@
 %!         switch (param.elem_type)
 %!           case {"iso8", "iso8upc"}
 %!             fprintf(fd, "Mesh.ElementOrder = 1;\n");
+%!           case "tet20"
+%!             fprintf(fd, "Mesh.ElementOrder = 3;\n");
 %!           otherwise
 %!             fprintf(fd, "Mesh.ElementOrder = 2;\n");
 %!         endswitch
@@ -273,7 +277,7 @@
 %!         fd = -1;
 %!       end_unwind_protect
 %!       [~] = unlink([filename, ".msh"]);
-%!                      #spawn_wait(spawn("gmsh", {[filename, ".geo"]}));
+%!       ## spawn_wait(spawn("gmsh", {[filename, ".geo"]}));
 %!       pid = spawn("gmsh", {"-format", "msh2", "-3", [filename, ".geo"]});
 %!       status = spawn_wait(pid);
 %!       if (status ~= 0)
@@ -283,6 +287,8 @@
 %!       switch (param.elem_type)
 %!         case {"tet10h", "tet10upc"}
 %!           param.elem_type_surf = {"tria6h"};
+%!         case "tet20"
+%!           param.elem_type_surf = {"tria10"};
 %!         case {"iso8", "iso8upc"}
 %!           param.elem_type_surf = {"iso4"};
 %!         case {"iso20", "iso20upc"}
@@ -297,11 +303,13 @@
 %!       switch (param.elem_type)
 %!         case {"iso8", "iso8upc"}
 %!           param.elem_type_line = "line2";
+%!         case "tet20"
+%!           param.elem_type_line = "line4";
 %!         otherwise
 %!           param.elem_type_line = "line3";
 %!       endswitch
 %!       param.material = "hookean linear elastic isotropic";
-%!       opt_msh.elem_type = {param.elem_type, param.elem_type_surf{:}, "line2", "line3", "point1"};
+%!       opt_msh.elem_type = {param.elem_type, param.elem_type_surf{:}, "line2", "line3", "line4", "point1"};
 %!       mesh = fem_pre_mesh_reorder(fem_pre_mesh_import([filename, ".msh"], "gmsh", opt_msh));
 %!       [~] = unlink([filename, ".msh"]);
 %!       load_case_dof.locked_dof = false(rows(mesh.nodes), 6);

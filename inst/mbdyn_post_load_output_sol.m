@@ -267,7 +267,7 @@ function elem_types_out = mbdyn_post_elem_types()
   persistent elem_types = [];
 
   if (isempty(elem_types))
-    empty_cell = cell(1, 20);
+    empty_cell = cell(1, 22);
 
     elem_types = struct("elem_type", empty_cell, "elem_tag", empty_cell, "num_cols", empty_cell, "node_cols", empty_cell, "node_offset", empty_cell);
 
@@ -399,6 +399,12 @@ function elem_types_out = mbdyn_post_elem_types()
     elem_types(21).node_offset = [];
     elem_types(21).num_cols = 20;
     elem_types(21).elem_tag = "tetrahedron20";
+
+    elem_types(22).elem_type = "tet20f";
+    elem_types(22).node_cols = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+    elem_types(22).node_offset = [];
+    elem_types(22).num_cols = 20;
+    elem_types(22).elem_tag = "tetrahedron20f";
   endif
 
   elem_types_out = elem_types;

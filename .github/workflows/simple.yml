@@ -137,7 +137,7 @@ jobs:
       - name: Install mboct-fem-pkg
         run: |
           MBOCT_FEM_PKG_REPO="https://github.com/octave-user/mboct-fem-pkg.git"
-          MBOCT_FEM_PKG_BRANCH="master"
+          MBOCT_FEM_PKG_BRANCH="tet20f"
           git clone -b "${MBOCT_FEM_PKG_BRANCH}" "${MBOCT_FEM_PKG_REPO}" "${RUNNER_TEMP}/mboct-fem-pkg"
           make -C "${RUNNER_TEMP}/mboct-fem-pkg" CXXFLAGS="${MBD_FLAGS}" -j${MBD_NUM_TASKS} install_local
           pushd "${RUNNER_TEMP}/mboct-fem-pkg/src"

@@ -318,7 +318,7 @@
 %!       fputs(fd, "         # output geometry,\n");
 %!       fprintf(fd, "         lower frequency limit, %e,\n", 0.01 / (SI_unit_second^-1));
 %!       fprintf(fd, "         upper frequency limit, %e,\n", 1000 / (SI_unit_second^-1));
-%!       fprintf(fd, "    use arpack,%d,%d,0.,suffix format, \"%%02d\";\n", 2 * options.number_of_modes, options.number_of_modes * 10);
+%!       fprintf(fd, "    use arpack,%d,%d,0.,suffix format, \"%%02d\";\n", 2 * options.number_of_modes + 1, options.number_of_modes * 15);
 %!       fputs(fd, "    nonlinear solver: nox, modified, 100, keep jacobian matrix, jacobian operator, newton krylov, forcing term, type 2, forcing term min tolerance, 1e-8, forcing term max tolerance, 1e-3, inner iterations before assembly, 30;\n");
 %!       fputs(fd, " end: initial value;\n");
 %!       fputs(fd, " begin: control data;\n");

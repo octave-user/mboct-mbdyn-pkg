@@ -361,7 +361,7 @@
 %!           case 1
 %!             fputs(fd, "    use lapack, balance, permute, suffix format, \"%02d\";\n");
 %!           case 2
-%!             fprintf(fd, "    use arpack,%d,%d,0.,suffix format,\"%%02d\";\n", 2 * cms_opt.modes.number, 4 * cms_opt.modes.number + 1);
+%!             fprintf(fd, "    use arpack,%d,%d,0.,suffix format,\"%%02d\";\n", 2 * cms_opt.modes.number + 1, 4 * cms_opt.modes.number + 1);
 %!           endswitch
 %!           fputs(fd, "end: initial value;\n");
 %!           fputs(fd, "begin: control data;\n");

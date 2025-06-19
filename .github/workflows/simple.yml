@@ -102,7 +102,7 @@ jobs:
           MBD_ARGS_ENABLE="--enable-octave --enable-multithread --disable-Werror --enable-install_test_progs"
           MBD_REPO="https://public.gitlab.polimi.it/DAER/mbdyn.git"
           LDFLAGS="-L/usr/local/lib -Wl,-rpath=/usr/local/lib"
-          git clone -b tet20f ${MBD_REPO} "${RUNNER_TEMP}/mbdyn"
+          git clone -b develop ${MBD_REPO} "${RUNNER_TEMP}/mbdyn"
           pushd "${RUNNER_TEMP}/mbdyn"
           ./bootstrap.sh
           ./configure CPPFLAGS="${MBD_CPPFLAGS}" LDFLAGS="${LDFLAGS} ${MBD_FLAGS}" CXXFLAGS="-std=c++20 ${MBD_FLAGS} ${MBD_CXXFLAGS}" CFLAGS="${MBD_FLAGS}" FCFLAGS="${MBD_FLAGS}" F77FLAGS="${MBD_FLAGS}" ${MBD_ARGS_WITH} ${MBD_ARGS_ENABLE}
@@ -137,7 +137,7 @@ jobs:
       - name: Install mboct-fem-pkg
         run: |
           MBOCT_FEM_PKG_REPO="https://github.com/octave-user/mboct-fem-pkg.git"
-          MBOCT_FEM_PKG_BRANCH="tet20f"
+          MBOCT_FEM_PKG_BRANCH="master"
           git clone -b "${MBOCT_FEM_PKG_BRANCH}" "${MBOCT_FEM_PKG_REPO}" "${RUNNER_TEMP}/mboct-fem-pkg"
           make -C "${RUNNER_TEMP}/mboct-fem-pkg" CXXFLAGS="${MBD_FLAGS}" -j${MBD_NUM_TASKS} install_local
           pushd "${RUNNER_TEMP}/mboct-fem-pkg/src"

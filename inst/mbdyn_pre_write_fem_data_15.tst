@@ -977,7 +977,7 @@
 %!       endif
 %!       options_mbd(i).output_file = sprintf("%s_%d", filename, i);
 %!       if (~options.verbose)
-%!         options_mbd(i).logfile = sprintf("%s_%d.stdout", filename, i);
+%!       # options_mbd(i).logfile = sprintf("%s_%d.stdout", filename, i);
 %!       endif
 %!       options_mbd(i).f_run_mbdyn2easyanim = false;
 %!       param_file = sprintf("%s_%d.set", filename, i);

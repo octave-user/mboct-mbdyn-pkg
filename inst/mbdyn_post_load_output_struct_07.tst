@@ -181,7 +181,7 @@
 %!   end_unwind_protect
 %!   options.output_file = fname;
 %!   options.verbose = false;
-%!   options.logfile = [fname, ".stdout"];
+%! # options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
 %!   [res.t, res.trajectory, res.deformation,res.velocity,res.acceleration,res.node_id, res.force_id, res.force_node_id, res.orientation_description]=mbdyn_post_load_output_struct (options.output_file);
 %!   log_dat = mbdyn_post_load_log(options.output_file);

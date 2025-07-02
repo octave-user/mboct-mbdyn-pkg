@@ -115,7 +115,7 @@
 %!     spawn_wait(spawn("cat", {fname}));
 %!   endif
 %!   options.verbose = false;
-%!   options.logfile = [fname, ".stdout"];
+%! # options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
 %!   [res.t, res.trajectory, res.deformation, res.velocity, res.acceleration, res.node_id] = mbdyn_post_load_output_struct(options.output_file);
 %!   res.log_dat = mbdyn_post_load_log(fname);

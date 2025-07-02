@@ -651,7 +651,7 @@
 %!         end_unwind_protect
 %!         options_mbd.output_file = sprintf("%s_%d_%d_%d_mbd", filename, j, k, l);
 %!         if (~options.verbose)
-%!           options_mbd.logfile = [options_mbd.output_file, ".stdout"];
+%! # options_mbd.logfile = [options_mbd.output_file, ".stdout"];
 %!         endif
 %!         options_eig.positive_frequencies = false;
 %!         if (options.verbose)

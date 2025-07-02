@@ -51,7 +51,7 @@
 %!   end_unwind_protect
 %!   options.output_file = fname;
 %!   options.verbose = false;
-%!   options.logfile = [fname, ".stdout"];
+%! # options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
 %!   log_dat = mbdyn_post_load_log(options.output_file);
 %!   mbdyn_post_nodes_print(log_dat.nodes, [fname, "_nodes.dat"]);

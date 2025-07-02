@@ -57,7 +57,7 @@
 %!     endif
 %!   end_unwind_protect
 %!   options.output_file = fname;
-%!   options.logfile = [fname, ".stdout"];
+%! # options.logfile = [fname, ".stdout"];
 %!   options.verbose = false;
 %!   mbdyn_solver_run(fname, options);
 %!   [t, dt, niter, reserr, solerr, solconv, output_flag] = mbdyn_post_load_output_out(options.output_file, 1024, false);

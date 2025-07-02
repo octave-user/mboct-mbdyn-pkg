@@ -341,7 +341,7 @@
 %!   opt_sol.output_file = output_file;
 %!   opt_sol.verbose = false;
 %!   if (~opt_sol.verbose)
-%!     opt_sol.logfile = [output_file, ".stdout"];
+%! # opt_sol.logfile = [output_file, ".stdout"];
 %!   endif
 %!   info = mbdyn_solver_run(output_file, opt_sol);
 %!   res.log_dat = mbdyn_post_load_log(opt_sol.output_file);

@@ -82,7 +82,7 @@
 %!   end_unwind_protect
 %!   options.output_file = fname;
 %!   options.verbose = false;
-%!   options.logfile = [fname, ".stdout"];
+%! # options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
 %!   log_dat = mbdyn_post_load_log(options.output_file);
 %!   [ref.ref_id, ref.position, ref.orientation, ref.velocity, ref.angular_velocity] = mbdyn_post_load_output_rfm(options.output_file);

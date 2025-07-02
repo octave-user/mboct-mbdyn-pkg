@@ -182,7 +182,7 @@
 %!               output_file = [file_prefix, "_mbd_out"];
 %!               opt_mbd.output_file = output_file;
 %!               if (~options.verbose)
-%!                 opt_mbd.logfile = [opt_mbd.output_file, ".stdout"];
+%! # opt_mbd.logfile = [opt_mbd.output_file, ".stdout"];
 %!               endif
 %!               opt_mbd.f_run_mbdyn = true;
 %!               switch (elem_type)

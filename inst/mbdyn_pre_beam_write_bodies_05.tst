@@ -37,7 +37,7 @@
 %! options_run.f_run_mbdyn2easyanim = true;
 %! options_run.f_runEasyAnim = false;
 %! options_run.verbose = false;
-%! options_run.logfile = [input_file, ".stdout"];
+%! # options_run.logfile = [input_file, ".stdout"];
 %! param.A = d^2 * pi / 4;
 %! param.Ay = param.Az = param.A * 9 / 10;
 %! param.Iy = param.Iz = d^4 * pi / 64;

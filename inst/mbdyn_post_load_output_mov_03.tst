@@ -50,7 +50,7 @@
 %!   end_unwind_protect
 %!   options.output_file = fname;
 %!   options.verbose = false;
-%!   options.logfile = [fname, ".stdout"];
+%! # options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
 %!   [t, dt, niter, reserr, solerr, solconv, output_flag] = mbdyn_post_load_output_out(fname, 1024, false);
 %!   [node_id, trajectory, velocity, acceleration, orientation_description, deformation] = mbdyn_post_load_output_mov(options.output_file, [1], numel(t), 6, false);

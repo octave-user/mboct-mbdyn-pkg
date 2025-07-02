@@ -216,7 +216,7 @@
 %!     fd = -1;
 %!   end_unwind_protect
 %!   if (~options.verbose)
-%!     opt_mbdyn.logfile = [filename, ".stdout"];
+%! # opt_mbdyn.logfile = [filename, ".stdout"];
 %!   endif
 %!   opt_mbdyn.output_file = [filename, "_mbdyn"];
 %!   info_mbdyn = mbdyn_solver_run(mbdyn_file, opt_mbdyn);

@@ -179,7 +179,7 @@
 %!         options.output_file = fname;
 %!         options.verbose = false;
 %!         if (~options.verbose)
-%!           options.logfile = [fname, ".stdout"];
+%! # options.logfile = [fname, ".stdout"];
 %!         endif
 %!         info(idx_node_type, idx_method) = mbdyn_solver_run(fname, options);
 %!         ncfile = [options.output_file, ".nc"];

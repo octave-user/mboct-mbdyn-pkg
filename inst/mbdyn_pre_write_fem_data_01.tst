@@ -102,7 +102,7 @@
 %!     options.output_file = fname1;
 %!     options.verbose = false;
 %!     if (silent)
-%!       options.logfile = [fname1, ".stdout"];
+%! # options.logfile = [fname1, ".stdout"];
 %!     endif
 %!     mbdyn_solver_run(fname1, options);
 %!     [t1, trajectory1, deformation1, velocity1, acceleration1, node_id1] = mbdyn_post_load_output_struct(fname1);
@@ -216,7 +216,7 @@
 %!     mbdyn_pre_write_fem_data([fname2, ".fem"], MRED, DRED, SRED, TRED, X0, URED0, DURED_DT0, DIAGM, M, XGC, JGC, NODE_LIST);
 %!     options.output_file = fname2;
 %!     if (silent)
-%!       options.logfile = [fname2, ".stdout"];
+%! # options.logfile = [fname2, ".stdout"];
 %!     endif
 %!     mbdyn_solver_run(fname2, options);
 %!     [t2, trajectory2, deformation2, velocity2, acceleration2, node_id2] = mbdyn_post_load_output_struct(fname2);
@@ -328,7 +328,7 @@
 %!     mbdyn_pre_write_fem_data([fname3, ".fem"], MRED, DRED, SRED, TRED, X0, URED0, DURED_DT0, DIAGM, M, XGC, JGC, NODE_LIST);
 %!     options.output_file = fname3;
 %!     if (silent)
-%!       options.logfile = [fname3, ".stdout"];
+%! # options.logfile = [fname3, ".stdout"];
 %!     endif
 %!     mbdyn_solver_run(fname3, options);
 %!     [t3, trajectory3, deformation3, velocity3, acceleration3, node_id3] = mbdyn_post_load_output_struct(fname3);

@@ -76,7 +76,7 @@
 %!   end_unwind_protect
 %!   options.output_file = fname;
 %!   options.verbose = false;
-%!   options.logfile = [fname, ".stdout"];
+%! # options.logfile = [fname, ".stdout"];
 %!   options.f_run_mbdyn2easyanim = false;
 %!   options.positive_frequencies = false;
 %!   mbdyn_solver_run(fname, options);

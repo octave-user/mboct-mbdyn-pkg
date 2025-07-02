@@ -110,7 +110,7 @@
 %!   load_case_dof.locked_dof(mesh.groups.quad8(find([[mesh.groups.quad8].id] == 3)).nodes, 1:3) = true;
 %!   load_case = struct();
 %!   if (~options.verbose)
-%!     opt_mbd.logfile = [opt_mbd.output_file, ".stdout"];
+%! # opt_mbd.logfile = [opt_mbd.output_file, ".stdout"];
 %!   endif
 %!   opt_mbd.f_run_mbdyn = true;
 %!   fd = -1;

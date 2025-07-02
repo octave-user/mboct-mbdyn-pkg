@@ -318,7 +318,7 @@
 %!   options.output_file = fname;
 %!   options.verbose = false;
 %!   if (~options.verbose)
-%!     options.logfile = [fname, ".stdout"];
+%! # options.logfile = [fname, ".stdout"];
 %!   endif
 %!   mbdyn_solver_run(fname, options);
 %!   [res.t, res.trajectory, res.deformation,res.velocity,res.acceleration,res.node_id, res.force_id, res.force_node_id, res.orientation_description]=mbdyn_post_load_output_struct (options.output_file);

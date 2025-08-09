@@ -20,7 +20,7 @@
 %! tolres = 1e-9;
 %! silent = true;
 %! for i=1:numel(omega1)
-%!   unwind_protect
+%! %unwind_protect
 %!     unwind_protect
 %!       [fd, fname1] = mkstemp(fullfile(tempdir(), "oct-mbdyn_pre_write_fem_data1_XXXXXX"));
 %!       if (fd == -1)
@@ -106,7 +106,7 @@
 %!     endif
 %!     mbdyn_solver_run(fname1, options);
 %!     [t1, trajectory1, deformation1, velocity1, acceleration1, node_id1] = mbdyn_post_load_output_struct(fname1);
-%!   unwind_protect_cleanup
+%! %unwind_protect_cleanup
 %!     if (fd ~= -1)
 %!       unlink(fname1);
 %!       files = dir([fname1, "*"]);
@@ -114,9 +114,9 @@
 %!         unlink(fullfile(files(j).folder, files(j).name));
 %!       endfor
 %!     endif
-%!   end_unwind_protect
+%! %end_unwind_protect
 %!   fd = -1;
-%!   unwind_protect
+%! %unwind_protect
 %!     unwind_protect
 %!       [fd, fname2] = mkstemp(fullfile(tempdir(), "oct-mbdyn_pre_write_fem_data2_XXXXXX"));
 %!       if (fd == -1)
@@ -220,7 +220,7 @@
 %!     endif
 %!     mbdyn_solver_run(fname2, options);
 %!     [t2, trajectory2, deformation2, velocity2, acceleration2, node_id2] = mbdyn_post_load_output_struct(fname2);
-%!   unwind_protect_cleanup
+%! %unwind_protect_cleanup
 %!     if (fd ~= -1)
 %!       unlink(fname2);
 %!       files = dir([fname2, "*"]);
@@ -228,9 +228,9 @@
 %!         unlink(fullfile(files(j).folder, files(j).name));
 %!       endfor
 %!     endif
-%!   end_unwind_protect
+%! %end_unwind_protect
 %!   fd = -1;
-%!   unwind_protect
+%! %unwind_protect
 %!     unwind_protect
 %!       [fd, fname3] = mkstemp(fullfile(tempdir(), "oct-mbdyn_pre_write_fem_data3_XXXXXX"));
 %!       if (fd == -1)
@@ -320,7 +320,7 @@
 %!     endif
 %!     mbdyn_solver_run(fname3, options);
 %!     [t3, trajectory3, deformation3, velocity3, acceleration3, node_id3] = mbdyn_post_load_output_struct(fname3);
-%!   unwind_protect_cleanup
+%! %unwind_protect_cleanup
 %!     if (fd ~= -1)
 %!       unlink(fname3);
 %!       files = dir([fname3, "*"]);
@@ -328,7 +328,7 @@
 %!         unlink(fullfile(files(j).folder, files(j).name));
 %!       endfor
 %!     endif
-%!   end_unwind_protect
+%! %end_unwind_protect
 %!   tol = 1e-4;
 %!   for j=1:numel(node_id2)
 %!     assert_simple(trajectory2{j}, trajectory1{j}, tol * max(max(abs(trajectory1{j}))));

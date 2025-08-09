@@ -2,7 +2,7 @@
 %!test
 %! try
 %! fd = -1;
-%! unwind_protect
+%! %unwind_protect
 %!   unwind_protect
 %!     [fd, fname] = mkstemp(fullfile(tempdir(), "oct-mbdyn_post_load_output_rfm_XXXXXX"));
 %!     if (fd == -1)
@@ -85,7 +85,7 @@
 %!   assert_simple(Phi{2}, [1.11e-2, 2.22e-2, 3.33e-2], 2 * pi * tol);
 %!   assert_simple(v{2}, [100.1, 200.2, 300.3], tol);
 %!   assert_simple(omega{2}, [2100.1, 2200.2, 2300.3], tol);
-%! unwind_protect_cleanup
+%! %unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
 %!     files = dir([fname, ".*"]);
@@ -93,7 +93,7 @@
 %!       unlink(fullfile(files(i).folder, files(i).name));
 %!     endfor
 %!   endif
-%! end_unwind_protect
+%! %end_unwind_protect
 %! catch
 %!   gtest_error = lasterror();
 %!   gtest_fail(gtest_error, evalin("caller", "__file"));

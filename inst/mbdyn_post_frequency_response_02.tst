@@ -44,7 +44,7 @@
 %! options.rho = "rho";
 %! beam = mbdyn_pre_beam_compute(X, N, 20);
 %! fd = -1;
-%! unwind_protect
+%! %unwind_protect
 %!   unwind_protect
 %!     [fd, fname] = mkstemp(fullfile(tempdir(), "oct-mbdyn_post_frequency_response_XXXXXX"));
 %!     if (fd == -1)
@@ -164,7 +164,7 @@
 %!   for idxfn=1:numel(fn)
 %!     assert_simple(getfield(modal{1}, fn{idxfn}), getfield(modal{2}, fn{idxfn}));
 %!   endfor
-%! unwind_protect_cleanup
+%! %unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
 %!     files = dir([fname, "*"]);
@@ -172,7 +172,7 @@
 %!       unlink(fullfile(files(i).folder, files(i).name));
 %!     endfor
 %!   endif
-%! end_unwind_protect
+%! %end_unwind_protect
 %! catch
 %!   gtest_error = lasterror();
 %!   gtest_fail(gtest_error, evalin("caller", "__file"));

@@ -4,7 +4,7 @@
 %! ## TEST4
 %! pkg load mboct-fem-pkg;
 %! filename = "";
-%! unwind_protect
+%! %unwind_protect
 %!   filename = tempname();
 %!   if (ispc())
 %!     filename(filename == "\\") = "/";
@@ -868,7 +868,7 @@
 %!       assert_simple(lambda_red_s(1:K), lambda_s(1:K), tol * norm(lambda_s(1:K)));
 %!   endfor
 %! endfor
-%! unwind_protect_cleanup
+%! %unwind_protect_cleanup
 %!   if (~isempty(filename))
 %!     fn = dir([filename, "*"]);
 %!     for i=1:numel(fn)
@@ -877,7 +877,7 @@
 %!       endif
 %!     endfor
 %!   endif
-%! end_unwind_protect
+%! %end_unwind_protect
 %! catch
 %!   gtest_error = lasterror();
 %!   gtest_fail(gtest_error, evalin("caller", "__file"));

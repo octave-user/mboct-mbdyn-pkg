@@ -70,7 +70,7 @@
 %! param.epsilon = epsilon_r(j);
 %! fd = -1;
 %! output_file = "";
-%! unwind_protect
+%! %unwind_protect
 %!   unwind_protect
 %!     output_dir = tempdir();
 %!     [fd, output_file] = mkstemp(fullfile(output_dir, "oct-mbdyn_post_ehd_load_output_XXXXXX"));
@@ -372,7 +372,7 @@
 %!   Q(j, k) = (Q_out1 + Q_out2) / ((0.5 * D)^3 * Psi * abs(omega_res));
 %!   dQ(j, k) = (Q_out1 + Q_out2 + Q_in) / Q_in;
 %!   mu_r(j, k) = Psi * (abs((omega1z - omega2z) / omega_res) * pi / (sqrt(1 - epsilon^2) * So_r(j, k)) + sin(beta_r(j, k)) * abs(epsilon) / 2);
-%! unwind_protect_cleanup
+%! %unwind_protect_cleanup
 %!   if (numel(output_file))
 %!     fn = dir([output_file, "*"]);
 %!     for i=1:numel(fn)
@@ -383,7 +383,7 @@
 %!       endif
 %!     endfor
 %!   endif
-%! end_unwind_protect
+%! %end_unwind_protect
 %! endfor
 %! endfor
 %! if (f_plot)

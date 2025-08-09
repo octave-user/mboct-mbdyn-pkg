@@ -106,7 +106,7 @@
 %!     filename(filename == "\\") = "/";
 %!   endif
 %!   fd = -1;
-%!   unwind_protect
+%! %unwind_protect
 %!     nodes_file = [filename, ".nod"];
 %!     csl_file = [filename, ".csl"];
 %!     elem_file = [filename, ".elem"];
@@ -185,14 +185,14 @@
 %!       endif
 %!       fd = -1;
 %!     end_unwind_protect
-%!   unwind_protect_cleanup
+%! %unwind_protect_cleanup
 %!     if (~isempty(filename))
 %!       fn = dir([filename, "*"]);
 %!       for i=1:numel(fn)
 %!         [~] = unlink(fullfile(fn(i).folder, fn(i).name));
 %!       endfor
 %!     endif
-%!   end_unwind_protect
+%! %end_unwind_protect
 %! endfunction
 %!
 %! function [Freact, Freact_mbd, X1_mbd, mesh, mesh_def, sol_stat, sol_eig, sol_eig_def, modal_mbd, load_case_mbd] = transmissibility(geometry, material, param)

@@ -61,7 +61,7 @@
 %! options.number_of_modes = int32(10);
 %! fref = zeros(5, columns(OMEGA));
 %! filename = "";
-%! unwind_protect
+%! %unwind_protect
 %!   filename = tempname();
 %!   if (ispc())
 %!     filename(filename == "\\") = "/";
@@ -428,7 +428,7 @@
 %!   endfor
 %!   tol = 2e-2;
 %!   assert_simple(f(floor(end/2+1):end,:), fref, tol * max(max(abs(fref))));
-%! unwind_protect_cleanup
+%! %unwind_protect_cleanup
 %!   if (numel(filename))
 %!     fn = dir([filename, "*"]);
 %!     for i=1:numel(fn)
@@ -437,7 +437,7 @@
 %!       endif
 %!     endfor
 %!   endif
-%! end_unwind_protect
+%! %end_unwind_protect
 %! catch
 %!   gtest_error = lasterror();
 %!   gtest_fail(gtest_error, evalin("caller", "__file"));

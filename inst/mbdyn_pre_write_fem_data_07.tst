@@ -8,7 +8,7 @@
 %! ## Natural frequencies of a rotating beam structure
 %! pkg load mboct-fem-pkg;
 %! filename = "";
-%! unwind_protect
+%! %unwind_protect
 %!   filename = tempname();
 %!   if (ispc())
 %!     filename(filename == "\\") = "/";
@@ -435,7 +435,7 @@
 %!     assert_simple(fmbd(1:Nfem), ffem(1:Nfem), tol * max(fmbd(1:Nfem)));
 %!   endfor
 %!   assert_simple(max(abs(sol_eig_diag.f/sol_eig(1).f - 1)) < 0.04);
-%! unwind_protect_cleanup
+%! %unwind_protect_cleanup
 %!   if (~isempty(filename))
 %!     fn = dir([filename, "*"]);
 %!     for i=1:numel(fn)
@@ -444,7 +444,7 @@
 %!       endif
 %!     endfor
 %!   endif
-%! end_unwind_protect
+%! %end_unwind_protect
 %! catch
 %!   gtest_error = lasterror();
 %!   gtest_fail(gtest_error, evalin("caller", "__file"));

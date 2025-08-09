@@ -45,7 +45,7 @@
 %! options.do_plot = false;
 %! options.var_step_size = false;
 %! filename = "";
-%! unwind_protect
+%! %unwind_protect
 %!   filename = tempname();
 %!   if (ispc())
 %!     filename(filename == "\\") = "/";
@@ -276,7 +276,7 @@
 %!   endif
 %!   tol = 2e-2;
 %!   assert_simple(Wkin_res, Wkin_ref, tol * max(abs(Wkin_res)));
-%! unwind_protect_cleanup
+%! %unwind_protect_cleanup
 %!   if (numel(filename))
 %!     fn = dir([filename, "*"]);
 %!     for i=1:numel(fn)
@@ -285,7 +285,7 @@
 %!       endif
 %!     endfor
 %!   endif
-%! end_unwind_protect
+%! %end_unwind_protect
 %! catch
 %!   gtest_error = lasterror();
 %!   gtest_fail(gtest_error, evalin("caller", "__file"));

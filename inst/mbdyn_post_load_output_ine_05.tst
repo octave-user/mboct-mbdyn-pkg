@@ -2,7 +2,7 @@
 %!demo
 %! try
 %! fd = -1;
-%! unwind_protect
+%! %unwind_protect
 %!   unwind_protect
 %!     [fd, fname] = mkstemp(fullfile(tempdir(), "oct-mbdyn_post_load_output_ine_XXXXXX"));
 %!     if (fd == -1)
@@ -83,7 +83,7 @@
 %!   assert_simple(gamma{1}, repmat(gammaref.', numel(t), 1), tol * norm(gammaref));
 %!   assert_simple(beta_dot{1}, repmat(betadotref.', numel(t), 1), tol * norm(betadotref));
 %!   assert_simple(gamma_dot{1}, repmat(gammadotref.', numel(t), 1), tol * max([1,norm(gammadotref)]));
-%! unwind_protect_cleanup
+%! %unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
 %!     files = dir([fname, ".*"]);
@@ -91,7 +91,7 @@
 %!       unlink(fullfile(files(i).folder, files(i).name));
 %!     endfor
 %!   endif
-%! end_unwind_protect
+%! %end_unwind_protect
 %! catch
 %!   gtest_error = lasterror();
 %!   gtest_fail(gtest_error, evalin("caller", "__file"));

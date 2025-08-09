@@ -45,7 +45,7 @@
 %! cpu.total = zeros(1, numel(autodiff));
 %! res = cell(numel(autodiff), numel(damping), numel(offset), numel(orientation), numel(balance), numel(solvers));
 %! fd = -1;
-%! unwind_protect
+%! %unwind_protect
 %!   for i=1:numel(autodiff)
 %!     for j=1:numel(damping)
 %!       for k=1:numel(offset)
@@ -246,7 +246,7 @@
 %!       endfor
 %!     endfor
 %!   endfor
-%! unwind_protect_cleanup
+%! %unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
 %!     files = dir([fname, ".*"]);
@@ -254,7 +254,7 @@
 %!       unlink(fullfile(files(i).folder, files(i).name));
 %!     endfor
 %!   endif
-%! end_unwind_protect
+%! %end_unwind_protect
 %! catch
 %!   gtest_error = lasterror();
 %!   gtest_fail(gtest_error, evalin("caller", "__file"));

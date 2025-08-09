@@ -10,7 +10,7 @@
 %! SI_unit_newton = SI_unit_kilogram * SI_unit_meter / SI_unit_second^2;
 %! SI_unit_pascal = SI_unit_newton / SI_unit_meter^2;
 %! filename = "";
-%! unwind_protect
+%! %unwind_protect
 %!   filename = tempname();
 %!   if (ispc())
 %!     filename(filename == "\\") = "/";
@@ -261,7 +261,7 @@
 %!   Uz = mean(sol_stat.def(mesh.groups.iso4(grp_id_load).nodes, 3));
 %!   tol = 1e-2;
 %!   assert_simple(Uz, Uz_ref, tol * abs(Uz_ref));
-%! unwind_protect_cleanup
+%! %unwind_protect_cleanup
 %!   if (~isempty(filename))
 %!     fn = dir([filename, "*"]);
 %!     for i=1:numel(fn)
@@ -270,7 +270,7 @@
 %!       endif
 %!     endfor
 %!   endif
-%! end_unwind_protect
+%! %end_unwind_protect
 %! catch
 %!   gtest_error = lasterror();
 %!   gtest_fail(gtest_error, evalin("caller", "__file"));

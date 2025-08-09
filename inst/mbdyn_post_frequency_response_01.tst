@@ -76,7 +76,7 @@
 %!         options.rho = "rho";
 %!         beam = mbdyn_pre_beam_compute(X, N, 20);
 %!         fd = -1;
-%!         unwind_protect
+%! %unwind_protect
 %!           unwind_protect
 %!             [fd, fname] = mkstemp(fullfile(tempdir(), "oct-mbdyn_post_frequency_response_XXXXXX"));
 %!             if (fd == -1)
@@ -205,7 +205,7 @@
 %!               title("frequency response phase");
 %!             endif
 %!           endfor
-%!         unwind_protect_cleanup
+%! %unwind_protect_cleanup
 %!           if (fd ~= -1)
 %!             unlink(fname);
 %!             files = dir([fname, "*"]);
@@ -213,7 +213,7 @@
 %!               unlink(fullfile(files(j).folder, files(j).name));
 %!             endfor
 %!           endif
-%!         end_unwind_protect
+%! %end_unwind_protect
 %!         tol = 2e-2;
 %!         for idxnc=1:numel(F)
 %!           assert_simple(sum(abs(F{idxnc} - V.' * wstat).^2) / sum(abs(V * wstat).^2) < tol);

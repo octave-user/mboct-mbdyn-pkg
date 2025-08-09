@@ -15,7 +15,7 @@
 %! fd = -1;
 %! for idx_autodiff=1:numel(autodiff)
 %! for idx_method=1:numel(methods)
-%! unwind_protect
+%! %unwind_protect
 %!   unwind_protect
 %!     [fd, fname] = mkstemp(fullfile(tempdir(), "oct-mbdyn_post_load_output_struct_XXXXXX"));
 %!     if (fd == -1)
@@ -218,7 +218,7 @@
 %!     rel_err = max([rel_err, max(norm(Wrel{i}(:, idx_t) - [omega; zeros(2, 1)], "cols")) / abs(omega)]);
 %!   endfor
 %!   rel_error(idx_method, idx_autodiff) = rel_err;
-%! unwind_protect_cleanup
+%! %unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
 %!     files = dir([fname, ".*"]);
@@ -226,7 +226,7 @@
 %!       unlink(fullfile(files(i).folder, files(i).name));
 %!     endfor
 %!   endif
-%! end_unwind_protect
+%! %end_unwind_protect
 %! endfor
 %! endfor
 %! if (do_plot)

@@ -2,7 +2,7 @@
 %!test
 %! try
 %! fd = -1;
-%! unwind_protect
+%! %unwind_protect
 %!   unwind_protect
 %!     [fd, fname] = mkstemp(fullfile(tempdir(), "oct-mbdyn_post_load_log_body_XXXXXX"));
 %!     if (fd == -1)
@@ -84,7 +84,7 @@
 %!   assert_simple(bodies(2).J, diag([2.1, 2.2, 2.3]) - bodies(2).dm * skew(bodies(2).Xgc) * skew(bodies(2).Xgc), sqrt(eps) * bodies(2).dm);
 %!   assert_simple(bodies(1).type, "body");
 %!   assert_simple(bodies(2).type, "body");
-%! unwind_protect_cleanup
+%! %unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
 %!     files = dir([fname, ".*"]);
@@ -92,7 +92,7 @@
 %!       unlink(fullfile(files(i).folder, files(i).name));
 %!     endfor
 %!   endif
-%! end_unwind_protect
+%! %end_unwind_protect
 %! catch
 %!   gtest_error = lasterror();
 %!   gtest_fail(gtest_error, evalin("caller", "__file"));

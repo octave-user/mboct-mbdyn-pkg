@@ -30,7 +30,7 @@
 %! f_plot = false;
 %! fd = -1;
 %! output_file = "";
-%! unwind_protect
+%! %unwind_protect
 %!   unwind_protect
 %!     output_dir = tempdir();
 %!     [fd, output_file] = mkstemp(fullfile(output_dir, "oct-mbdyn_post_ehd_load_output_XXXXXX"));
@@ -384,7 +384,7 @@
 %! assert_simple(-q1, analy.q_u1_wc, tol_q * analy.q_u1_wc);
 %! assert_simple(q2, analy.q_u1_wc, tol_q * analy.q_u1_wc);
 %! assert_simple(res.bearings.columns.p(:, 1), analy.p_wc(:), tol_p * max(abs(analy.p_wc)));
-%! unwind_protect_cleanup
+%! %unwind_protect_cleanup
 %!   if (numel(output_file))
 %!     fn = dir([output_file, "*"]);
 %!     for i=1:numel(fn)
@@ -395,7 +395,7 @@
 %!       endif
 %!     endfor
 %!   endif
-%! end_unwind_protect
+%! %end_unwind_protect
 %! catch
 %!   gtest_error = lasterror();
 %!   gtest_fail(gtest_error, evalin("caller", "__file"));

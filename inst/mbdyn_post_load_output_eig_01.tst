@@ -2,7 +2,7 @@
 %!test
 %! try
 %! fd = -1;
-%! unwind_protect
+%! %unwind_protect
 %!   unwind_protect
 %!     s1 = 5000;
 %!     m1 = 2.5;
@@ -123,7 +123,7 @@
 %!   assert_simple(modalnc.dTime, modal.dTime);
 %!   assert_simple(modalnc.dCoef, modal.dCoef);
 %!   assert_simple(modalnc.lStep, modal.lStep);
-%! unwind_protect_cleanup
+%! %unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
 %!     files = dir([fname, "*"]);
@@ -131,7 +131,7 @@
 %!       unlink(fullfile(files(i).folder, files(i).name));
 %!     endfor
 %!   endif
-%! end_unwind_protect
+%! %end_unwind_protect
 %! catch
 %!   gtest_error = lasterror();
 %!   gtest_fail(gtest_error, evalin("caller", "__file"));

@@ -25,7 +25,7 @@
 %!   cms_opt.verbose = options.verbose;
 %!   enable_filenames = [options.f_enable_modal, options.f_enable_beam, options.f_enable_solid];
 %!   filename = "";
-%!   unwind_protect
+%! %unwind_protect
 %!     filename = tempname();
 %!     if (ispc())
 %!       filename(filename == "\\") = "/";
@@ -1025,7 +1025,7 @@
 %!         assert_simple(interp1(omega{i}, r{i}, omega{j}, "pchip", "extrap"), r{j}, tol * max(abs(r{j})));
 %!       endfor
 %!     endfor
-%!   unwind_protect_cleanup
+%! %unwind_protect_cleanup
 %!     if (numel(filename))
 %!       fn = dir([filename, "*"]);
 %!       for i=1:numel(fn)
@@ -1034,7 +1034,7 @@
 %!         endif
 %!       endfor
 %!     endif
-%!   end_unwind_protect
+%! %end_unwind_protect
 %! endfunction
 %!
 %! ## Define the unit system

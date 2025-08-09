@@ -2,7 +2,7 @@
 %!test
 %! try
 %! fd = -1;
-%! unwind_protect
+%! %unwind_protect
 %!   unwind_protect
 %!     s1 = 5000;
 %!     m1 = 2.5;
@@ -106,7 +106,7 @@
 %!   options.mode_index = 1:numel(modal.lambda);
 %!   options.f_run_mbdyn2easyanim = true;
 %!   mbdyn_post_eig_to_mov_file(fname, [fname, "_%02d.mov"], options, modal);
-%! unwind_protect_cleanup
+%! %unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
 %!     files = dir([fname, "*"]);
@@ -114,7 +114,7 @@
 %!       unlink(fullfile(files(i).folder, files(i).name));
 %!     endfor
 %!   endif
-%! end_unwind_protect
+%! %end_unwind_protect
 %! catch
 %!   gtest_error = lasterror();
 %!   gtest_fail(gtest_error, evalin("caller", "__file"));

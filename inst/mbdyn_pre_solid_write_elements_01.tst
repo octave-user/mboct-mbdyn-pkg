@@ -51,7 +51,7 @@
 %!         endswitch
 %!     endswitch
 %!     filename = "";
-%!     unwind_protect
+%! %unwind_protect
 %!       filename = tempname();
 %!       if (ispc())
 %!         filename(filename == "\\") = "/";
@@ -478,7 +478,7 @@
 %!       fprintf(stderr, "difference(delta)=%.2f%%\n", (delta / delta_ref - 1) * 100);
 %!       assert_simple(sigma1_max, sigma1_max_ref, tol_sigma * abs(sigma1_max_ref));
 %!       assert_simple(delta, delta_ref, tol_delta * abs(delta_ref));
-%!     unwind_protect_cleanup
+%! %unwind_protect_cleanup
 %!       if (numel(filename))
 %!         fn = dir([filename, "*"]);
 %!         for i=1:numel(fn)
@@ -487,7 +487,7 @@
 %!           endif
 %!         endfor
 %!       endif
-%!     end_unwind_protect
+%! %end_unwind_protect
 %!   endfor
 %! endfor
 %! catch

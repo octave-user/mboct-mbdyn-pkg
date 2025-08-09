@@ -2,7 +2,7 @@
 %!test
 %! try
 %! fd = -1;
-%! unwind_protect
+%! %unwind_protect
 %!   unwind_protect
 %!     [fd, fname] = mkstemp(fullfile(tempdir(), "oct-mbdyn_post_inertia_compute_XXXXXX"));
 %!     if (fd == -1)
@@ -78,7 +78,7 @@
 %!   assert_simple(inertia(1).dm, 123.456, tol * 123.456);
 %!   assert_simple(inertia(1).Xgc, zeros(3, 1), tol);
 %!   assert_simple(inertia(1).J, diag([45.456, 78.789, 123.123]), tol * 123.123);
-%! unwind_protect_cleanup
+%! %unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
 %!     files = dir([fname, "*"]);
@@ -86,7 +86,7 @@
 %!       unlink(fullfile(files(i).folder, files(i).name));
 %!     endfor
 %!   endif
-%! end_unwind_protect
+%! %end_unwind_protect
 %! catch
 %!   gtest_error = lasterror();
 %!   gtest_fail(gtest_error, evalin("caller", "__file"));

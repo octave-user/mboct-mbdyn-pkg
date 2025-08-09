@@ -2,7 +2,7 @@
 %!test
 %! try
 %! fd = -1;
-%! unwind_protect
+%! %unwind_protect
 %!   unwind_protect
 %!     [fd, fname] = mkstemp(fullfile(tempdir(), "oct-mbdyn_pre_write_param_file_XXXXXX"));
 %!     if (fd == -1)
@@ -60,7 +60,7 @@
 %!     assert_simple(log_dat.vars.b1, param.b1);
 %!     assert_simple(log_dat.vars.b2, param.b2);
 %!     assert_simple(log_dat.vars.s, param.s);
-%! unwind_protect_cleanup
+%! %unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
 %!   endif
@@ -68,7 +68,7 @@
 %!   for i=1:numel(files)
 %!     unlink(fullfile(files(i).folder, files(i).name));
 %!   endfor
-%! end_unwind_protect
+%! %end_unwind_protect
 %! catch
 %!   gtest_error = lasterror();
 %!   gtest_fail(gtest_error, evalin("caller", "__file"));

@@ -39,7 +39,7 @@
 %!   for idx_node_type=1:numel(node_types)
 %!     for idx_method=1:numel(imethods)
 %!       fd = -1;
-%!       unwind_protect
+%! %unwind_protect
 %!         unwind_protect
 %!           [fd, fname] = mkstemp(fullfile(tempdir(), "oct-mbdyn_inertia_XXXXXX"));
 %!           if (fd == -1)
@@ -202,7 +202,7 @@
 %!         l = max([param.a, param.b, param.c]);
 %!         err_gamma(idx_node_type, idx_method) = max(norm(gamma - gamma0, "cols")) / norm(gamma0);
 %!         err_beta(idx_node_type, idx_method) = max(norm(beta - beta0, "cols")) / norm(beta0);
-%!       unwind_protect_cleanup
+%! %unwind_protect_cleanup
 %!         if (fd ~= -1)
 %!           unlink(fname);
 %!           files = dir([fname, "*"]);
@@ -210,7 +210,7 @@
 %!             unlink(fullfile(files(i).folder, files(i).name));
 %!           endfor
 %!         endif
-%!       end_unwind_protect
+%! %end_unwind_protect
 %!     endfor
 %!   endfor
 %!   status = false(numel(idx_node_type), numel(imethods));

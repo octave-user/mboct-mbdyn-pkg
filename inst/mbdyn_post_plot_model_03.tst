@@ -153,7 +153,7 @@
 %!   endif
 %! end_unwind_protect
 %! unwind_protect_cleanup
-%!   graphics_toolkit(gtk);
+%!   graphics_toolkit(gtk_curr);
 %! end_unwind_protect
 %! catch
 %!   gtest_error = lasterror();

@@ -3,7 +3,7 @@
 %! try
 %! f_plot_res = false;
 %! fd = -1;
-%! unwind_protect
+%! %unwind_protect
 %! shape = "straight x";
 %! param.initial_time = 0;
 %! param.final_time = 1;
@@ -212,7 +212,7 @@
 %! assert_simple(inertia.J(1,1), Jx_a, 1e-2 * abs(Jx_a));
 %! assert_simple(inertia.J(2,2), Jy_a, 1e-2 * abs(Jy_a));
 %! assert_simple(inertia.J(3,3), Jz_a, 1e-2 * abs(Jz_a));
-%! unwind_protect_cleanup
+%! %unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(input_file);
 %!     files = dir([input_file, "*"]);
@@ -220,7 +220,7 @@
 %!       unlink(fullfile(files(i).folder, files(i).name));
 %!     endfor
 %!   endif
-%! end_unwind_protect
+%! %end_unwind_protect
 %! catch
 %!   gtest_error = lasterror();
 %!   gtest_fail(gtest_error, evalin("caller", "__file"));

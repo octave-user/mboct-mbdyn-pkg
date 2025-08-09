@@ -1,7 +1,7 @@
 ## mbdyn_post_plot_model.tst:02
 %!test
 %! try
-%! unwind_protect
+%! %unwind_protect
 %! gtk_curr = graphics_toolkit();
 %! switch (gtk_curr)
 %! case "fltk"
@@ -156,7 +156,7 @@
 %!   unwind_protect_cleanup
 %!     graphics_toolkit(gtk);
 %!   end_unwind_protect
-%! unwind_protect_cleanup
+%! %unwind_protect_cleanup
 %!   if (fd ~= -1)
 %!     unlink(fname);
 %!     files = dir([fname, "*"]);
@@ -164,7 +164,7 @@
 %!       unlink(fullfile(files(i).folder, files(i).name));
 %!     endfor
 %!   endif
-%! end_unwind_protect
+%! %end_unwind_protect
 %! catch
 %!   gtest_error = lasterror();
 %!   gtest_fail(gtest_error, evalin("caller", "__file"));

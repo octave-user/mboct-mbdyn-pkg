@@ -60,7 +60,7 @@
 %!   end_unwind_protect
 %!   options.output_file = fname;
 %!   options.verbose = false;
-%!   options.logfile = [fname, ".stdout"];
+%! # options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
 %!   [ref_id, X, Phi, v, omega] = mbdyn_post_load_output_rfm(options.output_file, 1:2);
 %!   tol = eps^0.4;

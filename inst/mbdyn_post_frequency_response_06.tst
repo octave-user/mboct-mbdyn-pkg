@@ -174,7 +174,7 @@
 %!       options_mbd.output_file = sprintf("%s_mbd", filename);
 %!       options_eig.positive_frequencies = false;
 %!       if (~options.verbose)
-%!         options_mbd.logfile = [options_mbd.output_file, ".stdout"];
+%! # options_mbd.logfile = [options_mbd.output_file, ".stdout"];
 %!       endif
 %!       info = mbdyn_solver_run(mbdyn_file, options_mbd);
 %!       options_eig.use_netcdf = true;

@@ -106,7 +106,7 @@
 %!   endif
 %!   options.verbose = false;
 %!   if (~options.verbose)
-%!     options.logfile = [fname, ".stdout"];
+%! # options.logfile = [fname, ".stdout"];
 %!   endif
 %!   mbdyn_solver_run(fname, options);
 %!   [t, trajectory, deformation] = mbdyn_post_load_output_struct(options.output_file);

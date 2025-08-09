@@ -167,7 +167,7 @@
 %!             spawn_wait(spawn("cat", {fname}));
 %!           endif
 %!           if (~options.verbose)
-%!             options.logfile = [fname, ".stdout"];
+%! # options.logfile = [fname, ".stdout"];
 %!           endif
 %!           info = mbdyn_solver_run(fname, options);
 %!           log_dat = mbdyn_post_load_log(fname);

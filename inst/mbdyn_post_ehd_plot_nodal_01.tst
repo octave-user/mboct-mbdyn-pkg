@@ -323,7 +323,7 @@
 %!   end_unwind_protect
 %!   opt_sol.output_file = output_file;
 %!   opt_sol.verbose = false;
-%!   opt_sol.logfile = [output_file, ".stdout"];
+%! # opt_sol.logfile = [output_file, ".stdout"];
 %!   info = mbdyn_solver_run(output_file, opt_sol);
 %!   res.log_dat = mbdyn_post_load_log(opt_sol.output_file);
 %!   [res.t, ...

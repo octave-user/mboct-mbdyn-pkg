@@ -186,7 +186,7 @@
 %!             spawn_wait(spawn("nl", {fname}));
 %!           endif
 %!           if (~options.verbose)
-%!             options.logfile = [fname, ".stdout"];
+%! # options.logfile = [fname, ".stdout"];
 %!           endif
 %!           start = tic();
 %!           mbdyn_solver_run(fname, options);

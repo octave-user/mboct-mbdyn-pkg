@@ -73,7 +73,7 @@
 %!   end_unwind_protect
 %!   options.output_file = fname;
 %!   options.verbose = false;
-%!   options.logfile = [fname, ".stdout"];
+%! # options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
 %!   bodies = mbdyn_post_load_log_body(fname);
 %!   assert_simple([bodies.label], int32([1,2]));

@@ -72,7 +72,7 @@
 %!   options.output_file = fname;
 %!   options.verbose = true;
 %!   if (~options.verbose)
-%!     options.logfile = [fname, ".stdout"];
+%! # options.logfile = [fname, ".stdout"];
 %!   endif
 %!   mbdyn_solver_run(fname, options);
 %!   [t, trajectory, deformation, velocity, acceleration, res.node_id, force, res.force_id, force_node_id] = mbdyn_post_load_output_struct(options.output_file);

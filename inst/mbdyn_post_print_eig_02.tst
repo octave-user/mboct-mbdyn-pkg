@@ -84,7 +84,7 @@
 %!   options.output_file = fname;
 %!   options.positive_frequencies = false;
 %!   options.verbose = false;
-%!   options.logfile = [fname, ".stdout"];
+%! # options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
 %!   modal = mbdyn_post_load_output_eig(fname, options, 0);
 %!   log_dat = mbdyn_post_load_log(fname);

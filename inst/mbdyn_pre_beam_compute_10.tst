@@ -101,7 +101,7 @@
 %!     spawn_wait(spawn("cat", {fname}));
 %!   endif
 %!   options.verbose = false;
-%!   options.logfile = [fname, ".stdout"];
+%! # options.logfile = [fname, ".stdout"];
 %!   mbdyn_solver_run(fname, options);
 %!   [res.t, ...
 %!    res.trajectory, ...

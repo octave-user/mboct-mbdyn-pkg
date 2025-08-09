@@ -293,7 +293,7 @@
 %!     fd = -1;
 %!   end_unwind_protect
 %!   if (~options.verbose)
-%!     opt_mbdyn.logfile = [filename, ".stdout"];
+%! # opt_mbdyn.logfile = [filename, ".stdout"];
 %!   endif
 %!   if (options.verbose)
 %!     shell(["nl ", mbdyn_file]);

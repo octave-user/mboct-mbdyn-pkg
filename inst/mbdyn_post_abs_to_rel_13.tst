@@ -122,7 +122,7 @@
 %!   options.output_file = fname;
 %!   options.verbose = false;
 %!   if (~options.verbose)
-%!     options.logfile = [fname, ".stdout"];
+%! # options.logfile = [fname, ".stdout"];
 %!   endif
 %!   mbdyn_solver_run(fname, options);
 %!   log_dat = mbdyn_post_load_log(options.output_file);

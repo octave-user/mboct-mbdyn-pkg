@@ -464,11 +464,11 @@
 %!       fprintf(stderr, "delta=%.3f [mm]\n", delta);
 %!       switch (param.nu)
 %!         case 0.3
-%!           ## K.J.Bathe page 329 chaper 4.4
+%!           ## K.J.Bathe page 329 chapter 4.4
 %!           sigma1_max_ref = 0.6056e6 / SI_unit_pascal;
 %!           delta_ref = -1.669e-3 / SI_unit_meter;
 %!         case 0.499
-%!           ## K.J.Bathe page 333 chaper 4.4
+%!           ## K.J.Bathe page 333 chapter 4.4
 %!           sigma1_max_ref = 0.5998e6 / SI_unit_pascal;
 %!           delta_ref = -1.393e-3 / SI_unit_meter;
 %!       endswitch

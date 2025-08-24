@@ -1,7 +1,8 @@
 ## mbdyn_pre_write_fem_data.tst:04
 %!test
-%! try
 %! ## TEST4
+%! try
+%! pkg load mbdyn_util_oct;
 %! pkg load mboct-fem-pkg;
 %! filename = "";
 %! %unwind_protect

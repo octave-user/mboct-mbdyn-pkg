@@ -1,6 +1,7 @@
 ## mbdyn_post_load_output_struct.tst:04
 %!test
 %! try
+%! pkg load mbdyn_util_oct;
 %! ## TEST 7
 %! ## CARDANO JOINT
 %! do_plot = false;

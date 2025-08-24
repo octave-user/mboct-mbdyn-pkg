@@ -98,6 +98,8 @@ function [log_dat] = mbdyn_post_load_log(mbdyn_filename, options)
     options.force_idx_prefix = "force_idx_";
   endif
 
+  pkg load mbdyn_util_oct;
+
   log_filename = mbdyn_post_output_filename(mbdyn_filename, ".log");
 
   fid = -1;

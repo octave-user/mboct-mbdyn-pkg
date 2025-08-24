@@ -58,6 +58,8 @@ function mbdyn_post_deformations_scale(log_file, input_mov_file, output_mov_file
     error("node_groups is not a valid struct array");
   endif
 
+  pkg load mbdyn_util_oct;
+
   if (idx_t_ref == -1)
     if (length(log_dat_nodes) == 0)
       [dir_mbdyn, name_mbdyn, ext_mbdyn] = fileparts(input_mov_file);

@@ -1,6 +1,6 @@
 Name: mboct-mbdyn-pkg
-Version: 0.1.0
-Date: 2020-03-08
+Version: 0.1.1
+Date: 2025-08-24
 Author: Reinhard <octave-user@a1.net>
 Maintainer: Reinhard <octave-user@a1.net>
 Title: MBDyn/Octave interface package
@@ -8,4 +8,4 @@ Description: This package belongs to a suite of packages which can be used for p
              It contains interfaces to Multibody Dynamics software MBDyn (www.mbdyn.org).
 License: GPLv3
 Categories: Simulation, Pre-processing, Post-processing
-Depends: octave (>=5.1.0), mboct-octave-pkg (>=0.1.0), mboct-numerical-pkg (>=0.1.0), mbdyn_util_oct, nurbs (>=1.3)
+Depends: octave (>=5.1.0), mboct-octave-pkg (>=0.1.0), mboct-numerical-pkg (>=0.1.0), nurbs (>=1.3)

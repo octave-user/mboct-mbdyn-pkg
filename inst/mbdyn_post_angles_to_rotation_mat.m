@@ -30,6 +30,8 @@ function R = mbdyn_post_angles_to_rotation_mat(node_id, res, log_dat, idx_t)
     print_usage();
   endif
 
+  pkg load mbdyn_util_oct;
+
   if (nargin < 4)
     idx_t = 1:numel(res.t);
   endif

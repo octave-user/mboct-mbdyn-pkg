@@ -2,6 +2,7 @@
 %!test
 %! try
 %! fd = -1;
+%! pkg load mbdyn_util_oct;
 %! %unwind_protect
 %!   unwind_protect
 %!     [fd, fname] = mkstemp(fullfile(tempdir(), "oct-mbdyn_post_load_log_XXXXXX"));

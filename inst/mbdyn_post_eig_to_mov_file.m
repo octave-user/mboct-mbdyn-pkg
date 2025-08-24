@@ -67,6 +67,8 @@ function mode_index = mbdyn_post_eig_to_mov_file(input_file, output_filename_tem
     options.verbose = false;
   endif
 
+  pkg load mbdyn_util_oct;
+
   log_file = canonicalize_file_name(mbdyn_post_output_filename(input_file, ".log"));
 
   [nodes, dof_info ] = mbdyn_post_load_log_node(input_file);

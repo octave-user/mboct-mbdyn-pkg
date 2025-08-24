@@ -24,14 +24,14 @@ function mbdyn_pre_beam_check_rotation_matrix(R)
   if (nargin ~= 1)
     print_usage();
   endif
-  
+
   if (~min(min(isfinite(R))))
     error("rotation matrix is not finite");
   endif
-  
+
   f1 = max(max(abs(R.' * R - eye(3))));
   f2 = max(max(abs(R * R.' - eye(3))));
-  
+
   if (max(f1, f2) > sqrt(eps))
     error("rotation matrix is not orthogonal");
   endif

@@ -2,6 +2,7 @@
 %!test
 %! try
 %! ## TEST12
+%! pkg load mbdyn_util_oct;
 %! pkg load mboct-fem-pkg;
 %! filename = "";
 %! %unwind_protect

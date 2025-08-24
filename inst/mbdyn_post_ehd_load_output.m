@@ -45,6 +45,8 @@ function bearings = mbdyn_post_ehd_load_output(mbdyn_filename, log_dat, options)
     options = struct();
   endif
 
+  pkg load mbdyn_util_oct;
+
   fnames = fieldnames(options);
 
   for i=1:length(fnames)

@@ -1,6 +1,7 @@
 ## mbdyn_post_load_output_struct.tst:04
 %!test
 %! try
+%! pkg load mbdyn_util_oct;
 %! ## TEST4
 %! ## TRACTA JOINT
 %! methods = {"impliciteuler", "ms2", "ms3", "ms4", "ss2", "ss3", "ss4", "hope", "Bathe", "msstc3", "msstc4", "msstc5", "mssth3", "mssth4", "mssth5", "DIRK33", "DIRK43", "DIRK54", "hybrid,ms"};

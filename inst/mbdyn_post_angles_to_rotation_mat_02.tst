@@ -1,6 +1,7 @@
 ## mbdyn_post_angles_to_rotation_mat.tst:02
 %!test
 %! try
+%! pkg load mbdyn_util_oct;
 %! state = rand("state");
 %! unwind_protect
 %! rand("seed", 0);

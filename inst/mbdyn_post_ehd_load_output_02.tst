@@ -1,6 +1,7 @@
 ## mbdyn_post_ehd_load_output.tst:02
 %!test
 %! try
+%! pkg load mbdyn_util_oct;
 %! ## TEST 2
 %! ## References:
 %! ## Hans Juergen Butenschoen

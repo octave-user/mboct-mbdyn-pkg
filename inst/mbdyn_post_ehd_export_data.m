@@ -37,6 +37,8 @@ function filenames = mbdyn_post_ehd_export_data(mesh, res, outputfile, idx_t, op
     print_usage();
   endif
 
+  pkg load mbdyn_util_oct;
+
   if (nargin < 4)
     idx_t = 1:numel(res.t);
   endif

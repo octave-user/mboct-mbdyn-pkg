@@ -1,6 +1,7 @@
 ## mbdyn_post_load_log.tst:01
 %!test
 %! try
+%! pkg load mbdyn_util_oct;
 %! fd = -1;
 %! %unwind_protect
 %!   unwind_protect

@@ -1,6 +1,7 @@
 ## mbdyn_post_ehd_plot_mesh.tst:01
 %!demo
 %! try
+%! pkg load mbdyn_util_oct;
 %! ## References:
 %! ## Hans Juergen Butenschoen
 %! ## Das hydrodynamische, zylindrische Gleitlager endlicher Breite unter instationaerer Belastung, Karlsruhe 1976

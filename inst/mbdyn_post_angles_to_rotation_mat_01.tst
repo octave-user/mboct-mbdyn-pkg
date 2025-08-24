@@ -5,6 +5,7 @@
 %! unwind_protect
 %! rand("seed", 0);
 %! N = 10;
+%! pkg load mbdyn_util_oct;
 %! orient = {"euler123", "euler321", "phi"};
 %! func = {@rotation_matrix_to_euler123, ...
 %!         @rotation_matrix_to_euler321, ...

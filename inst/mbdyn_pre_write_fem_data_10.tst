@@ -2,6 +2,7 @@
 %!test
 %! try
 %! ## TEST10
+%! pkg load mbdyn_util_oct;
 %! pkg load mboct-fem-pkg;
 %! printf("fem_cms_create2: test7\n");
 %! filename = "";

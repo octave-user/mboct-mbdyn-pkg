@@ -1,6 +1,7 @@
 ## mbdyn_post_rigid_body_kinematics.tst:03
 %!test
 %! try
+%! pkg load mbdyn_util_oct;
 %! r1 = 15e-3;
 %! omega0 = 100;
 %! Phi0 = 30 * pi / 180;

@@ -5,7 +5,7 @@
   - Generate MBDyn input files for arbitrary curved beam structures represented by Non-Uniform Rational B-Splines (NURBS).
   - Generate MBDyn input files for modal elements based on Finite Element models.
   - Generate MBDyn input files for solid elements based on Finite Element meshes.
-  - Run the multibody dynamics solver MBDyn.  
+  - Run the multibody dynamics solver MBDyn.
   - Load output files from MBDyn.
   - Compute inertia properties of groups of several rigid and flexible bodies.
   - Compute frequency response functions of linearized equations of motion.
@@ -21,11 +21,13 @@ Copyright<sup>&copy;</sup> 2019-2025
 # Installation
   - See [simple.yml](https://github.com/octave-user/mboct-mbdyn-pkg/blob/master/.github/workflows/simple.yml) as an example on how to install mboct-mbdyn-pkg.
 
-### Usage
-  - Run Octave.  
-    `octave`
-  - At the Octave prompt load the package.   
-    `pkg load mboct-mbdyn-pkg`
-  - At the Octave prompt execute a demo.  
-    `demo mbdyn_post_ehd_load_output`
-	
+# Function reference
+  - The function reference is automatically generated from the source code by means of Octave's [generate_html](https://octave.sourceforge.io/generate_html/index.html) package. See [overview.html](https://octave-user.github.io/mboct-mbdyn-pkg/mboct-mbdyn-pkg/overview.html).
+
+# Docker images
+  Docker images may be pulled by one of the following commands:
+  - docker pull ghcr.io/octave-user/mboct-fem-pkg:master
+  - docker pull octaveuser/mboct-fem-pkg:latest
+
+# Youtube channel
+  You can find several videos at the [youtube channel](https://www.youtube.com/@nonlinearmultibodydynamics6802) of mboct-fem-pkg.

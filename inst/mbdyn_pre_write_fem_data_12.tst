@@ -658,7 +658,7 @@
 %!                      "joints", empty_cell, ...
 %!                      "g", empty_cell, ...
 %!                      "tau0", empty_cell);
-%!   sol_stat = struct("def", empty_cell, "stress", empty_cell);
+%!   sol_stat = struct("def", empty_cell, "stress", empty_cell, "lambda", empty_cell);
 %!   for i=1:numel(load_case)
 %!     load_case(i).loaded_nodes = cms_opt.nodes.interfaces.number;
 %!     load_case(i).loads = zeros(1, 6);

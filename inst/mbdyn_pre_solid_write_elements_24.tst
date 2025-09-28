@@ -139,7 +139,7 @@
 %!     load_case = struct();
 %!     opt_mbd_mesh = struct();
 %!     opt_mbd_mesh.struct_nodes.type = repmat(MBDYN_NODE_TYPE_DYNAMIC_STRUCT_DISP, rows(mesh.nodes), 1);
-%!     opt_mbd_mesh.struct_nodes.type(node_idx_tip) = MBDYN_NODE_TYPE_DYNAMIC_STRUCT;
+%!     opt_mbd_mesh.struct_nodes.type(node_idx_tip) = MBDYN_NODE_TYPE_STATIC_STRUCT;
 %!     opt_mbd_mesh = mbdyn_pre_solid_write_nodes(mesh, nodes_file, opt_mbd_mesh);
 %!     opt_mbd_mesh = mbdyn_pre_solid_write_const_laws(mesh, csl_file, opt_mbd_mesh);
 %!     opt_mbd_mesh = mbdyn_pre_solid_write_elements(mesh, load_case_dof, load_case, elem_file, opt_mbd_mesh);

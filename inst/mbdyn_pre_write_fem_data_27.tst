@@ -9,7 +9,7 @@
 %!   param.d = 10e-3;
 %!   param.D = 280e-3;
 %!   param.t = 30e-3;
-%!   param.dx = 10e-3;
+%!   param.dx = 50e-3;
 %!   param.g = 9.81;
 %!   options.post_proc = false;
 %!   filename = "";
@@ -53,19 +53,19 @@
 %!       fputs(fd, "Line(11) = {6,7};\n");
 %!       fputs(fd, "Line(12) = {7,8};\n");
 %!       fputs(fd, "Line(13) = {8,9};\n");
-%!       fputs(fd, "Transfinite Curve(1) = Round(d/2/dx)+1;\n");
-%!       fputs(fd, "Transfinite Curve(2) = Round((h-t)/2/dx)+1;\n");
-%!       fputs(fd, "Transfinite Curve(3) = Round(d/2/dx)+1;\n");
-%!       fputs(fd, "Transfinite Curve(4) = Round((h-t)/2/dx)+1;\n");
-%!       fputs(fd, "Transfinite Curve(5) = Round(t/dx)+1;\n");
-%!       fputs(fd, "Transfinite Curve(6) = Round(d/2/dx)+1;\n");
-%!       fputs(fd, "Transfinite Curve(7) = Round(t/dx)+1;\n");
-%!       fputs(fd, "Transfinite Curve(8) = Round((D-d)/2/dx)+1;\n");
-%!       fputs(fd, "Transfinite Curve(9) = Round(t/dx)+1;\n");
-%!       fputs(fd, "Transfinite Curve(10) = Round((D-d)/2/dx)+1;\n");
-%!       fputs(fd, "Transfinite Curve(11) = Round((h-t)/2/dx)+1;\n");
-%!       fputs(fd, "Transfinite Curve(12) = Round(d/2/dx)+1;\n");
-%!       fputs(fd, "Transfinite Curve(13) = Round((h-t)/2/dx)+1;\n");
+%!       fputs(fd, "Transfinite Curve(1) = Max(2,Round(d/2/dx)+1);\n");
+%!       fputs(fd, "Transfinite Curve(2) = Max(2,Round((h-t)/2/dx)+1);\n");
+%!       fputs(fd, "Transfinite Curve(3) = Max(2,Round(d/2/dx)+1);\n");
+%!       fputs(fd, "Transfinite Curve(4) = Max(2,Round((h-t)/2/dx)+1);\n");
+%!       fputs(fd, "Transfinite Curve(5) = Max(2,Round(t/dx)+1);\n");
+%!       fputs(fd, "Transfinite Curve(6) = Max(2,Round(d/2/dx)+1);\n");
+%!       fputs(fd, "Transfinite Curve(7) = Max(2,Round(t/dx)+1);\n");
+%!       fputs(fd, "Transfinite Curve(8) = Max(2,Round((D-d)/2/dx)+1);\n");
+%!       fputs(fd, "Transfinite Curve(9) = Max(2,Round(t/dx)+1);\n");
+%!       fputs(fd, "Transfinite Curve(10) = Max(2,Round((D-d)/2/dx)+1);\n");
+%!       fputs(fd, "Transfinite Curve(11) = Max(2,Round((h-t)/2/dx)+1);\n");
+%!       fputs(fd, "Transfinite Curve(12) = Max(2,Round(d/2/dx)+1);\n");
+%!       fputs(fd, "Transfinite Curve(13) = Max(2,Round((h-t)/2/dx)+1);\n");
 %!       fputs(fd, "Line Loop(14) = {1,2,3,4};\n");
 %!       fputs(fd, "Line Loop(15) = {-3,5,6,7};\n");
 %!       fputs(fd, "Line Loop(16) = {8,9,10,-5};\n");
@@ -82,18 +82,18 @@
 %!       fputs(fd, "Recombine Surface{19};\n");
 %!       fputs(fd, "Recombine Surface{20};\n");
 %!       fputs(fd, "Recombine Surface{21};\n");
-%!       fputs(fd, "v1[] = Extrude {{0,0,1},{0,0,0},Pi}{Surface{18};Layers{Round(d/2*Pi/dx)};Recombine;};\n");
-%!       fputs(fd, "v2[] = Extrude {{0,0,1},{0,0,0},Pi}{Surface{19};Layers{Round(d/2*Pi/dx)};Recombine;};\n");
-%!       fputs(fd, "v3[] = Extrude {{0,0,1},{0,0,0},Pi}{Surface{20};Layers{Round(d/2*Pi/dx)};Recombine;};\n");
-%!       fputs(fd, "v4[] = Extrude {{0,0,1},{0,0,0},Pi}{Surface{21};Layers{Round(d/2*Pi/dx)};Recombine;};\n");
+%!       fputs(fd, "v1[] = Extrude {{0,0,1},{0,0,0},Pi}{Surface{18};Layers{Max(2,Round(d/2*Pi/dx))};Recombine;};\n");
+%!       fputs(fd, "v2[] = Extrude {{0,0,1},{0,0,0},Pi}{Surface{19};Layers{Max(2,Round(d/2*Pi/dx))};Recombine;};\n");
+%!       fputs(fd, "v3[] = Extrude {{0,0,1},{0,0,0},Pi}{Surface{20};Layers{Max(2,Round(d/2*Pi/dx))};Recombine;};\n");
+%!       fputs(fd, "v4[] = Extrude {{0,0,1},{0,0,0},Pi}{Surface{21};Layers{Max(2,Round(d/2*Pi/dx))};Recombine;};\n");
 %!       fputs(fd, "Recombine Surface{18,v1[0]};\n");
 %!       fputs(fd, "Recombine Surface{19,v2[0]};\n");
 %!       fputs(fd, "Recombine Surface{20,v3[0]};\n");
 %!       fputs(fd, "Recombine Surface{21,v4[0]};\n");
-%!       fputs(fd, "v5[] = Extrude {{0,0,1},{0,0,0},Pi}{Surface{v1[0]};Layers{Round(d/2*Pi/dx)};Recombine;};\n");
-%!       fputs(fd, "v6[] = Extrude {{0,0,1},{0,0,0},Pi}{Surface{v2[0]};Layers{Round(d/2*Pi/dx)};Recombine;};\n");
-%!       fputs(fd, "v7[] = Extrude {{0,0,1},{0,0,0},Pi}{Surface{v3[0]};Layers{Round(d/2*Pi/dx)};Recombine;};\n");
-%!       fputs(fd, "v8[] = Extrude {{0,0,1},{0,0,0},Pi}{Surface{v4[0]};Layers{Round(d/2*Pi/dx)};Recombine;};\n");
+%!       fputs(fd, "v5[] = Extrude {{0,0,1},{0,0,0},Pi}{Surface{v1[0]};Layers{Max(2,Round(d/2*Pi/dx))};Recombine;};\n");
+%!       fputs(fd, "v6[] = Extrude {{0,0,1},{0,0,0},Pi}{Surface{v2[0]};Layers{Max(2,Round(d/2*Pi/dx))};Recombine;};\n");
+%!       fputs(fd, "v7[] = Extrude {{0,0,1},{0,0,0},Pi}{Surface{v3[0]};Layers{Max(2,Round(d/2*Pi/dx))};Recombine;};\n");
+%!       fputs(fd, "v8[] = Extrude {{0,0,1},{0,0,0},Pi}{Surface{v4[0]};Layers{Max(2,Round(d/2*Pi/dx))};Recombine;};\n");
 %!       fputs(fd, "Recombine Surface{v1[0],v5[0]};\n");
 %!       fputs(fd, "Recombine Surface{v2[0],v6[0]};\n");
 %!       fputs(fd, "Recombine Surface{v3[0],v7[0]};\n");
@@ -121,7 +121,7 @@
 %!     endif
 %!     [~] = unlink([filename, ".geo"]);
 %!     mesh = fem_pre_mesh_reorder(fem_pre_mesh_import([filename, ".msh"], "gmsh"));
-%!     mesh.material_data.E = 210000e6*1e3;
+%!     mesh.material_data.E = 210000e6;
 %!     mesh.material_data.nu = 0.3;
 %!     mesh.material_data.rho = 7850;
 %!     mesh.materials.penta15 = ones(rows(mesh.elements.penta15),1, "int32");
@@ -137,12 +137,23 @@
 %!     cms_data.cms_opt.nodes.modal.name = "node_id_modal";
 %!     cms_data.cms_opt.nodes.interfaces.number = node_idx_center;
 %!     cms_data.cms_opt.nodes.interfaces.name = "node_id_interface1";
-%!     cms_data.cms_opt.modes.number = 0;
+%!     cms_data.cms_opt.modes.number = 20;
 %!     cms_data.cms_opt.element.name = "elem_id_pegtop";
 %!     [cms_data.mesh, cms_data.mat_ass, cms_data.dof_map, cms_data.sol_eig, cms_data.cms_opt, cms_data.sol_tau] = fem_cms_create2(mesh, cms_data.load_case, cms_data.cms_opt);
-%!     fem_cms_export(filename, cms_data.mesh, cms_data.dof_map, cms_data.mat_ass, cms_data.cms_opt);
+%!     modal_file = [filename, "_modal"];
+%!     nodes_file = [filename, "_solid.nod"];
+%!     csl_file = [filename, "_solid.csl"];
+%!     elem_file = [filename, "_solid.elm"];
+%!     fem_cms_export(modal_file, cms_data.mesh, cms_data.dof_map, cms_data.mat_ass, cms_data.cms_opt);
+%!     opt_mbd_mesh.struct_nodes.reference_frame = "ref_id_pegtop";
+%!     opt_mbd_mesh.struct_nodes.type = repmat(MBDYN_NODE_TYPE_DYNAMIC_STRUCT_DISP, rows(mesh.nodes), 1);
+%!     opt_mbd_mesh.struct_nodes.type(node_idx_tip) = MBDYN_NODE_TYPE_STATIC_STRUCT;
+%!     opt_mbd_mesh.struct_nodes.type(node_idx_center) = MBDYN_NODE_TYPE_STATIC_STRUCT;
+%!     opt_mbd_mesh = mbdyn_pre_solid_write_nodes(mesh, nodes_file, opt_mbd_mesh);
+%!     opt_mbd_mesh = mbdyn_pre_solid_write_const_laws(mesh, csl_file, opt_mbd_mesh);
+%!     opt_mbd_mesh = mbdyn_pre_solid_write_elements(mesh, cms_data.load_case, cms_data.load_case, elem_file, opt_mbd_mesh);
 %!     for i=1:numel(param.n)
-%!       for j=1:2
+%!       for j=1:3
 %!         fd = -1;
 %!         unwind_protect
 %!           filename_mbdyn = sprintf("%s_%02d_%d.mbdyn", filename, i, j);
@@ -151,14 +162,19 @@
 %!             error("failed to open file \"%s\": %s", filename_mbdyn, msg);
 %!           endif
 %!           fputs(fd, "set: integer ref_id_ground = 100;\n");
-%!           fputs(fd, "set: integer ref_id_modal = 101;\n");
-%!           fputs(fd, "set: integer ref_id_interface1 = 102;\n");
-%!           fputs(fd, "set: integer ref_id_tilt = 103;\n");
-%!           fputs(fd, "set: integer node_id_modal = 1001;\n");
-%!           fputs(fd, "set: integer node_id_interface1 = 1002;\n");
-%!           fputs(fd, "set: integer elem_id_pegtop = 2001;\n");
+%!           fputs(fd, "set: integer ref_id_pegtop = 101;\n");
+%!           switch (j)
+%!           case {1, 2}
+%!             fputs(fd, "set: integer ref_id_interface1 = 102;\n");
+%!             fputs(fd, "set: integer node_id_modal = 1001;\n");
+%!             fputs(fd, "set: integer node_id_interface1 = 1002;\n");
+%!           endswitch
+%!           switch (j)
+%!           case {1, 2}
+%!             fputs(fd, "set: integer elem_id_pegtop = 2001;\n");
+%!           endswitch
 %!           fputs(fd, "set: integer joint_id_ground = 2002;\n");
-%!           fputs(fd, "set: real k = 10;\n");
+%!           fputs(fd, "set: real k = 2;\n");
 %!           fputs(fd, "set: real omega0x = 2. * pi * 0.1;\n");
 %!           fputs(fd, "set: real omega0y = 0.;\n");
 %!           fprintf(fd, "set: real omega0z = 2. * pi * %g;\n", param.n(i));
@@ -171,8 +187,8 @@
 %!           fputs(fd, "begin: initial value;\n");
 %!           fputs(fd, "        initial time: 0;\n");
 %!           fputs(fd, "        final time: t1;\n");
-%!           fputs(fd, "        time step: t1 / k / 100.;\n");
-%!           fputs(fd, "        method: ms2, 0.;\n");
+%!           fputs(fd, "        time step: t1 / k / 360.;\n");
+%!           fputs(fd, "        method: DIRK33;\n");
 %!           fputs(fd, "        tolerance: 1e-4, test, minmax, 1e-6, test,minmax;\n");
 %!           fputs(fd, "        max iterations: 1000;\n");
 %!           fputs(fd, "        derivatives max iterations: 50;\n");
@@ -180,8 +196,7 @@
 %!           fputs(fd, "        derivatives tolerance: 1e-6, 1e-6;\n");
 %!           fputs(fd, "        output: iterations, solver condition number, stat, yes;\n");
 %!           fputs(fd, "        linear solver: umfpack, grad, scale, iterative, always, max iterations, 100;\n");
-%!           fputs(fd, "        nonlinear solver: nox, modified, 100,\n");
-%!           fputs(fd, "             keep jacobian matrix,\n");
+%!           fputs(fd, "        nonlinear solver: nox, modified, 10,\n");
 %!           fputs(fd, "             inner iterations before assembly, 6,\n");
 %!           fputs(fd, "             jacobian operator, newton krylov,\n");
 %!           fputs(fd, "             solver, line search based,\n");
@@ -207,13 +222,18 @@
 %!           fputs(fd, "       default orientation: euler123;\n");
 %!           fputs(fd, "       output precision: 16;\n");
 %!           fputs(fd, "       max iterations: 0;\n");
-%!           fputs(fd, "        structural nodes: 2;\n");
 %!           switch (j)
 %!             case 1
+%!               fputs(fd, "    structural nodes: 2;\n");
 %!               fputs(fd, "    joints: 2;\n");
 %!             case 2
+%!               fputs(fd, "    structural nodes: 2;\n");
 %!               fputs(fd, "    joints: 1;\n");
 %!               fputs(fd, "    rigid bodies: 1;\n");
+%!             case 3
+%!               fprintf(fd, "    structural nodes: %d;\n", opt_mbd_mesh.struct_nodes.number);
+%!               fprintf(fd, "    joints: %d;\n", opt_mbd_mesh.joints.number + 1);
+%!               fprintf(fd, "    solids: %d;\n", opt_mbd_mesh.solids.number);
 %!           endswitch
 %!           fputs(fd, "        gravity;\n");
 %!           fputs(fd, "end: control data;\n");
@@ -222,22 +242,31 @@
 %!           fputs(fd, "        reference, global, eye,\n");
 %!           fputs(fd, "        reference, global, null,\n");
 %!           fputs(fd, "        reference, global, null;\n");
-%!           fputs(fd, "reference: ref_id_modal,\n");
+%!           fputs(fd, "reference: ref_id_pegtop,\n");
 %!           fputs(fd, "        reference, ref_id_ground, null,\n");
 %!           fputs(fd, "        reference, ref_id_ground, eye,\n");
 %!           fputs(fd, "        reference, ref_id_ground, null,\n");
 %!           fputs(fd, "        reference, ref_id_ground, omega0x, omega0y, omega0z;\n");
-%!           fputs(fd, "reference: ref_id_interface1,\n");
-%!           fputs(fd, "        reference, ref_id_modal, 0., 0., h/2.,\n");
-%!           fputs(fd, "        reference, ref_id_modal, eye,\n");
-%!           fputs(fd, "        reference, ref_id_modal, null,\n");
-%!           fputs(fd, "        reference, ref_id_modal, null;\n");
-%!           fputs(fd, "begin: nodes;\n");
-%!           fputs(fd, "        structural: node_id_modal, modal,\n");
-%!           fputs(fd, "                reference, ref_id_modal, null,\n");
-%!           fputs(fd, "                reference, ref_id_modal, eye,\n");
-%!           fputs(fd, "                reference, ref_id_modal, null,\n");
-%!           fputs(fd, "                reference, ref_id_modal, null, accelerations, yes;\n");
+%!           switch (j)
+%!           case {1, 2}
+%!             fputs(fd, "reference: ref_id_interface1,\n");
+%!             fputs(fd, "        reference, ref_id_pegtop, 0., 0., h/2.,\n");
+%!             fputs(fd, "        reference, ref_id_pegtop, eye,\n");
+%!             fputs(fd, "        reference, ref_id_pegtop, null,\n");
+%!             fputs(fd, "        reference, ref_id_pegtop, null;\n");
+%!           endswitch
+%!           fprintf(fd, "      include: \"%s\";\n", csl_file);
+%!           fputs(fd, "begin: nodes;\n")
+%!           switch (j)
+%!           case {1, 2}
+%!             fputs(fd, "        structural: node_id_modal, modal,\n");
+%!             fputs(fd, "                reference, ref_id_pegtop, null,\n");
+%!             fputs(fd, "                reference, ref_id_pegtop, eye,\n");
+%!             fputs(fd, "                reference, ref_id_pegtop, null,\n");
+%!             fputs(fd, "                reference, ref_id_pegtop, null, accelerations, yes;\n");
+%!           case 3
+%!             fprintf(fd, "      include: \"%s\";\n", nodes_file);
+%!           endswitch
 %!           switch (j)
 %!             case 1
 %!               fputs(fd, "        structural: node_id_interface1, static,\n");
@@ -252,26 +281,13 @@
 %!           endswitch
 %!           fputs(fd, "end: nodes;\n");
 %!           fputs(fd, "begin: elements;\n");
-%!           switch (j)
-%!             case 1
-%!               fprintf(fd, "include: \"%s.elm\";\n", filename);
-%!             case 2
-%!               dm = cms_data.mat_ass.dm;
-%!               Xcg = cms_data.mat_ass.S / dm;
-%!               Jcg = cms_data.mat_ass.J + skew(Xcg) * skew(Xcg) * dm;
-%!            fputs(fd, "body: elem_id_pegtop, node_id_modal,\n");
-%!               fprintf(fd, "%.16e,\n", cms_data.mat_ass.dm);
-%!               fputs(fd, "reference, node,");
-%!               fprintf(fd, "%.16e, ", Xcg);
-%!               fputs(fd, "\nmatr,\n")
-%!               for k=1:3
-%!                 fprintf(fd, "%.16e, ", Jcg(k, :));
-%!                 fputs(fd, "\n");
-%!               endfor
-%!               fputs(fd, "orientation, reference, node, eye;\n");
-%!           endswitch
 %!           fputs(fd, "        joint: joint_id_ground, total pin joint,\n");
-%!           fputs(fd, "                node_id_modal,\n");
+%!           switch (j)
+%!           case {1, 2}
+%!             fputs(fd, "                node_id_modal,\n");
+%!           case 3
+%!             fprintf(fd, "              %d,\n", node_idx_tip);
+%!           endswitch
 %!           fputs(fd, "                        position, reference, ref_id_ground, null,\n");
 %!           fputs(fd, "                        position orientation, reference, ref_id_ground, eye,\n");
 %!           fputs(fd, "                        rotation orientation, reference, ref_id_ground, eye,\n");
@@ -284,6 +300,26 @@
 %!           fputs(fd, "               orientation constraint,\n");
 %!           fputs(fd, "                        inactive, inactive, inactive,\n");
 %!           fputs(fd, "                          null;\n");
+%!           switch (j)
+%!             case 1
+%!               fprintf(fd, "include: \"%s.elm\";\n", modal_file);
+%!             case 2
+%!               dm = cms_data.mat_ass.dm;
+%!               Xcg = cms_data.mat_ass.S / dm;
+%!               Jcg = cms_data.mat_ass.J + skew(Xcg) * skew(Xcg) * dm;
+%!               fputs(fd, "body: elem_id_pegtop, node_id_modal,\n");
+%!               fprintf(fd, "%.16e,\n", cms_data.mat_ass.dm);
+%!               fputs(fd, "reference, node,");
+%!               fprintf(fd, "%.16e, ", Xcg);
+%!               fputs(fd, "\nmatr,\n")
+%!               for k=1:3
+%!                 fprintf(fd, "%.16e, ", Jcg(k, :));
+%!                 fputs(fd, "\n");
+%!               endfor
+%!               fputs(fd, "orientation, reference, node, eye;\n");
+%!             case 3
+%!               fprintf(fd, "include: \"%s\";\n", elem_file);
+%!           endswitch
 %!           fputs(fd, "        gravity: uniform, 0., 0., -1., const, g;\n");
 %!           fputs(fd, "end: elements;\n");
 %!         unwind_protect_cleanup
@@ -301,7 +337,12 @@
 %!          res(j).velocity, ...
 %!          res(j).acceleration, ...
 %!          res(j).node_id] = mbdyn_post_load_output_struct([opt_mbdyn.output_file]);
-%!         if (j == 1 && options.post_proc)
+%!         [res(j).joint_id, ...
+%!          res(j).local_reaction, ...
+%!          res(j).global_reaction] = mbdyn_post_load_output_jnt(opt_mbdyn.output_file);
+%!         switch (j)
+%!         case 1
+%!         if (options.post_proc)
 %!           opt_scale.scale_type = "least square";
 %!           opt_scale.scale = 300;
 %!           opt_post.print_and_exit = false;
@@ -310,24 +351,35 @@
 %!           fem_post_cms_sol_export(cms_data, opt_mbdyn.output_file, opt_mbdyn.output_file, opt_scale, opt_post);
 %!           spawn_wait(spawn("gmsh", {[opt_mbdyn.output_file, "_struct.geo"]}));
 %!         endif
+%!         case 3
+%!           [res(j).mesh, res(j).sol] = mbdyn_post_load_output_sol(opt_mbdyn.output_file);
+%!         endswitch
 %!       endfor
 %!     endfor
 %!     tol = 1e-2;
 %!     for i=1:2
 %!       assert_simple(res(1).trajectory{i}, res(2).trajectory{i}, tol * max(max(abs(res(2).trajectory{i}))));
 %!       assert_simple(res(1).velocity{i}, res(2).velocity{i}, tol * max(max(abs(res(2).velocity{i}))));
-%!       if (~isempty(res(1).acceleration{i}))
-%!         assert_simple(res(1).acceleration{i}(floor(end/2):end, :), res(2).acceleration{i}(floor(end/2):end, :), tol * max(max(abs(res(2).acceleration{i}))));
-%!       endif
 %!     endfor
-%!   ## unwind_protect_cleanup
+%!     tol = 2e-3;
+%!     assert_simple(res(1).trajectory{1}, res(3).trajectory{node_idx_tip}, tol * max(max(abs(res(3).trajectory{node_idx_tip}))));
+%!     assert_simple(res(1).trajectory{2}, res(3).trajectory{node_idx_center}, tol * max(max(abs(res(3).trajectory{node_idx_center}))));
+%!     assert_simple(res(1).velocity{1}, res(3).velocity{node_idx_tip}, tol * max(max(abs(res(3).velocity{node_idx_tip}))));
+%!     assert_simple(res(1).velocity{2}, res(3).velocity{node_idx_center}, tol * max(max(abs(res(3).velocity{node_idx_center}))));
+%!     tol = 3e-2;
+%!     a3_tip = (res(3).velocity{node_idx_tip}(2:end, :) - res(3).velocity{node_idx_tip}(1:end-1, :)) / (res(3).t(2) - res(3).t(1));
+%!     a3_tip = interp1(0.5 * (res(3).t(2:end) + res(3).t(1:end-1)), a3_tip, res(3).t, "extrap");
+%!     assert(res(1).acceleration{1}(floor(0.1 * end):end, :), a3_tip(floor(0.1 * end):end, :), tol * max(max(abs(a3_tip))));
+%!     tol = 1e-2;
+%!     assert(res(1).global_reaction{1}, res(3).global_reaction{end}, tol * max(max(abs(res(3).global_reaction{end}))));
+%!  ## unwind_protect_cleanup
 %!     if (numel(filename))
 %!       fn = dir([filename, "*"]);
 %!       for i=1:numel(fn)
 %!         [~] = unlink(fullfile(fn(i).folder, fn(i).name));
 %!       endfor
 %!     endif
-%!   ## end_unwind_protect
+%!  ## end_unwind_protect
 %! catch
 %!   gtest_error = lasterror();
 %!   gtest_fail(gtest_error, evalin("caller", "__file"));

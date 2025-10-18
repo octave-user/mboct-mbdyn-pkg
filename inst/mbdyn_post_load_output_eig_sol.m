@@ -34,7 +34,7 @@
 ## @end deftypefn
 
 function [mesh, sol] = mbdyn_post_load_output_eig_sol(output_file, options, index)
-  if (nargin ~= 1 || nargout ~= 2 || ~ischar(output_file))
+  if (nargin < 1 || nargin > 3 || nargout ~= 2 || ~ischar(output_file))
     print_usage();
   endif
 

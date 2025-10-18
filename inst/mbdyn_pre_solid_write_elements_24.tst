@@ -233,9 +233,9 @@
 %!     opt_mbdyn.output_file = [filename, "_mbdyn"];
 %!     info_mbdyn = mbdyn_solver_run(mbdyn_file, opt_mbdyn);
 %!     [mesh_sol, sol_stat] = mbdyn_post_load_output_sol(opt_mbdyn.output_file);
-%!     modal = mbdyn_post_load_output_eig(opt_mbdyn.output_file);
+%!     [mesh_eig, sol_eig] = mbdyn_post_load_output_eig_sol(opt_mbdyn.output_file);
 %!     tol = 2e-2;
-%!     assert_simple(modal.f(1:2), fref, tol * max(fref));
+%!     assert_simple(sol_eig.f(1:2), fref, tol * max(fref));
 %!   unwind_protect_cleanup
 %!     if (numel(filename))
 %!       fn = dir([filename, "*"]);

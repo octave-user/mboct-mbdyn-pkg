@@ -1,4 +1,4 @@
-## Copyright (C) 2023(-2023) Reinhard <octave-user@a1.net>
+## Copyright (C) 2023(-2025) Reinhard <octave-user@a1.net>
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -41,6 +41,14 @@ function options = mbdyn_pre_solid_write_elements(mesh, load_case_dof, load_case
 
   if (~isfield(options.solids, "number"))
     options.solids.number = 0;
+  endif
+
+  if (~isfield(options, "rigid_bodies"))
+    options.rigid_bodies = struct();
+  endif
+
+  if (~isfield(options.rigid_bodies, "number"))
+    options.rigid_bodies.number = 0;
   endif
 
   if (~isfield(options.genels, "number"))
@@ -421,6 +429,23 @@ function options = mbdyn_pre_solid_write_elements(mesh, load_case_dof, load_case
             options.surface_loads.number += rows(elem_nodes);
           endfor
         endfor
+      endfor
+    endif
+
+    if (isfield(mesh.elements, "bodies"))
+      for i=1:numel(mesh.elements.bodies)
+        fprintf(fd, "body: %d,\n", ++options.rigid_bodies.number);
+        fprintf(fd, "\t%d,\n", mesh.elements.bodies(i).nodes + offset_node_id);
+        fprintf(fd, "\t%.16e,\n", mesh.elements.bodies(i).m);
+        fprintf(fd, "\treference, %s, ", options.struct_nodes.reference_frame);
+        fprintf(fd, "%.16e, ", mesh.nodes(mesh.elements.bodies(i).nodes, 1:3).' + mesh.elements.bodies(i).lcg);
+        fputs(fd, "\n\tmatr,\n");
+        for j=1:3
+          fputs(fd, "\t\t");
+          fprintf(fd, "%.16e, ", mesh.elements.bodies(i).J(j, :));
+          fputs(fd, "\n");
+        endfor
+        fprintf(fd, "\torientation, reference, %s, eye;\n\n", options.struct_nodes.reference_frame);
       endfor
     endif
   unwind_protect_cleanup

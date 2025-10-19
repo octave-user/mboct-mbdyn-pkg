@@ -74,10 +74,11 @@ function [mesh, elem_types] = mbdyn_post_load_mesh_sol(output_file)
   mesh.elem_node_offset = struct();
 
   for i=1:numel(elem_types)
-    arg_fmt = ", $2";
+    offset_col = sum(isspace(elem_types(i).elem_tag));
+    arg_fmt = sprintf(", $%d", 2 + offset_col);
 
     for j=1:elem_types(i).num_cols
-      arg_fmt = [arg_fmt, sprintf(", $%d", j + 2)];
+      arg_fmt = [arg_fmt, sprintf(", $%d", j + 2 + offset_col)];
     endfor
 
     awk_cmd = sprintf("awk -F ' ' '/^%s:/{printf(\"%%d%s\\n\"%s);}' \"%s\"", elem_types(i).elem_tag, repmat(" %g", 1, elem_types(i).num_cols), arg_fmt, log_file);
@@ -102,8 +103,13 @@ function [mesh, elem_types] = mbdyn_post_load_mesh_sol(output_file)
           mesh.elem_node_offset = setfield(mesh.elem_node_offset, elem_types(i).elem_type, elem_node_offset);
         endif
 
-        mesh.elem_id = setfield(mesh.elem_id, elem_types(i).elem_type, elem_id);
-        mesh.elements = setfield(mesh.elements, elem_types(i).elem_type, elem_nodes);
+        if (~isfield(mesh.elem_id, elem_types(i).elem_type))
+          mesh.elem_id = setfield(mesh.elem_id, elem_types(i).elem_type, []);
+          mesh.elements = setfield(mesh.elements, elem_types(i).elem_type, []);
+        endif
+
+        mesh.elem_id = setfield(mesh.elem_id, elem_types(i).elem_type, [getfield(mesh.elem_id, elem_types(i).elem_type); elem_id]);
+        mesh.elements = setfield(mesh.elements, elem_types(i).elem_type, [getfield(mesh.elements, elem_types(i).elem_type); elem_nodes]);
       endif
     unwind_protect_cleanup
       if (fd ~= -1)
@@ -273,6 +279,30 @@ function elem_types_out = mbdyn_post_elem_types()
     elem_types(22).node_offset = [];
     elem_types(22).num_cols = 20;
     elem_types(22).elem_tag = "tetrahedron20f";
+
+    elem_types(23).elem_type = "line2";
+    elem_types(23).node_cols = [1,23];
+    elem_types(23).node_offset = [];
+    elem_types(23).num_cols = 56;
+    elem_types(23).elem_tag = "totaljoint";
+
+    elem_types(24).elem_type = "line2";
+    elem_types(24).node_cols = [1,14];
+    elem_types(24).node_offset = [];
+    elem_types(24).num_cols = 20;
+    elem_types(24).elem_tag = "journal bearing";
+
+    elem_types(25).elem_type = "line2";
+    elem_types(25).node_cols = [1,14];
+    elem_types(25).node_offset = [];
+    elem_types(25).num_cols = 25;
+    elem_types(25).elem_tag = "inline friction";
+
+    elem_types(26).elem_type = "line2";
+    elem_types(26).node_cols = [1,14];
+    elem_types(26).node_offset = [];
+    elem_types(26).num_cols = 25;
+    elem_types(26).elem_tag = "deformablejoint";
   endif
 
   elem_types_out = elem_types;

@@ -154,9 +154,9 @@
 %!     info = mbdyn_solver_run(mbdyn_file, options_mbd);
 %!     [mesh_sol, sol] = mbdyn_post_load_output_sol(options_mbd.output_file);
 %!     options_eig.use_netcdf = false;
-%!     modal = mbdyn_post_load_output_eig(options_mbd.output_file, options_eig);
+%!     [mesh_modal, modal] = mbdyn_post_load_output_eig_sol(options_mbd.output_file, options_eig);
 %!     options_eig.use_netcdf = true;
-%!     modalnc = mbdyn_post_load_output_eig(options_mbd.output_file, options_eig);
+%!     [~, modalnc] = mbdyn_post_load_output_eig_sol(options_mbd.output_file, options_eig);
 %!     fref = [5078; 6005; 6378; 6729] / SI_unit_second^-1;
 %!     assert_simple(modal.f([7, 12, 19, 39] - 6), fref, 5e-4 * max(fref));
 %!     assert_simple(modalnc.f([7, 12, 19, 39] - 6), fref, 5e-4 * max(fref));

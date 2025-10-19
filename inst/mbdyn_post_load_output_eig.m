@@ -59,8 +59,10 @@ function modal = mbdyn_post_load_output_eig(mbdyn_output_file, options, index)
   output_files(1).type = "netcdf";
   output_files(2).name = fullfile(inp_dir, sprintf("%s_%02d.m", inp_name, index));
   output_files(2).type = "m";
-  output_files(3).name = fullfile(inp_dir, cstrcat(inp_name, ".m"));
-  output_files(3).type = "m";
+  output_files(3).name = fullfile(inp_dir, sprintf("%s_%d.m", inp_name, index));
+  output_files(3).type = "m";  
+  output_files(4).name = fullfile(inp_dir, [inp_name, ".m"]);
+  output_files(4).type = "m";
 
   idx = false(size(output_files));
 

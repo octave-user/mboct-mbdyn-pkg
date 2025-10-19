@@ -1,4 +1,4 @@
-## Copyright (C) 2023(-2023) Reinhard <octave-user@a1.net>
+## Copyright (C) 2023(-2025) Reinhard <octave-user@a1.net>
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 ##
 ## @var{nodes_file} @dots{} filename of output file
 ##
-## @var{options}.struct_nodes.type @dots{} type of structural nodes to be created ("static" or "dynamic")
+## @var{options}.struct_nodes.type @dots{} type of structural nodes to be created (e.g. MBDYN_NODE_TYPE_STATIC_STRUCT_DISP, MBDYN_NODE_TYPE_DYNAMIC_STRUCT_DISP)
 ##
 ## @end deftypefn
 

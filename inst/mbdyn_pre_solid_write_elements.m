@@ -137,7 +137,7 @@ function options = mbdyn_pre_solid_write_elements(mesh, load_case_dof, load_case
       error("failed to open file \"%s\": %s", elem_file, msg);
     endif
 
-    elem_type_solid = {"iso8", "iso8f", "iso8upc", "iso20", "iso20f", "iso20upc", "iso20upcr", "iso20r", "iso20fr", "iso27", "iso27f", "iso27upc", "penta15", "penta15f", "penta15upc", "tet10h", "tet10hf", "tet10upc", "tet20", "tet20f"};
+    elem_type_solid = {"iso8", "iso8f", "iso8upc", "iso20", "iso20f", "iso20upc", "iso20upcr", "iso20r", "iso20fr", "iso27", "iso27f", "iso27upc", "penta15", "penta15f", "penta15upc", "penta18", "penta18f", "tet10h", "tet10hf", "tet10upc", "tet20", "tet20f"};
 
     for i=1:numel(elem_type_solid)
       if (~isfield(mesh.elements, elem_type_solid{i}))
@@ -197,6 +197,12 @@ function options = mbdyn_pre_solid_write_elements(mesh, load_case_dof, load_case
           elem_name = "pentahedron15upc";
           num_colloc_points = 7 * 3;
           elem_node_idx_upc = int32(1:6);
+        case "penta18"
+          elem_name = "pentahedron18";
+          num_colloc_points = 21;
+        case "penta18f"
+          elem_name = "pentahedron18f";
+          num_colloc_points = 21;
         case "tet10h"
           elem_name = "tetrahedron10";
           num_colloc_points = 5;

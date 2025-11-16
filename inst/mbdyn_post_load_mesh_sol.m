@@ -141,7 +141,7 @@ function elem_types_out = mbdyn_post_elem_types()
   persistent elem_types = [];
 
   if (isempty(elem_types))
-    empty_cell = cell(1, 22);
+    empty_cell = cell(1, 28);
 
     elem_types = struct("elem_type", empty_cell, "elem_tag", empty_cell, "num_cols", empty_cell, "node_cols", empty_cell, "node_offset", empty_cell);
 
@@ -303,6 +303,18 @@ function elem_types_out = mbdyn_post_elem_types()
     elem_types(26).node_offset = [];
     elem_types(26).num_cols = 25;
     elem_types(26).elem_tag = "deformablejoint";
+
+    elem_types(27).elem_type = "penta18";
+    elem_types(27).node_cols = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18];
+    elem_types(27).node_offset = [];
+    elem_types(27).num_cols = 18;
+    elem_types(27).elem_tag = "pentahedron18";
+
+    elem_types(28).elem_type = "penta18f";
+    elem_types(28).node_cols = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18];
+    elem_types(28).node_offset = [];
+    elem_types(28).num_cols = 18;
+    elem_types(28).elem_tag = "pentahedron18f";
   endif
 
   elem_types_out = elem_types;

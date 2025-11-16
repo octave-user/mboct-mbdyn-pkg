@@ -35,7 +35,9 @@
 %!   material.delta = 0.25;
 %!   material.theta = 0.5;
 %!   material.tau = 0.5 / SI_unit_second;
-%!   elem_types = {"tet20", ...
+%!   elem_types = {"penta18", ...
+%!                 "penta18f", ...
+%!                 "tet20", ...
 %!                 "tet20f", ...
 %!                 "tet10h", ...
 %!                 "tet10hf", ...
@@ -116,7 +118,7 @@
 %!                   ## incompressible version of constitutive law not implemented yet
 %!                   continue;
 %!                 endswitch
-%!               case {"iso8f", "iso20f", "iso20fr", "iso27f", "penta15f", "tet10hf", "tet20", "tet20f"}
+%!               case {"iso8f", "iso20f", "iso20fr", "iso27f", "penta15f", "penta18f", "tet10hf", "tet20", "tet20f"}
 %!                 switch (material.type)
 %!                 case {"mooney rivlin elastic"}
 %!                 otherwise
@@ -157,9 +159,9 @@
 %!                   case {"three point", "two surfaces one line"}
 %!                     switch (idx_sigma)
 %!                     case {4, 5, 6}
-%!                       ## shear deformation with those materials and elements not passed yet because the Jacobian may become singular
+%!                       ## FIXME: shear deformation with those materials and elements not passed yet because the Jacobian may become singular
 %!                       switch (elem_type)
-%!                       case {"tet10h", "tet10hf", "tet10upc", "penta15", "penta15f", "penta15upc", "tet20", "tet20f"}
+%!                       case {"tet10h", "tet10hf", "tet10upc", "penta15", "penta15f", "penta15upc", "penta18", "penta18f", "tet20", "tet20f"}
 %!                         continue;
 %!                       otherwise
 %!                         if (~f_transfinite_mesh(idx_transfinite))
@@ -208,11 +210,11 @@
 %!                   elem_type_surf = {"quad8r"};
 %!                 case "iso27"
 %!                   mesh_order = 2;
-%!                   elem_type_solid = {"iso27"};
+%!                   elem_type_solid = {"iso27", "penta18"};
 %!                   elem_type_surf = {"quad9"};
 %!                 case "iso27f"
 %!                   mesh_order = 2;
-%!                   elem_type_solid = {"iso27f"};
+%!                   elem_type_solid = {"iso27f", "penta18f"};
 %!                   elem_type_surf = {"quad9"};
 %!                 case "iso20r"
 %!                   mesh_order = 2;
@@ -226,6 +228,10 @@
 %!                   mesh_order = 2;
 %!                   elem_type_solid = {elem_type};
 %!                   elem_type_surf = {"quad8", "tria6h"};
+%!                 case {"penta18", "penta18f"}
+%!                   mesh_order = 2;
+%!                   elem_type_solid = {elem_type};
+%!                   elem_type_surf = {"tria6h", "quad9"};
 %!                 case {"tet10h", "tet10hf", "tet10upc"}
 %!                   mesh_order = 2;
 %!                   elem_type_solid = {elem_type};

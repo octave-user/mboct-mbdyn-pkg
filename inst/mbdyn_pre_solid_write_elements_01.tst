@@ -18,7 +18,7 @@
 %! param.analysis = "plain strain";
 %! param.transfinite = true;
 %! options.verbose = false;
-%! elem_types = {"tet20", "tet10h", "tet10upc", "iso8upc", "penta15", "penta15upc", "iso20", "iso20upc", "iso20upcr", "iso20r", "iso27"};
+%! elem_types = {"penta18", "tet20", "tet10h", "tet10upc", "iso8upc", "penta15", "penta15upc", "iso20", "iso20upc", "iso20upcr", "iso20r", "iso27"};
 %! nu_val = [0.3, 0.499];
 %! for idx_elem_type=1:numel(elem_types)
 %!   param.elem_type = elem_types{idx_elem_type};
@@ -27,7 +27,7 @@
 %!     switch (idx_nu)
 %!       case 2
 %!         switch (param.elem_type)
-%!           case {"tet20", "tet10h", "iso8", "penta15", "iso20", "iso27"}
+%!           case {"tet20", "tet10h", "iso8", "penta15", "penta18", "iso20", "iso27"}
 %!             continue;
 %!         endswitch
 %!     endswitch
@@ -257,7 +257,7 @@
 %!         endswitch
 %!         if (~param.transfinite)
 %!           switch (param.elem_type)
-%!             case {"tet20", "tet10h", "tet10upc", "penta15", "penta15upc"}
+%!             case {"tet20", "tet10h", "tet10upc", "penta15", "penta15upc", "penta18"}
 %!               fputs(fd, "Mesh.HighOrderOptimize = 2;\n");
 %!           endswitch
 %!         endif
@@ -299,6 +299,8 @@
 %!           param.elem_type_surf = {"quad9"};
 %!         case {"penta15", "penta15upc"}
 %!           param.elem_type_surf = {"quad8", "tria6h"};
+%!         case "penta18"
+%!           param.elem_type_surf = {"quad9", "tria6h"};
 %!       endswitch
 %!       switch (param.elem_type)
 %!         case {"iso8", "iso8upc"}

@@ -102,7 +102,7 @@
 %!       fputs(fd, "Physical Surface(\"support\", 2) = {22, 39};\n");
 %!       fputs(fd, "Physical Surface(\"center\", 3) = {48, 31};\n");
 %!       fputs(fd, "Mesh.ElementOrder = 2;\n");
-%!       fputs(fd, "Mesh.SecondOrderIncomplete=1;\n");
+%!       fputs(fd, "Mesh.SecondOrderIncomplete=0;\n");
 %!       fputs(fd, "Mesh.Algorithm = 3;\n");
 %!       fputs(fd, "Mesh 3;\n");
 %!       fputs(fd, "Coherence Mesh;\n");
@@ -124,14 +124,14 @@
 %!     mesh.material_data.E = 210000e6;
 %!     mesh.material_data.nu = 0.3;
 %!     mesh.material_data.rho = 7850;
-%!     mesh.materials.penta15 = ones(rows(mesh.elements.penta15),1, "int32");
-%!     mesh.materials.iso20 = ones(rows(mesh.elements.iso20), 1, "int32");
+%!     mesh.materials.penta18 = ones(rows(mesh.elements.penta18),1, "int32");
+%!     mesh.materials.iso27 = ones(rows(mesh.elements.iso27), 1, "int32");
 %!     node_idx_tip = rows(mesh.nodes) + 1;
 %!     node_idx_center = rows(mesh.nodes) + 2;
 %!     mesh.nodes(node_idx_tip, :) = zeros(1, 6);
 %!     mesh.nodes(node_idx_center, 1:3) = [0, 0, 0.5 * param.h];
 %!     mesh.elements.rbe2 = fem_pre_mesh_rbe2_from_surf(mesh, 2, node_idx_tip);
-%!     mesh.elements.rbe3 = fem_pre_mesh_rbe3_from_surf(mesh, 3, node_idx_center, "quad8");
+%!     mesh.elements.rbe3 = fem_pre_mesh_rbe3_from_surf(mesh, 3, node_idx_center, "quad9");
 %!     cms_data.load_case.locked_dof = false(size(mesh.nodes));
 %!     cms_data.cms_opt.nodes.modal.number = node_idx_tip;
 %!     cms_data.cms_opt.nodes.modal.name = "node_id_modal";
@@ -142,7 +142,9 @@
 %!     cms_data.cms_opt.solver = "umfpack";
 %!     cms_data.cms_opt.pre_scaling = true;
 %!     cms_data.cms_opt.refine_max_iter = int32(10);
+%!     ## cms_data.cms_opt.tolerance_tau = 1e-6;
 %!     [cms_data.mesh, cms_data.mat_ass, cms_data.dof_map, cms_data.sol_eig, cms_data.cms_opt, cms_data.sol_tau] = fem_cms_create2(mesh, cms_data.load_case, cms_data.cms_opt);
+%!     ##cms_data.mat_ass = rmfield(cms_data.mat_ass, "KTAU0red");
 %!     modal_file = [filename, "_modal"];
 %!     nodes_file = [filename, "_solid.nod"];
 %!     csl_file = [filename, "_solid.csl"];
@@ -350,7 +352,7 @@
 %!           opt_scale.scale = 300;
 %!           opt_post.print_and_exit = false;
 %!           opt_scale.output_stress = FEM_SCA_STRESS_VMIS;
-%!           opt_post.elem_types = {"iso20", "penta15"};
+%!           opt_post.elem_types = {"iso27", "penta18"};
 %!           fem_post_cms_sol_export(cms_data, opt_mbdyn.output_file, opt_mbdyn.output_file, opt_scale, opt_post);
 %!           spawn_wait(spawn("gmsh", {[opt_mbdyn.output_file, "_struct.geo"]}));
 %!         endif

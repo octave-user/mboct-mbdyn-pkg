@@ -1,54 +1,54 @@
 ## mbdyn_post_ehd_load_output.tst:10
 %!test
 %! try
-%! ############################################################################################################################
-%! ## EHD TEST CASE according
-%! ## Freund, Norman Owen, A thermo-elasto-hydrodynamic study of journal bearings, Doctor of Philosophy thesis, University of
-%! ## Wollongong. Dept. of Mechanical Engineering, University of Wollongong, 1995. http://ro.uow.edu.au/theses/1568
-%! ############################################################################################################################
-%!
-%! close all;
-%! pkg load mboct-fem-pkg;
-%! ## Figure 46b, page 175
-%! ref_data_w = [  0, 195;
-%!                10, 122;
-%!                20,  65;
-%!                30,  28;
-%!                40,  18;
-%!                50,  20;
-%!                60,  30;
-%!                70,  40;
-%!                80,  48;
-%!                90,  50;
-%!               100,  60;
-%!               110,  45;
-%!               120,  30;
-%!               130,   0];
-%! ref_p = [  0,     0;
-%!           10,   100;
-%!           20,   200;
-%!           30,   300;
-%!           40,   375;
-%!           50,   425;
-%!           60,   525;
-%!           70,   650;
-%!           80,   750;
-%!           90,   875;
-%!          100,   975;
-%!          110,  1100;
-%!          120,  1175;
-%!          130,  1175;
-%!          140,  1050;
-%!          150,   925;
-%!          160,   700;
-%!          170,   450;
-%!          180,   200;
-%!          190,    50;
-%!          200,     0];
-%! output_file = "";
-%! have_mesh_size_binary = false;
-%! f_plot = false;
-%! %unwind_protect
+%!   ############################################################################################################################
+%!   ## EHD TEST CASE according
+%!   ## Freund, Norman Owen, A thermo-elasto-hydrodynamic study of journal bearings, Doctor of Philosophy thesis, University of
+%!   ## Wollongong. Dept. of Mechanical Engineering, University of Wollongong, 1995. http://ro.uow.edu.au/theses/1568
+%!   ############################################################################################################################
+
+%!   close all;
+%!   pkg load mboct-fem-pkg;
+%!   ## Figure 46b, page 175
+%!   ref_data_w = [  0, 195;
+%!                   10, 122;
+%!                   20,  65;
+%!                   30,  28;
+%!                   40,  18;
+%!                   50,  20;
+%!                   60,  30;
+%!                   70,  40;
+%!                   80,  48;
+%!                   90,  50;
+%!                   100,  60;
+%!                   110,  45;
+%!                   120,  30;
+%!                   130,   0];
+%!   ref_p = [  0,     0;
+%!              10,   100;
+%!              20,   200;
+%!              30,   300;
+%!              40,   375;
+%!              50,   425;
+%!              60,   525;
+%!              70,   650;
+%!              80,   750;
+%!              90,   875;
+%!              100,   975;
+%!              110,  1100;
+%!              120,  1175;
+%!              130,  1175;
+%!              140,  1050;
+%!              150,   925;
+%!              160,   700;
+%!              170,   450;
+%!              180,   200;
+%!              190,    50;
+%!              200,     0];
+%!   output_file = "";
+%!   have_mesh_size_binary = false;
+%!   f_plot = false;
+%!   %unwind_protect
 %!   output_file = tempname();
 %!   if (ispc())
 %!     output_file(output_file == "\\") = "/";
@@ -58,7 +58,7 @@
 %!     have_mesh_size_binary = true;
 %!   endif
 %!   if (~have_mesh_size_binary)
-%!     error("fem_pre_mesh_size was not installed\nrun ./configure && make install inside the src directory");
+%!     error("fem_pre_mesh_size was not installed\nrun ./configure && make install inside the src directory of mboct-fem-pkg");
 %!   endif
 %!   SI_unit_meter = 1;
 %!   SI_unit_kilogram = 1;
@@ -94,7 +94,7 @@
 %!   param.delta = 180 * pi / 180;            %! position of eccentricity
 %!   param.epsilon = 0.3;                     %! relative eccentricity
 %!   param.diaph_sec_n = 72;                  %! number of cross sections for diaphragm
-%!   param.h = 15e-3 / SI_unit_meter;         %! mesh size for hydraulic mesh
+%!   param.h = 8e-3 / SI_unit_meter;         %! mesh size for hydraulic mesh
 %!   param.h1 = 4e-3 / SI_unit_meter;         %! mesh size in the area of the diaphragm
 %!   param.h2 = 20e-3 / SI_unit_meter;        %! mesh size outside the are of the diaphragm
 %!   param.ht = 10e-3 / SI_unit_meter;        %! mesh transition region
@@ -112,6 +112,7 @@
 %!   opt_mesh.verbose = false;
 %!   opt_mesh.output_file = [output_file, "_msh"];
 %!   options.geo_tol = sqrt(eps);
+%!   options.use_linear_mesh = true;
 %!   empty_cell = cell(1, 2);
 %!   group_defs = struct("id", empty_cell, ...
 %!                       "name", empty_cell, ...
@@ -142,11 +143,14 @@
 %!   group_defs(2).geometry.rmax = 0.5 * param.Di;
 %!   group_defs(2).geometry.zmin = -0.5 * param.Wo;
 %!   group_defs(2).geometry.zmax = 0.5 * param.Wo;
-%!   group_defs(2).compliance_matrix.matrix_type = "nodal substruct";
+%!   group_defs(2).compliance_matrix.matrix_type = "modal substruct total";
 %!   group_defs(2).compliance_matrix.bearing_type = "shell";
 %!   group_defs(2).compliance_matrix.bearing_model = "EHD/FD";
 %!   group_defs(2).compliance_matrix.reference_pressure = param.pref;
 %!   group_defs(2).compliance_matrix.mesh_size = param.h;
+%!   group_defs(2).compliance_matrix.interpolate_interface = true;
+%!   group_defs(2).compliance_matrix.number_of_modes = int32(70);
+%!   group_defs(2).compliance_matrix.include_rigid_body_modes = true;
 %!   group_defs(2).bearing = "elem_id_bearing";
 %!   fd = -1;
 %!   unwind_protect
@@ -291,16 +295,21 @@
 %!     endif
 %!   end_unwind_protect
 %!   mesh = fem_pre_mesh_unstruct_create([output_file, ".geo"], param, opt_mesh);
+%!   mesh = fem_pre_mesh_reorder(mesh);
 %!   mesh.groups.tria6 = fem_pre_mesh_groups_create(mesh, group_defs, options.geo_tol).tria6;
 %!   mesh.materials.tet10 = zeros(rows(mesh.elements.tet10), 1, "int32");
 %!   mesh.materials.tet10(mesh.groups.tet10(find([mesh.groups.tet10.id == 1])).elements) = 1;
-%!   mesh.material_data.rho = param.rho;
-%!   mesh.material_data.C = fem_pre_mat_isotropic(param.E, param.nu);
+%!   mesh.material_data(1).E = param.E;
+%!   mesh.material_data(1).nu = param.nu;
+%!   mesh.material_data(1).rho = param.rho;
+%!   mesh.material_data(2).E = sqrt(eps) * param.E;
+%!   mesh.material_data(2).nu = param.nu;
+%!   mesh.material_data(2).rho = 0;
 %!   cms_opt.invariants = true;
 %!   cms_opt.refine_max_iter = int32(0);
 %!   cms_opt.number_of_threads = mbdyn_solver_num_threads_default();
 %!   cms_opt.verbose = false;
-%!   cms_opt.modes.number = 0;
+%!   cms_opt.modes.number = int32(40);
 %!   cms_opt.element.name = "elem_id_diaphragm_cms";
 %!   node_set = int32(rows(mesh.nodes) + (1:numel(group_defs)));
 %!   node_names = {group_defs.name};
@@ -327,6 +336,10 @@
 %!       otherwise
 %!         ++num_comp_mat;
 %!         bearing_surf(num_comp_mat).group_idx = find([mesh.groups.tria6.id] == group_defs(j).id);
+%!         bearing_surf(num_comp_mat).group_id_interface = group_defs(j).id + int32(1000);
+%!         bearing_surf(num_comp_mat).material_id_interface = int32(2);
+%!         bearing_surf(num_comp_mat).absolute_tolerance = 1e-3 * param.Di;
+%!         bearing_surf(num_comp_mat).relative_tolerance = 0;
 %!         bearing_surf(num_comp_mat).name = group_defs(j).name;
 %!         bearing_surf(num_comp_mat).bearing = group_defs(j).bearing;
 %!         bearing_surf(num_comp_mat).X0 = group_defs(j).X0;
@@ -344,20 +357,26 @@
 %!     endswitch
 %!   endfor
 %!   bearing_surf = bearing_surf(1:num_comp_mat);
-%!   [load_case_pressure, bearing_surf] = fem_ehd_pre_comp_mat_load_case(mesh, bearing_surf);
-%!   load_case = fem_pre_load_case_merge(load_case, load_case_pressure);
-%!   [mesh, ...
-%!    mat_ass, ...
-%!    dof_map, ...
-%!    sol_eig, ...
-%!    cms_opt] = fem_cms_create(mesh, load_case, cms_opt);
+%!   if (options.use_linear_mesh)
+%!     [mesh, mat_ass, dof_map, cms_opt, comp_mat, load_case, bearing_surf, sol_eig] = fem_ehd_pre_comp_mat_linear_mesh(mesh, load_case, cms_opt, bearing_surf);
+%!   else
+%!     [load_case_pressure, bearing_surf] = fem_ehd_pre_comp_mat_load_case(mesh, bearing_surf);
+%!     load_case = fem_pre_load_case_merge(load_case, load_case_pressure);
+%!     [mesh, ...
+%!      mat_ass, ...
+%!      dof_map, ...
+%!      sol_eig, ...
+%!      cms_opt] = fem_cms_create(mesh, load_case, cms_opt);
+%!   endif
 %!   mat_ass.Dred = param.damp_alpha * mat_ass.Mred + param.damp_beta * mat_ass.Kred;
 %!   fem_cms_export([output_file, "_cms"], mesh, dof_map, mat_ass, cms_opt);
-%!   comp_mat = fem_ehd_pre_comp_mat_unstruct(mesh, ...
-%!                                            mat_ass, ...
-%!                                            dof_map, ...
-%!                                            cms_opt, ...
-%!                                            bearing_surf);
+%!   if (~options.use_linear_mesh)
+%!     comp_mat = fem_ehd_pre_comp_mat_unstruct(mesh, ...
+%!                                              mat_ass, ...
+%!                                              dof_map, ...
+%!                                              cms_opt, ...
+%!                                              bearing_surf);
+%!   endif
 %!   for j=1:numel(comp_mat)
 %!     comp_mat_file = [output_file, "_", bearing_surf(j).bearing, ".dat"];
 %!     fem_ehd_pre_comp_mat_export(comp_mat(j), bearing_surf(j).options, comp_mat_file);
@@ -559,7 +578,12 @@
 %!     fputs(fd, "                shaft node, node_id_journal_bearing,\n");
 %!     fputs(fd, "                offset, reference, ref_id_journal_bearing, null,\n");
 %!     fputs(fd, "                orientation, reference, ref_id_journal_bearing, eye,\n");
-%!     fputs(fd, "                bearing node, node_id_shell_bearing,\n");
+%!     switch (group_defs(2).compliance_matrix.matrix_type)
+%!       case "modal substruct total"
+%!         fputs(fd, "                bearing node, node_id_shell_support,\n");
+%!       otherwise
+%!         fputs(fd, "                bearing node, node_id_shell_bearing,\n");
+%!     endswitch
 %!     fputs(fd, "                offset, reference, ref_id_shell_bearing, null,\n");
 %!     fputs(fd, "                orientation, reference, ref_id_shell_bearing, eye,\n");
 %!     fputs(fd, "                        number of nodes z, number_of_nodes_z,\n");
@@ -619,103 +643,104 @@
 %!   Phi = res.bearings.xi(1, :) / (0.5 * param.Di);
 %!   p = interp2(res.bearings.xi, res.bearings.zi, res.bearings.columns.p(:, :, end), res.bearings.xi(1, :), 0);
 %!   w = interp2(res.bearings.xi, res.bearings.zi, res.bearings.columns.wtot(:, :, end), res.bearings.xi(1, :), 0);
-%!   ax = plotyy(180 / pi * Phi, 1e-3 * p * SI_unit_pascal, 180 / pi * Phi, 1e6 * w * SI_unit_meter);
 %!   h = interp2(res.bearings.xi, res.bearings.zi, res.bearings.columns.h(:, :, end), res.bearings.xi(1, :), 0);
 %!   if (f_plot)
-%!   figure("visible", "off");
-%!   plot(res.t * SI_unit_second, 1e-3 * max(res.bearings.columns.p_n, [], 2) * SI_unit_pascal, "-;max(p(t));r");
-%!   xlabel("t [s]");
-%!   ylabel("p [kPa]");
-%!   grid on;
-%!   grid minor on;
-%!   title("convergence history of peak pressure");
-%!   figure("visible", "off");
-%!   plot(res.t * SI_unit_second, 1e6 * max(res.bearings.columns.wtot_n, [], 2) * SI_unit_pascal, "-;max(w(t));r");
-%!   xlabel("t [s]");
-%!   ylabel("w [um]");
-%!   grid on;
-%!   grid minor on;
-%!   title("convergence history of peak deformation");
-%!   figure("visible", "off");
-%!   xlabel("Phi [deg]");
-%!   ylabel(ax(1), "p [kPa]");
-%!   ylabel(ax(2), "w [um]");
-%!   grid on;
-%!   grid minor on;
-%!   for i=1:2
-%!     xlim(ax(i), [0, 360]);
-%!   endfor
-%!   xticks(0:30:360);
-%!   title("midplane pressure and deformation");
-%!   figure("visible","off");
-%!   hold on;
-%!   set(plot(180 / pi * Phi, 1e6 * w * SI_unit_meter, "-;w(Phi) [um];r"), "linewidth", 5);
-%!   set(plot(ref_data_w(:, 1), ref_data_w(:, 2), "-;reference w(Phi) [um];k"), "linewidth", 3);
-%!   xlabel("Phi [deg]");
-%!   ylabel("w [um]");
-%!   grid on;
-%!   grid minor on;
-%!   xlim([0,360]);
-%!   xticks(0:30:360);
-%!   title("midplane deformation");
-%!   figure("visible","off");
-%!   hold on;
-%!   set(plot(180 / pi * Phi, 1e-3 * p * SI_unit_pascal, "-;p(Phi) [kPa];r"), "linewidth", 5);
-%!   set(plot(ref_p(:, 1), ref_p(:, 2), "-;reference p(Phi) [kPa];k"), "linewidth", 3);
-%!   xlabel("Phi [deg]");
-%!   ylabel("p* [kPa]");
-%!   grid on;
-%!   grid minor on;
-%!   xlim([0,360]);
-%!   xticks(0:30:360);
-%!   title("midplane pressure");
-%!   figure("visible","off");
-%!   set(plot(180 / pi * Phi, p * param.cr^2 / (0.5 * param.Di * param.U1 * param.etal), "-;p*(Phi) [1];r"), "linewidth", 5);
-%!   xlabel("Phi [deg]");
-%!   ylabel("p* [1]");
-%!   grid on;
-%!   grid minor on;
-%!   xlim([0,360]);
-%!   xticks(0:30:360);
-%!   title("midplane nondimensional pressure");
-%!   figure("visible", "off");
-%!   hold on;
-%!   set(plot(180 / pi * Phi, 1e6 * h * SI_unit_meter, "-;h(Phi) [um];r"), "linewidth", 5);
-%!   set(plot(180 / pi * Phi, 1e6 * w * SI_unit_meter, "-;w(Phi) [um];b"), "linewidth", 5);
-%!   xlabel("Phi [deg]");
-%!   ylabel(ax(2), "h, w [um]");
-%!   grid on;
-%!   grid minor on;
-%!   xlim([0, 360]);
-%!   title("midplane clearance and deformation");
-%!   figure("visible","off");
-%!   contourf(180/pi * res.bearings.xi / (0.5 * param.Di), 1e3 * res.bearings.zi * SI_unit_meter, 1e-3 * res.bearings.columns.p(:, :, end) * SI_unit_pascal);
-%!   colormap jet;
-%!   colorbar;
-%!   xlabel("Phi [deg]");
-%!   ylabel("z [mm]");
-%!   grid on;
-%!   grid minor on;
-%!   title("pressure distribution p [kPa]");
-%!   figure("visible","off");
-%!   contourf(180/pi * res.bearings.xi / (0.5 * param.Di), 1e3 * res.bearings.zi * SI_unit_meter, 1e6 * res.bearings.columns.wtot(:, :, end) * SI_unit_meter);
-%!   colormap jet;
-%!   colorbar;
-%!   xlabel("Phi [deg]");
-%!   ylabel("z [mm]");
-%!   grid on;
-%!   grid minor on;
-%!   title("radial deformation [um]");
-%!   figure("visible","off");
-%!   contourf(180/pi * res.bearings.xi / (0.5 * param.Di), 1e3 * res.bearings.zi * SI_unit_meter, res.bearings.columns.rho(:, :, end) / param.rhol);
-%!   colormap jet;
-%!   colorbar;
-%!   xlabel("Phi [deg]");
-%!   ylabel("z [mm]");
-%!   grid on;
-%!   grid minor on;
-%!   title("fractional film content [1]");
-%!   figure_list();
+%!     figure("visible", "off");
+%!     ax = plotyy(180 / pi * Phi, 1e-3 * p * SI_unit_pascal, 180 / pi * Phi, 1e6 * w * SI_unit_meter);
+%!     figure("visible", "off");
+%!     plot(res.t * SI_unit_second, 1e-3 * max(res.bearings.columns.p_n, [], 2) * SI_unit_pascal, "-;max(p(t));r");
+%!     xlabel("t [s]");
+%!     ylabel("p [kPa]");
+%!     grid on;
+%!     grid minor on;
+%!     title("convergence history of peak pressure");
+%!     figure("visible", "off");
+%!     plot(res.t * SI_unit_second, 1e6 * max(res.bearings.columns.wtot_n, [], 2) * SI_unit_pascal, "-;max(w(t));r");
+%!     xlabel("t [s]");
+%!     ylabel("w [um]");
+%!     grid on;
+%!     grid minor on;
+%!     title("convergence history of peak deformation");
+%!     figure("visible", "off");
+%!     xlabel("Phi [deg]");
+%!     ylabel(ax(1), "p [kPa]");
+%!     ylabel(ax(2), "w [um]");
+%!     grid on;
+%!     grid minor on;
+%!     for i=1:2
+%!       xlim(ax(i), [0, 360]);
+%!     endfor
+%!     xticks(0:30:360);
+%!     title("midplane pressure and deformation");
+%!     figure("visible","off");
+%!     hold on;
+%!     set(plot(180 / pi * Phi, 1e6 * w * SI_unit_meter, "-;w(Phi) [um];r"), "linewidth", 5);
+%!     set(plot(ref_data_w(:, 1), ref_data_w(:, 2), "-;reference w(Phi) [um];k"), "linewidth", 3);
+%!     xlabel("Phi [deg]");
+%!     ylabel("w [um]");
+%!     grid on;
+%!     grid minor on;
+%!     xlim([0,360]);
+%!     xticks(0:30:360);
+%!     title("midplane deformation");
+%!     figure("visible","off");
+%!     hold on;
+%!     set(plot(180 / pi * Phi, 1e-3 * p * SI_unit_pascal, "-;p(Phi) [kPa];r"), "linewidth", 5);
+%!     set(plot(ref_p(:, 1), ref_p(:, 2), "-;reference p(Phi) [kPa];k"), "linewidth", 3);
+%!     xlabel("Phi [deg]");
+%!     ylabel("p* [kPa]");
+%!     grid on;
+%!     grid minor on;
+%!     xlim([0,360]);
+%!     xticks(0:30:360);
+%!     title("midplane pressure");
+%!     figure("visible","off");
+%!     set(plot(180 / pi * Phi, p * param.cr^2 / (0.5 * param.Di * param.U1 * param.etal), "-;p*(Phi) [1];r"), "linewidth", 5);
+%!     xlabel("Phi [deg]");
+%!     ylabel("p* [1]");
+%!     grid on;
+%!     grid minor on;
+%!     xlim([0,360]);
+%!     xticks(0:30:360);
+%!     title("midplane nondimensional pressure");
+%!     figure("visible", "off");
+%!     hold on;
+%!     set(plot(180 / pi * Phi, 1e6 * h * SI_unit_meter, "-;h(Phi) [um];r"), "linewidth", 5);
+%!     set(plot(180 / pi * Phi, 1e6 * w * SI_unit_meter, "-;w(Phi) [um];b"), "linewidth", 5);
+%!     xlabel("Phi [deg]");
+%!     ylabel(ax(2), "h, w [um]");
+%!     grid on;
+%!     grid minor on;
+%!     xlim([0, 360]);
+%!     title("midplane clearance and deformation");
+%!     figure("visible","off");
+%!     contourf(180/pi * res.bearings.xi / (0.5 * param.Di), 1e3 * res.bearings.zi * SI_unit_meter, 1e-3 * res.bearings.columns.p(:, :, end) * SI_unit_pascal);
+%!     colormap jet;
+%!     colorbar;
+%!     xlabel("Phi [deg]");
+%!     ylabel("z [mm]");
+%!     grid on;
+%!     grid minor on;
+%!     title("pressure distribution p [kPa]");
+%!     figure("visible","off");
+%!     contourf(180/pi * res.bearings.xi / (0.5 * param.Di), 1e3 * res.bearings.zi * SI_unit_meter, 1e6 * res.bearings.columns.wtot(:, :, end) * SI_unit_meter);
+%!     colormap jet;
+%!     colorbar;
+%!     xlabel("Phi [deg]");
+%!     ylabel("z [mm]");
+%!     grid on;
+%!     grid minor on;
+%!     title("radial deformation [um]");
+%!     figure("visible","off");
+%!     contourf(180/pi * res.bearings.xi / (0.5 * param.Di), 1e3 * res.bearings.zi * SI_unit_meter, res.bearings.columns.rho(:, :, end) / param.rhol);
+%!     colormap jet;
+%!     colorbar;
+%!     xlabel("Phi [deg]");
+%!     ylabel("z [mm]");
+%!     grid on;
+%!     grid minor on;
+%!     title("fractional film content [1]");
+%!     figure_list();
 %!   endif
 %!   p_int = interp1(180 / pi * Phi, 1e-3 * p * SI_unit_pascal, ref_p(:, 1), "linear");
 %!   w_int = interp1(180 / pi * Phi, 1e6 * w * SI_unit_meter, ref_data_w(:, 1), "linear");

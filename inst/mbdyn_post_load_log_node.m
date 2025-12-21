@@ -51,6 +51,7 @@ function [nodes, dof_info] = mbdyn_post_load_log_node(mbdyn_filename)
   options.vars = false;
   options.beams2 = false;
   options.beams3 = false;
+  options.hydrodynamic_bearings = false;
 
   data = mbdyn_post_load_log(mbdyn_filename, options);
 

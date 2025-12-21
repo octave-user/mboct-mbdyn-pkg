@@ -600,7 +600,10 @@
 %!     fprintf(fd, "                        matrix, 1, from file, \"%s_elem_id_bearing.dat\",\n", output_file);
 %!     fputs(fd, "                        E1, E,\n");
 %!     fputs(fd, "                        nu1, nu,\n");
-%!     fputs(fd, "                        modal element, elem_id_diaphragm_cms,\n");
+%!     switch (group_defs(2).compliance_matrix.matrix_type)
+%!       case "modal substruct total"
+%!         fputs(fd, "                        modal element, elem_id_diaphragm_cms,\n");
+%!     endswitch
 %!     fputs(fd, "                pressure dof scale, pref,\n");
 %!     fputs(fd, "                reynolds equation scale, dt / (rhol * cr),\n");
 %!     fputs(fd, "                elasticity equation scale, dt / cr,\n");

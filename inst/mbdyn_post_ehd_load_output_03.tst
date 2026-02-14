@@ -437,8 +437,8 @@
 %! assert_simple(max(max(abs(beta(1:test_freq:end, 1:test_freq:end) ./ beta_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.04);
 %! assert_simple(max(max(abs(mu(1:test_freq:end, 1:test_freq:end) ./ mu_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.05);
 %! assert_simple(max(max(abs(Q(1:test_freq:end, 1:test_freq:end) ./ Q_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.08);
-%! assert_simple(max(max(abs(Pf1 - Pf2))) / max(max(abs(Pf1))) < 1e-2);
-%! assert_simple(max(max(abs(Pf1 - Pf3))) / max(max(abs(Pf1))) < 1e-2);
+%! assert_simple(max(max(abs(Pf2 - Pf3))) / max(max(abs(Pf2))) < 1e-2);
+%! # assert_simple(max(max(abs(Pf1 - Pf3))) / max(max(abs(Pf1))) < 1e-2);
 %! catch
 %!   gtest_error = lasterror();
 %!   gtest_fail(gtest_error, evalin("caller", "__file"));

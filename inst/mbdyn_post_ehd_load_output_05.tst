@@ -15,7 +15,7 @@
 %! param.output_bearing_data = true;
 %! param.B = 25e-3;
 %! cavitation = "mass conserving";
-%! f_plot = false;
+%! f_plot = true;
 %! fd = -1;
 %! output_file = "";
 %! %unwind_protect
@@ -342,7 +342,7 @@
 %!   ylabel("h [m]");
 %!   grid on;
 %!   grid minor on;
-%!   title("radial clearance versus time");
+%!   title("radial clearance");
 %!   endif
 %!   assert_simple(res.bearings.columns.p(:, 1), p_ref, 1e-4 * max(abs(p_ref)));
 %!   assert_simple(-mdot1, mdotz_ref(1), 0.5e-2 * abs(mdotz_ref(1)));

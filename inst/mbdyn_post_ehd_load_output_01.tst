@@ -69,6 +69,9 @@
 %! param.output_bearing_data = true;
 %! param.B = param.d1 * B_d_r(k);
 %! param.epsilon = epsilon_r(j);
+%! param.cavitation_model = "mass conserving";
+%! param.hydraulic_nodes = true;
+%! param.jacobian_check = false;
 %! fd = -1;
 %! output_file = "";
 %! %unwind_protect
@@ -78,20 +81,24 @@
 %!     mbdyn_pre_write_param_file(fd, param);
 %!     fputs(fd, "set: integer node_id_rotor = 1001;\n");
 %!     fputs(fd, "set: integer node_id_stator = 1002;\n");
-%!     fputs(fd, "set: integer hyd_node_id_outlet1 = 2001;\n");
-%!     fputs(fd, "set: integer hyd_node_id_outlet2 = 2002;\n");
-%!     fputs(fd, "set: integer hyd_node_id_inlet = 2003;\n");
+%!     if (param.hydraulic_nodes)
+%!       fputs(fd, "set: integer hyd_node_id_outlet1 = 2001;\n");
+%!       fputs(fd, "set: integer hyd_node_id_outlet2 = 2002;\n");
+%!       fputs(fd, "set: integer hyd_node_id_inlet = 2003;\n");
+%!     endif
 %!     fputs(fd, "set: integer joint_id_rotor = 3001;\n");
 %!     fputs(fd, "set: integer joint_id_stator = 3002;\n");
 %!     fputs(fd, "set: integer elem_id_bearing = 4001;\n");
 %!     fputs(fd, "set: integer ref_id_bearing = 5000;\n");
 %!     fputs(fd, "set: integer ref_id_rotor = 5001;\n");
 %!     fputs(fd, "set: integer ref_id_stator = 5002;\n");
-%!     fputs(fd, "set: integer genel_id_outlet1 = 4003;\n");
-%!     fputs(fd, "set: integer genel_id_outlet2 = 4004;\n");
-%!     fputs(fd, "set: integer genel_id_inlet = 4005;\n");
+%!     if (param.hydraulic_nodes)
+%!       fputs(fd, "set: integer genel_id_outlet1 = 4003;\n");
+%!       fputs(fd, "set: integer genel_id_outlet2 = 4004;\n");
+%!       fputs(fd, "set: integer genel_id_inlet = 4005;\n");
+%!     endif
 %!     fputs(fd, "set: real omega1z = 2 * pi * 50;\n");
-%!     fputs(fd, "set: real omega2z = 2 * pi * 15;\n");
+%!     fputs(fd, "set: real omega2z = 2 * pi * 0;\n");
 %!     fputs(fd, "set: real v1z = 0;\n");
 %!     fputs(fd, "set: real v2z = 0;\n");
 %!     fputs(fd, "set: real n = 1e-3;\n");
@@ -132,7 +139,7 @@
 %!     fputs(fd, "        output: messages;\n");
 %!     fputs(fd, "        derivatives tolerance: 1e-4, 1e-4;\n");
 %!     fputs(fd, "        derivatives max iterations: 20;\n");
-%!     fputs(fd, "        derivatives coefficient: 1e-3;\n");
+%!     fputs(fd, "        derivatives coefficient: 1e-3, auto;\n");
 %!     fputs(fd, "        output: iterations, solver condition number, stat, yes;\n");
 %!     fputs(fd, "        nonlinear solver: nox,\n");
 %!     fputs(fd, "             jacobian operator, newton,\n");
@@ -146,6 +153,9 @@
 %!     fputs(fd, "             krylov subspace size, 100;\n");
 %!     fputs(fd, "end: initial value;\n");
 %!     fputs(fd, "begin: control data;\n");
+%!     if (param.jacobian_check)
+%!       fputs(fd, "    finite difference jacobian meter: const, 1., iterations, string, \"Var == 1\", coefficient, 1e-8, order, 1, output, none, statistics iteration, yes;\n");
+%!     endif
 %!     fputs(fd, "    use automatic differentiation;\n");
 %!     fputs(fd, "    skip initial joint assembly;\n");
 %!     fputs(fd, "    output meter: closest next, t1 - 0.5 * dt, forever, const, dt;\n");
@@ -154,8 +164,10 @@
 %!     fputs(fd, "        structural nodes: 2;\n");
 %!     fputs(fd, "        joints: 2;\n");
 %!     fputs(fd, "        loadable elements: 1;\n");
-%!     fputs(fd, "        hydraulic nodes: 3;\n");
-%!     fputs(fd, "        genels: 3;\n");
+%!     if (param.hydraulic_nodes)
+%!       fputs(fd, "        hydraulic nodes: 3;\n");
+%!       fputs(fd, "        genels: 3;\n");
+%!     endif
 %!     fputs(fd, "        print: dof stats, to file;\n");
 %!     fputs(fd, "        print: equation description, to file;\n");
 %!     fputs(fd, "        print: dof description, to file;\n");
@@ -207,9 +219,11 @@
 %!     fputs(fd, "                reference, ref_id_stator, eye,\n");
 %!     fputs(fd, "                reference, ref_id_stator, null,\n");
 %!     fputs(fd, "                reference, ref_id_stator, null;\n");
-%!     fputs(fd, "    hydraulic: hyd_node_id_outlet1, p_mB2;\n");
-%!     fputs(fd, "    hydraulic: hyd_node_id_outlet2, p_pB2;\n");
-%!     fputs(fd, "    hydraulic: hyd_node_id_inlet, p_in;\n");
+%!     if (param.hydraulic_nodes)
+%!       fputs(fd, "    hydraulic: hyd_node_id_outlet1, p_mB2;\n");
+%!       fputs(fd, "    hydraulic: hyd_node_id_outlet2, p_pB2;\n");
+%!       fputs(fd, "    hydraulic: hyd_node_id_inlet, p_in;\n");
+%!     endif
 %!     fputs(fd, "end: nodes;\n");
 %!     fputs(fd, "begin: elements;\n");
 %!     fputs(fd, "        joint: joint_id_rotor, total pin joint,\n");
@@ -266,21 +280,32 @@
 %!     fputs(fd, "            const, 0.,\n");
 %!     fputs(fd, "            mult, const, omega2z,\n");
 %!     fputs(fd, "                  time;\n");
-%!     fputs(fd, "    genel: genel_id_outlet1, clamp,\n");
-%!     fputs(fd, "        hyd_node_id_outlet1, hydraulic, p_mB2;\n");
-%!     fputs(fd, "    genel: genel_id_outlet2, clamp,\n");
-%!     fputs(fd, "        hyd_node_id_outlet2, hydraulic, p_pB2;\n");
-%!     fputs(fd, "    genel: genel_id_inlet, clamp,\n");
-%!     fputs(fd, "        hyd_node_id_inlet, hydraulic, p_in;\n");
+%!     if (param.hydraulic_nodes)
+%!       fputs(fd, "    genel: genel_id_outlet1, clamp,\n");
+%!       fputs(fd, "        hyd_node_id_outlet1, hydraulic, p_mB2;\n");
+%!       fputs(fd, "    genel: genel_id_outlet2, clamp,\n");
+%!       fputs(fd, "        hyd_node_id_outlet2, hydraulic, p_pB2;\n");
+%!       fputs(fd, "    genel: genel_id_inlet, clamp,\n");
+%!       fputs(fd, "        hyd_node_id_inlet, hydraulic, p_in;\n");
+%!     endif
 %!     fputs(fd, "    user defined: elem_id_bearing,\n");
 %!     fputs(fd, "        hydrodynamic plain bearing2,\n");
-%!     fputs(fd, "            hydraulic fluid, linear compressible,\n");
-%!     fputs(fd, "                density, rho,\n");
-%!     fputs(fd, "                1.,\n");
-%!     fputs(fd, "                0.,\n");
-%!     fputs(fd, "                viscosity, eta,\n");
-%!     fputs(fd, "                temperature, 0,\n");
-%!     fputs(fd, "            viscosity vapor, eta,\n");
+%!     switch(param.cavitation_model)
+%!     case "non mass conserving"
+%!       fputs(fd, "            hydraulic fluid, incompressible,\n");
+%!       fputs(fd, "                density, rho,\n");
+%!       fputs(fd, "                viscosity, eta,\n");
+%!       fputs(fd, "                pressure, 0.,\n");
+%!       fputs(fd, "                temperature, 0,\n");
+%!     case "mass conserving"
+%!       fputs(fd, "            hydraulic fluid, linear compressible,\n");
+%!       fputs(fd, "                density, rho,\n");
+%!       fputs(fd, "                1.,\n");
+%!       fputs(fd, "                0.,\n");
+%!       fputs(fd, "                viscosity, eta,\n");
+%!       fputs(fd, "                temperature, 0,\n");
+%!       fputs(fd, "            viscosity vapor, eta,\n");
+%!     endswitch
 %!     fputs(fd, "            mesh, linear finite difference,\n");
 %!     fputs(fd, "            geometry, cylindrical,\n");
 %!     fputs(fd, "                mesh position, at bearing,\n");
@@ -297,6 +322,7 @@
 %!     fputs(fd, "                    orientation, reference, ref_id_stator, eye,\n");
 %!     fputs(fd, "            number of nodes z, M,\n");
 %!     fputs(fd, "            number of nodes Phi, N,\n");
+%!     if (param.hydraulic_nodes)
 %!     fputs(fd, "            pressure coupling conditions axial,\n");
 %!     fputs(fd, "                hyd_node_id_outlet1,\n");
 %!     fputs(fd, "                hyd_node_id_outlet2,\n");
@@ -304,6 +330,14 @@
 %!     fputs(fd, "                position, 0.5 * D2 * (delta_t0 + pi), 0.,\n");
 %!     fputs(fd, "                rectangle, width, D2 * pi / (N - 1), height, B,\n");
 %!     fputs(fd, "                pressure node, hyd_node_id_inlet,\n");
+%!     else
+%!       fputs(fd, "         boundary conditions, const, p_mB2, const, p_pB2,\n");
+%!       fputs(fd, "         lubrication grooves, 1,\n");
+%!       fputs(fd, "                at bearing,\n");
+%!       fputs(fd, "                pressure, const, p_in,\n");
+%!       fputs(fd, "                position, 0.5 * D2 * (delta_t0 + pi), 0.,\n");
+%!       fputs(fd, "                rectangle, width, D2 * pi / (N - 1), height, B,\n");
+%!     endif
 %!     fputs(fd, "            pressure dof scale, pmax,\n");
 %!     fputs(fd, "            output pressure, yes,\n");
 %!     fputs(fd, "            output density, yes,\n");
@@ -335,7 +369,9 @@
 %!    res.velocity, ...
 %!    res.acceleration, ...
 %!    res.node_id] = mbdyn_post_load_output_struct(opt_sol.output_file);
-%!   [res.genel_id, res.genel_data] = mbdyn_post_load_output([opt_sol.output_file, ".gen"], 1);
+%!   if (param.hydraulic_nodes)
+%!     [res.genel_id, res.genel_data] = mbdyn_post_load_output([opt_sol.output_file, ".gen"], 1);
+%!   endif
 %!   res.log_dat.vars = mbdyn_post_id_to_index(res, res.log_dat.vars);
 %!   opt_load.verbose = false;
 %!   opt_load.num_steps = numel(res.t);
@@ -356,22 +392,30 @@
 %!   Rb2 = res.log_dat.bearings.cylindrical.nodes(2).Rb;
 %!   F1 = -res.bearings.columns.F1.';
 %!   M1 = -res.bearings.columns.M1.';
+%!   M2 = -res.bearings.columns.M2.';
 %!   omega1z = res.bearings.cylindrical.omega1z;
 %!   omega2z = res.bearings.cylindrical.omega2z;
 %!   omega_res = res.bearings.cylindrical.omega_res;
 %!   epsilon = res.bearings.cylindrical.epsilon;
 %!   delta = res.bearings.cylindrical.delta;
-%!   Q_out1 = -res.genel_data{res.log_dat.vars.genel_idx_outlet1}(end) / res.log_dat.vars.rho;
-%!   Q_out2 = -res.genel_data{res.log_dat.vars.genel_idx_outlet2}(end) / res.log_dat.vars.rho;
-%!   Q_in = -res.genel_data{res.log_dat.vars.genel_idx_inlet}(end) / res.log_dat.vars.rho;
+%!   if (param.hydraulic_nodes)
+%!     Q_out1 = -res.genel_data{res.log_dat.vars.genel_idx_outlet1}(end) / res.log_dat.vars.rho;
+%!     Q_out2 = -res.genel_data{res.log_dat.vars.genel_idx_outlet2}(end) / res.log_dat.vars.rho;
+%!     Q_in = -res.genel_data{res.log_dat.vars.genel_idx_inlet}(end) / res.log_dat.vars.rho;
+%!   endif
 %!   P = norm(Rb2(:, 1:2).' * R2.' * F1);
 %!   alpha = atan2(Rb2(:, 2).' * R2.' * F1, Rb2(:, 1).' * R2.' * F1);
 %!   beta(j, k) = sign(omega_res) * (delta - alpha);
 %!   beta(j, k) = mod(beta(j, k) + pi, 2 * pi) - pi;
 %!   mu(j, k) = 2 * Rb2(:, 3).' * R2.' * M1 / (P * d) * sign(omega1z - omega2z);
+%!   Pf1(j, k) = -M1(3) * (omega1z - omega2z);
+%!   Pf2(j, k) = M2(3) * (omega1z - omega2z);
+%!   Pf3(j, k) = res.bearings.columns.Pff + res.bearings.columns.Pfc;
 %!   So(j, k) = P * Psi^2 / (B * D * eta * abs(omega_res));
-%!   Q(j, k) = (Q_out1 + Q_out2) / ((0.5 * D)^3 * Psi * abs(omega_res));
-%!   dQ(j, k) = (Q_out1 + Q_out2 + Q_in) / Q_in;
+%!   if (param.hydraulic_nodes)
+%!     Q(j, k) = (Q_out1 + Q_out2) / ((0.5 * D)^3 * Psi * abs(omega_res));
+%!     dQ(j, k) = (Q_out1 + Q_out2 + Q_in) / Q_in;
+%!   endif
 %!   mu_r(j, k) = Psi * (abs((omega1z - omega2z) / omega_res) * pi / (sqrt(1 - epsilon^2) * So_r(j, k)) + sin(beta_r(j, k)) * abs(epsilon) / 2);
 %! %unwind_protect_cleanup
 %!   if (numel(output_file))
@@ -421,6 +465,7 @@
 %!   grid minor on;
 %!   title(sprintf("Coefficient of friction for pure rotation B/d=%.2f", B_d_r(i)));
 %! endfor
+%! if (param.hydraulic_nodes)
 %! for i=1:test_freq:numel(B_d_r)
 %!   figure("visible", "off");
 %!   hold("on");
@@ -433,14 +478,21 @@
 %!   title(sprintf("Non-dimensional oil flow pure rotation B/d=%.2f", B_d_r(i)));
 %! endfor
 %! endif
+%! endif
 %! assert_simple(mean(mean(abs(So(1:test_freq:end, 1:test_freq:end) ./ So_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.03);
 %! assert_simple(mean(mean(abs(beta(1:test_freq:end, 1:test_freq:end) ./ beta_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.02);
 %! assert_simple(mean(mean(abs(mu(1:test_freq:end, 1:test_freq:end) ./ mu_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.02);
-%! assert_simple(mean(mean(abs(Q(1:test_freq:end, 1:test_freq:end) ./ Q_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.07);
+%! if (param.hydraulic_nodes)
+%!   assert_simple(mean(mean(abs(Q(1:test_freq:end, 1:test_freq:end) ./ Q_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.07);
+%! endif
 %! assert_simple(max(max(abs(So(1:test_freq:end, 1:test_freq:end) ./ So_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.05);
 %! assert_simple(max(max(abs(beta(1:test_freq:end, 1:test_freq:end) ./ beta_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.04);
 %! assert_simple(max(max(abs(mu(1:test_freq:end, 1:test_freq:end) ./ mu_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.05);
-%! assert_simple(max(max(abs(Q(1:test_freq:end, 1:test_freq:end) ./ Q_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.08);
+%! if (param.hydraulic_nodes)
+%!   assert_simple(max(max(abs(Q(1:test_freq:end, 1:test_freq:end) ./ Q_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.08);
+%! endif
+%! assert_simple(max(max(abs(Pf2 - Pf3))) / max(max(abs(Pf2))) < 1e-2);
+%! #assert_simple(max(max(abs(Pf1 - Pf3))) / max(max(abs(Pf1))) < 1e-2);
 %! catch
 %!   gtest_error = lasterror();
 %!   gtest_fail(gtest_error, evalin("caller", "__file"));

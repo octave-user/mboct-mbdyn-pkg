@@ -27,7 +27,7 @@
 %! param.rho_0 = 850;
 %! param.p_amb = 1e5;
 %! param.pref = 1e6;
-%! f_plot = false;
+%! f_plot = true;
 %! fd = -1;
 %! output_file = "";
 %! %unwind_protect

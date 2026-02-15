@@ -148,9 +148,7 @@
 %!     fputs(fd, "end: initial value;\n");
 %!     fputs(fd, "begin: control data;\n");
 %!     fputs(fd, "    use automatic differentiation;\n");
-%!     fputs(fd, "    #skip initial joint assembly;\n");
 %!     fputs(fd, "    output meter: closest next, t1 - 0.5 * dt, forever, const, dt;\n");
-%!     fputs(fd, "    use: loadable elements, in assembly;\n");
 %!     fputs(fd, "    default orientation: euler123;\n");
 %!     fputs(fd, "        structural nodes: 2;\n");
 %!     fputs(fd, "        joints: 2;\n");
@@ -350,13 +348,18 @@
 %!   s = (D - d);
 %!   Psi = (D - d) / D;
 %!   eta = res.log_dat.bearings.eta;
+%!   node_idx_1 = find(res.node_id == res.log_dat.bearings.cylindrical.nodes(1).label);
 %!   node_idx_2 = find(res.node_id == res.log_dat.bearings.cylindrical.nodes(2).label);
+%!   X1 = res.trajectory{node_idx_1}(:, 1:3).';
+%!   X2 = res.trajectory{node_idx_2}(:, 1:3).';
 %!   Phi2 = res.trajectory{node_idx_2}(:, 4:6).';
 %!   R2 = euler123_to_rotation_matrix(Phi2);
 %!   Rb1 = res.log_dat.bearings.cylindrical.nodes(1).Rb;
 %!   Rb2 = res.log_dat.bearings.cylindrical.nodes(2).Rb;
 %!   F1 = -res.bearings.columns.F1.';
 %!   M1 = -res.bearings.columns.M1.';
+%!   M2 = -res.bearings.columns.M2.';
+%!   M1_ = M1 + cross(X1 - X2, F1);
 %!   omega1z = res.bearings.cylindrical.omega1z;
 %!   omega2z = res.bearings.cylindrical.omega2z;
 %!   omega_res = res.bearings.cylindrical.omega_res;
@@ -377,6 +380,9 @@
 %!   beta_ref = interp2(B_d_r, epsilon_r, beta_r, B / d, epsilon, "linear");
 %!   mu_ref = Psi * (abs((omega1z - omega2z) / omega_res) * pi / (sqrt(1 - epsilon^2) * So_ref) + sin(beta_ref) * abs(epsilon) / 2);
 %!   Q_ref = interp2(B_d_r, epsilon_r, Q_r, B / d, epsilon, "linear");
+%!   Pf1 = -M1_(3) * (omega1z - omega2z);
+%!   Pf2 = M2(3) * (omega1z - omega2z);
+%!   Pf3 = res.bearings.columns.Pff + res.bearings.columns.Pfc;
 %!   if (f_plot)
 %!   figure("visible", "off");
 %!   set(plot(res.bearings.xi(floor(end/2), :) / (0.5 * D) * 180 / pi, res.bearings.columns.p(floor(end/2), :)), "linewidth", 3);
@@ -411,6 +417,8 @@
 %!   assert_simple(mu, mu_ref, 0.03 * mu_ref);
 %!   assert_simple(Q, Q_ref, 0.07 * Q_ref);
 %!   assert_simple(dQ, 0, 1e-3);
+%!   assert_simple(max(max(abs(Pf2 - Pf3))) / max(max(abs(Pf2))) < 1e-2);
+%!   assert_simple(max(max(abs(Pf1 - Pf3))) / max(max(abs(Pf1))) < 1e-2);
 %! %unwind_protect_cleanup
 %!   if (numel(output_file))
 %!     fn = dir([output_file, "*"]);

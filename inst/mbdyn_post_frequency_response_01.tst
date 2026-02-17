@@ -19,6 +19,7 @@
 %! solvers = {"lapack", "arpack"};
 %! linear_solvers = {"umfpack, grad", "klu, grad", "naive, colamd"};
 %! assert_simple(numel(E), numel(rho));
+%! idxerr = int32(0);
 %! for n=1:numel(linear_solvers)
 %!   for m=1:numel(solvers)
 %!     for k=1:numel(which_eigenvalues)
@@ -229,11 +230,12 @@
 %!                 endif
 %!             endswitch
 %!           endfor
-%!           erryz = max(max(abs(wyz(1:2:end-1) ./ omega_crit - 1)), max(abs(wyz(2:2:end) ./ omega_crit - 1)));
+%!           erryz(++idxerr) = max(max(abs(wyz(1:2:end-1) ./ omega_crit - 1)), max(abs(wyz(2:2:end) ./ omega_crit - 1)));
 %!           if (options.verbose)
 %!             fprintf(stderr, "err(%d:%d:%d:%d): %.3f%%\n", n, m, k, i, 100 * erryz);
 %!           endif
-%!           assert_simple(erryz < tol);
+%!           printf("erryz(%d)=%e\n", idxerr, erryz(idxerr));
+%!           assert_simple(erryz(idxerr) < tol);
 %!         endfor
 %!         fn = fieldnames(modal{1});
 %!         for idxfn=1:numel(fn)

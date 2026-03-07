@@ -358,7 +358,7 @@
 %!   endfor
 %!   bearing_surf = bearing_surf(1:num_comp_mat);
 %!   if (options.use_linear_mesh)
-%!     [mesh, mat_ass, dof_map, cms_opt, comp_mat, load_case, bearing_surf, sol_eig] = fem_ehd_pre_comp_mat_linear_mesh(mesh, load_case, cms_opt, bearing_surf);
+%!     [mesh, mat_ass, dof_map, cms_opt, comp_mat, bearing_surf, sol_eig] = fem_ehd_pre_comp_mat_linear_mesh(mesh, load_case, cms_opt, bearing_surf);
 %!   else
 %!     [load_case_pressure, bearing_surf] = fem_ehd_pre_comp_mat_load_case(mesh, bearing_surf);
 %!     load_case = fem_pre_load_case_merge(load_case, load_case_pressure);

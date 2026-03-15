@@ -7,7 +7,7 @@
 %! ## Hans Juergen Butenschoen
 %! ## Das hydrodynamische, zylindrische Gleitlager endlicher Breite unter instationaerer Belastung, Karlsruhe 1976
 %! ## Test case for squeeze flow
-%! f_plot = false;
+%! f_plot = true;
 %! B_d_r = [1, 1/2, 1/2.5, 1/3, 1/4, 1/5, 1/6, 1/8];
 %! epsilon_r = [-0.99, -0.98, -0.97, -0.96, -0.95, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0, ...
 %!                0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.96, 0.97, 0.98, 0.99];
@@ -72,10 +72,11 @@
 %!        2.3923	1.7362	1.4746	1.2690	0.9782	0.7904	0.6617	0.4982];
 %! So = beta = mu = Q = dQ = nan(numel(epsilon_r), numel(B_d_r));
 %! cavitation = "mass conserving";
-%! test_freq = 4;
+%! test_freq_eps = 1;
+%! test_freq_B = 1000;
 %! verbose = false;
-%! for j=1:test_freq:numel(epsilon_r)
-%! for k=1:test_freq:numel(B_d_r)
+%! for j=1:test_freq_eps:numel(epsilon_r)
+%! for k=1:test_freq_B:numel(B_d_r)
 %! param.d1 = 10e-3;
 %! param.D2 = 10.01e-3;
 %! param.M = int32(20);
@@ -420,44 +421,44 @@
 %! beta_r = zeros(numel(epsilon_r), numel(B_d_r));
 %! beta_r(find(epsilon_r < 0), :) = pi;
 %! if (f_plot)
-%! for i=1:test_freq:numel(B_d_r)
+%! for i=1:test_freq_B:numel(B_d_r)
 %!   figure("visible", "off");
 %!   hold("on");
-%!   semilogy(epsilon_r(1:test_freq:end), So_r(1:test_freq:end, i), "-;So_r(epsilon);k");
-%!   semilogy(epsilon_r(1:test_freq:end), So(1:test_freq:end, i), "-;So(epsilon);r");
+%!   set(semilogy(epsilon_r(1:test_freq_eps:end), So_r(1:test_freq_eps:end, i), "-;So_r(epsilon);k"), "linewidth", 3);
+%!   set(semilogy(epsilon_r(1:test_freq_eps:end), So(1:test_freq_eps:end, i), "-;So(epsilon);r"), "linewidth", 3);
 %!   xlabel("epsilon [1]");
 %!   ylabel("So [1]");
 %!   grid on;
 %!   grid minor on;
 %!   title(sprintf("Sommerfeld number for pure displacement B/d=%.2f", B_d_r(i)));
 %! endfor
-%! for i=1:test_freq:numel(B_d_r)
+%! for i=1:test_freq_B:numel(B_d_r)
 %!   figure("visible", "off");
 %!   hold("on");
-%!   plot(epsilon_r(1:test_freq:end), 180 / pi * beta_r(1:test_freq:end, i), "-;beta_r(epsilon);k");
-%!   plot(epsilon_r(1:test_freq:end), 180 / pi * beta(1:test_freq:end, i), "-;beta(epsilon);r");
+%!   set(plot(epsilon_r(1:test_freq_eps:end), 180 / pi * beta_r(1:test_freq_eps:end, i), "-;beta_r(epsilon);k"), "linewidth", 3);
+%!   set(plot(epsilon_r(1:test_freq_eps:end), 180 / pi * beta(1:test_freq_eps:end, i), "-;beta(epsilon);r"), "linewidth", 3);
 %!   xlabel("epsilon [1]");
 %!   ylabel("beta [deg]");
 %!   grid on;
 %!   grid minor on;
 %!   title(sprintf("Angular offset of reaction force for pure displacement B/d=%.2f", B_d_r(i)));
 %! endfor
-%! for i=1:test_freq:numel(B_d_r)
+%! for i=1:test_freq_B:numel(B_d_r)
 %!   figure("visible", "off");
 %!   hold("on");
-%!   plot(epsilon_r(1:test_freq:end), mu_r(1:test_freq:end, i), "-;mu_r(epsilon);k");
-%!   plot(epsilon_r(1:test_freq:end), mu(1:test_freq:end, i), "-;mu(epsilon);r");
+%!   set(plot(epsilon_r(1:test_freq_eps:end), mu_r(1:test_freq_eps:end, i), "-;mu_r(epsilon);k"), "linewidth", 3);
+%!   set(plot(epsilon_r(1:test_freq_eps:end), mu(1:test_freq_eps:end, i), "-;mu(epsilon);r"), "linewidth", 3);
 %!   xlabel("epsilon [1]");
 %!   ylabel("mu [1]");
 %!   grid on;
 %!   grid minor on;
 %!   title(sprintf("Coefficient of friction for pure displacement B/d=%.2f", B_d_r(i)));
 %! endfor
-%! for i=1:test_freq:numel(B_d_r)
+%! for i=1:test_freq_B:numel(B_d_r)
 %!   figure("visible", "off");
 %!   hold("on");
-%!   plot(epsilon_r(1:test_freq:end), Q_r(1:test_freq:end, i), "-;Q_r(epsilon);k");
-%!   plot(epsilon_r(1:test_freq:end), Q(1:test_freq:end, i), "-;Q(epsilon);r");
+%!   set(plot(epsilon_r(1:test_freq_eps:end), Q_r(1:test_freq_eps:end, i), "-;Q_r(epsilon);k"), "linewidth", 3);
+%!   set(plot(epsilon_r(1:test_freq_eps:end), Q(1:test_freq_eps:end, i), "-;Q(epsilon);r"), "linewidth", 3);
 %!   ylim([0, ylim()(2)]);
 %!   xlabel("epsilon [1]");
 %!   ylabel("Q [1]");
@@ -466,14 +467,14 @@
 %!   title(sprintf("Non-dimensional oil flow pure displacement B/d=%.2f", B_d_r(i)));
 %! endfor
 %! endif
-%! assert_simple(mean(mean(abs(So(1:test_freq:end, 1:test_freq:end) ./ So_r(1:test_freq:end,1:test_freq:end) - 1))) < 0.02);
-%! assert_simple(mean(mean(abs(beta(1:test_freq:end,1:test_freq:end) - beta_r(1:test_freq:end, 1:test_freq:end)))) < 1e-6 * pi / 180);
-%! assert_simple(mean(mean(abs(mu(1:test_freq:end,1:test_freq:end)))) < 1e-8);
-%! assert_simple(mean(mean(abs(Q(1:test_freq:end,1:test_freq:end) ./ Q_r(1:test_freq:end,1:test_freq:end) - 1))) < 0.06);
-%! assert_simple(max(max(abs(So(1:test_freq:end,1:test_freq:end) ./ So_r(1:test_freq:end,1:test_freq:end) - 1))) < 0.11);
-%! assert_simple(max(max(abs(beta(1:test_freq:end,1:test_freq:end) - beta_r(1:test_freq:end,1:test_freq:end)))) < 1e-6 * pi / 180);
-%! assert_simple(max(max(abs(mu(1:test_freq:end,1:test_freq:end)))) < 1e-8);
-%! assert_simple(max(max(abs(Q(1:test_freq:end,1:test_freq:end) ./ Q_r(1:test_freq:end,1:test_freq:end) - 1))) < 0.07);
+%! assert_simple(mean(mean(abs(So(1:test_freq_eps:end, 1:test_freq_B:end) ./ So_r(1:test_freq_eps:end,1:test_freq_B:end) - 1))) < 0.02);
+%! assert_simple(mean(mean(abs(beta(1:test_freq_eps:end,1:test_freq_B:end) - beta_r(1:test_freq_eps:end, 1:test_freq_B:end)))) < 1e-6 * pi / 180);
+%! assert_simple(mean(mean(abs(mu(1:test_freq_eps:end,1:test_freq_B:end)))) < 1e-8);
+%! assert_simple(mean(mean(abs(Q(1:test_freq_eps:end,1:test_freq_B:end) ./ Q_r(1:test_freq_eps:end,1:test_freq_B:end) - 1))) < 0.06);
+%! assert_simple(max(max(abs(So(1:test_freq_eps:end,1:test_freq_B:end) ./ So_r(1:test_freq_eps:end,1:test_freq_B:end) - 1))) < 0.11);
+%! assert_simple(max(max(abs(beta(1:test_freq_eps:end,1:test_freq_B:end) - beta_r(1:test_freq_eps:end,1:test_freq_B:end)))) < 1e-6 * pi / 180);
+%! assert_simple(max(max(abs(mu(1:test_freq_eps:end,1:test_freq_B:end)))) < 1e-8);
+%! assert_simple(max(max(abs(Q(1:test_freq_eps:end,1:test_freq_B:end) ./ Q_r(1:test_freq_eps:end,1:test_freq_B:end) - 1))) < 0.07);
 %! catch
 %!   gtest_error = lasterror();
 %!   gtest_fail(gtest_error, evalin("caller", "__file"));

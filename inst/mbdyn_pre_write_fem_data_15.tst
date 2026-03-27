@@ -1002,7 +1002,7 @@
 %!       omega{i} = res(i).drive_data{find(res(i).drive_id == res(i).log_dat.vars.drive_id_rotor_speed)};
 %!       r{i} = norm(res(i).trajectory{res(i).log_dat.vars.node_idx_rotor}(:, 1:2), "rows");
 %!       if (options.f_plot)
-%!         plot(omega{i} * 30 / pi * (1 / SI_unit.second), 1e3 * r{i} * SI_unit.meter, sprintf("-;%s;%d", printable_title(mbdyn_filename_suffix{i}), i));
+%!         plot(omega{i} * 30 / pi * (1 / SI_unit.second), 1e3 * r{i} * SI_unit.meter, sprintf("-;%s;%s", printable_title(mbdyn_filename_suffix{i}), {"r","g","b"}{i}));
 %!       endif
 %!     endfor
 %!     if (options.f_plot)
@@ -1062,7 +1062,7 @@
 %! param.dr = param.ecg * (m1 + param.dm) / param.dm;
 %! param.omega0 = 1000 * pi / 30 / (1 / SI_unit.second);
 %! param.omega1 = 10000 * pi / 30 / (1 / SI_unit.second);
-%! param.n = 10;
+%! param.n = 5;
 %! options.number_of_modes = int32(10);
 %! options.scale_def = 10e-3;
 %! options.geo_tol = sqrt(eps);

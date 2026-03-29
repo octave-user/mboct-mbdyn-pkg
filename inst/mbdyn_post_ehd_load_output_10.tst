@@ -308,9 +308,11 @@
 %!   cms_opt.invariants = true;
 %!   cms_opt.refine_max_iter = int32(0);
 %!   cms_opt.number_of_threads = mbdyn_solver_num_threads_default();
-%!   cms_opt.verbose = false;
+%!   cms_opt.verbose = true;
 %!   cms_opt.modes.number = int32(40);
 %!   cms_opt.element.name = "elem_id_diaphragm_cms";
+%!   cms_opt.max_cond_D = 1e10;
+%!   cms_opt.tol_gamma_rel = 1e-10;
 %!   node_set = int32(rows(mesh.nodes) + (1:numel(group_defs)));
 %!   node_names = {group_defs.name};
 %!   cms_opt.nodes.modal.number = node_set(1);

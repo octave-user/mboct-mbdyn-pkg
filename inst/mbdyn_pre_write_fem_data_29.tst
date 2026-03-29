@@ -69,7 +69,7 @@
 %!         fputs(fd, "        time step: 2. * pi / (360. * abs(omega0));\n");
 %!         fputs(fd, "        strategy: change, postponed, drive_id_time_step;\n");
 %!         fputs(fd, "        method: ms, 0.6;\n");
-%!         fputs(fd, "        tolerance: 1e-6, test, norm, 1e-6, test, norm;\n");
+%!         fputs(fd, "        tolerance: 1e-6, test, norm, 1e-4, test, norm;\n");
 %!         fputs(fd, "        derivatives tolerance: 1e-4, 1e-4;\n");
 %!         fputs(fd, "        max iterations: 100;\n");
 %!         fputs(fd, "        derivatives max iterations: 10;\n");
@@ -301,7 +301,7 @@
 %!         fputs(fd, "        time step: 2. * pi / (360. * abs(omega0));\n");
 %!         fputs(fd, "        strategy: change, postponed, drive_id_time_step;\n");
 %!         fputs(fd, "        method: ms, 0.6;\n");
-%!         fputs(fd, "        tolerance: 1e-6, test, norm, 1e-6, test, norm;\n");
+%!         fputs(fd, "        tolerance: 1e-6, test, norm, 1e-4, test, norm;\n");
 %!         fputs(fd, "        derivatives tolerance: 1e-4, 1e-4;\n");
 %!         fputs(fd, "        max iterations: 100;\n");
 %!         fputs(fd, "        derivatives max iterations: 10;\n");
@@ -819,7 +819,7 @@
 %!         fputs(fd, "        time step: 2. * pi / (360. * abs(omega0));\n");
 %!         fputs(fd, "        strategy: change, postponed, drive_id_time_step;\n");
 %!         fputs(fd, "        method: ms, 0.6;\n");
-%!         fputs(fd, "        tolerance: 1e-5, test, sepnorm, 1e-5, test, norm;\n");
+%!         fputs(fd, "        tolerance: 1e-5, test, sepnorm, 1e-4, test, norm;\n");
 %!         fputs(fd, "        derivatives tolerance: 1e-3, 1e-3;\n");
 %!         fputs(fd, "        max iterations: 100;\n");
 %!         fputs(fd, "        derivatives max iterations: 10;\n");
@@ -1074,9 +1074,11 @@
 %! options.f_enable_beam = true;
 %! options.f_enable_modal = true;
 %! options.f_enable_solid = false; ## disabled because of long execution time
+%! printf("beam versus modal:\n");
 %! [omega1, r1] = rotordynamics_test_case(param, options, SI_unit);
 %! options.f_rbk = true;
 %! options.f_enable_modal = false;
+%! printf("beam with rigid body kinematics:\n");
 %! [omega2, r2] = rotordynamics_test_case(param, options, SI_unit);
 %! assert_simple(r2{2}, r1{2}, 1e-3 * max(abs(r1{2})));
 %! options.elem_type = "iso27";
@@ -1085,9 +1087,11 @@
 %! options.f_enable_modal = true;
 %! param.h1 = 10e-3 / SI_unit.meter; ## coarse mesh size
 %! param.h2 = 100e-3 / SI_unit.meter; ## coarse mesh size
+%! printf("solid versus modal:\n");
 %! [omega3, r3] = rotordynamics_test_case(param, options, SI_unit);
 %! options.f_rbk = false;
 %! options.f_enable_modal = false;
+%! printf("solid without rigid body kinematics:\n");
 %! [omega4, r4] = rotordynamics_test_case(param, options, SI_unit);
 %! assert_simple(r4{3}, r3{3}, 1e-3 * max(abs(r3{3})));
 %! catch

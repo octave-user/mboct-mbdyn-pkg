@@ -4,7 +4,7 @@
 %!   pkg load mboct-fem-pkg;
 %!   pkg load mbdyn_util_oct;
 %!   ## MBDyn rigid body dynamics
-%!   param.n = 10;
+%!   param.n = 5;
 %!   param.h = 100e-3;
 %!   param.d = 50e-3;
 %!   param.D = 280e-3;

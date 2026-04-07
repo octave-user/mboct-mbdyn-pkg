@@ -57,11 +57,12 @@
 %!        1.5277  0.9351  0.7674  0.6461  0.4892  0.393   0.3282  0.2467];
 %!
 %! So = beta = mu = Q = dQ = mu_r = nan(numel(epsilon_r), numel(B_d_r));
-%! test_freq = 4;
+%! test_freq_eps = 4;
+%! test_freq_B = 4;
 %! verbose = false;
-%! f_plot = false;
-%! for j=1:test_freq:numel(epsilon_r)
-%! for k=1:test_freq:numel(B_d_r)
+%! f_plot = true;
+%! for j=1:test_freq_eps:numel(epsilon_r)
+%! for k=1:test_freq_B:numel(B_d_r)
 %! param.d1 = 10e-3;
 %! param.Psi = 1e-3;
 %! param.M = int32(20);
@@ -436,33 +437,33 @@
 %! endfor
 %! endfor
 %! if (f_plot)
-%! for i=1:test_freq:numel(B_d_r)
+%! for i=1:test_freq_B:numel(B_d_r)
 %!   figure("visible", "off");
 %!   hold("on");
-%!   semilogy(epsilon_r(1:test_freq:end), So_r(1:test_freq:end, i), "-;So_r(epsilon);k");
-%!   semilogy(epsilon_r(1:test_freq:end), So(1:test_freq:end, i), "-;So(epsilon);r");
+%!   set(semilogy(epsilon_r(1:test_freq_eps:end), So_r(1:test_freq_eps:end, i), "-;So_r(epsilon);k"), "linewidth", 3);
+%!   set(semilogy(epsilon_r(1:test_freq_eps:end), So(1:test_freq_eps:end, i), "-;So(epsilon);r"), "linewidth", 3);
 %!   xlabel("epsilon [1]");
 %!   ylabel("So [1]");
 %!   grid on;
 %!   grid minor on;
 %!   title(sprintf("Sommerfeld number for pure rotation B/d=%.2f", B_d_r(i)));
 %! endfor
-%! for i=1:test_freq:numel(B_d_r)
+%! for i=1:test_freq_B:numel(B_d_r)
 %!   figure("visible", "off");
 %!   hold("on");
-%!   plot(epsilon_r(1:test_freq:end), 180 / pi * beta_r(1:test_freq:end, i), "-;beta_r(epsilon);k");
-%!   plot(epsilon_r(1:test_freq:end), 180 / pi * beta(1:test_freq:end, i), "-;beta(epsilon);r");
+%!   set(plot(epsilon_r(1:test_freq_eps:end), 180 / pi * beta_r(1:test_freq_eps:end, i), "-;beta_r(epsilon);k"), "linewidth", 3);
+%!   set(plot(epsilon_r(1:test_freq_eps:end), 180 / pi * beta(1:test_freq_eps:end, i), "-;beta(epsilon);r"), "linewidth", 3);
 %!   xlabel("epsilon [1]");
 %!   ylabel("beta [deg]");
 %!   grid on;
 %!   grid minor on;
 %!   title(sprintf("Angular offset of reaction force for pure rotation B/d=%.2f", B_d_r(i)));
 %! endfor
-%! for i=1:test_freq:numel(B_d_r)
+%! for i=1:test_freq_B:numel(B_d_r)
 %!   figure("visible", "off");
 %!   hold("on");
-%!   plot(epsilon_r(1:test_freq:end), mu_r(1:test_freq:end, i), "-;mu_r(epsilon);k");
-%!   plot(epsilon_r(1:test_freq:end), mu(1:test_freq:end, i), "-;mu(epsilon);r");
+%!   set(plot(epsilon_r(1:test_freq_eps:end), mu_r(1:test_freq_eps:end, i), "-;mu_r(epsilon);k"), "linewidth", 3);
+%!   set(plot(epsilon_r(1:test_freq_eps:end), mu(1:test_freq_eps:end, i), "-;mu(epsilon);r"), "linewidth", 3);
 %!   xlabel("epsilon [1]");
 %!   ylabel("mu [1]");
 %!   grid on;
@@ -470,11 +471,11 @@
 %!   title(sprintf("Coefficient of friction for pure rotation B/d=%.2f", B_d_r(i)));
 %! endfor
 %! if (param.hydraulic_nodes)
-%! for i=1:test_freq:numel(B_d_r)
+%! for i=1:test_freq_B:numel(B_d_r)
 %!   figure("visible", "off");
 %!   hold("on");
-%!   plot(epsilon_r(1:test_freq:end), Q_r(1:test_freq:end, i), "-;Q_r(epsilon);k");
-%!   plot(epsilon_r(1:test_freq:end), Q(1:test_freq:end, i), "-;Q(epsilon);r");
+%!   set(plot(epsilon_r(1:test_freq_eps:end), Q_r(1:test_freq_eps:end, i), "-;Q_r(epsilon);k"), "linewidth", 3);
+%!   set(plot(epsilon_r(1:test_freq_eps:end), Q(1:test_freq_eps:end, i), "-;Q(epsilon);r"), "linewidth", 3);
 %!   xlabel("epsilon [1]");
 %!   ylabel("Q [1]");
 %!   grid on;
@@ -483,17 +484,17 @@
 %! endfor
 %! endif
 %! endif
-%! assert_simple(mean(mean(abs(So(1:test_freq:end, 1:test_freq:end) ./ So_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.03);
-%! assert_simple(mean(mean(abs(beta(1:test_freq:end, 1:test_freq:end) ./ beta_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.02);
-%! assert_simple(mean(mean(abs(mu(1:test_freq:end, 1:test_freq:end) ./ mu_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.02);
+%! assert_simple(mean(mean(abs(So(1:test_freq_eps:end, 1:test_freq_B:end) ./ So_r(1:test_freq_eps:end, 1:test_freq_B:end) - 1))) < 0.03);
+%! assert_simple(mean(mean(abs(beta(1:test_freq_eps:end, 1:test_freq_B:end) ./ beta_r(1:test_freq_eps:end, 1:test_freq_B:end) - 1))) < 0.02);
+%! assert_simple(mean(mean(abs(mu(1:test_freq_eps:end, 1:test_freq_B:end) ./ mu_r(1:test_freq_eps:end, 1:test_freq_B:end) - 1))) < 0.02);
 %! if (param.hydraulic_nodes)
-%!   assert_simple(mean(mean(abs(Q(1:test_freq:end, 1:test_freq:end) ./ Q_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.07);
+%!   assert_simple(mean(mean(abs(Q(1:test_freq_eps:end, 1:test_freq_B:end) ./ Q_r(1:test_freq_eps:end, 1:test_freq_B:end) - 1))) < 0.07);
 %! endif
-%! assert_simple(max(max(abs(So(1:test_freq:end, 1:test_freq:end) ./ So_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.05);
-%! assert_simple(max(max(abs(beta(1:test_freq:end, 1:test_freq:end) ./ beta_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.04);
-%! assert_simple(max(max(abs(mu(1:test_freq:end, 1:test_freq:end) ./ mu_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.05);
+%! assert_simple(max(max(abs(So(1:test_freq_eps:end, 1:test_freq_B:end) ./ So_r(1:test_freq_eps:end, 1:test_freq_B:end) - 1))) < 0.05);
+%! assert_simple(max(max(abs(beta(1:test_freq_eps:end, 1:test_freq_B:end) ./ beta_r(1:test_freq_eps:end, 1:test_freq_B:end) - 1))) < 0.04);
+%! assert_simple(max(max(abs(mu(1:test_freq_eps:end, 1:test_freq_B:end) ./ mu_r(1:test_freq_eps:end, 1:test_freq_B:end) - 1))) < 0.05);
 %! if (param.hydraulic_nodes)
-%!   assert_simple(max(max(abs(Q(1:test_freq:end, 1:test_freq:end) ./ Q_r(1:test_freq:end, 1:test_freq:end) - 1))) < 0.08);
+%!   assert_simple(max(max(abs(Q(1:test_freq_eps:end, 1:test_freq_B:end) ./ Q_r(1:test_freq_eps:end, 1:test_freq_B:end) - 1))) < 0.08);
 %! endif
 %! assert_simple(max(max(abs(Pf2 - Pf3))) / max(max(abs(Pf2))) < 1e-2);
 %! assert_simple(max(max(abs(Pf1 - Pf3))) / max(max(abs(Pf1))) < 1e-2);

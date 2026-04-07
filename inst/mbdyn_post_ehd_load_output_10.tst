@@ -308,9 +308,10 @@
 %!   cms_opt.invariants = true;
 %!   cms_opt.refine_max_iter = int32(0);
 %!   cms_opt.number_of_threads = mbdyn_solver_num_threads_default();
-%!   cms_opt.verbose = false;
+%!   cms_opt.verbose = true;
 %!   cms_opt.modes.number = int32(40);
 %!   cms_opt.element.name = "elem_id_diaphragm_cms";
+%!   cms_opt.max_cond_D = 1e11;
 %!   node_set = int32(rows(mesh.nodes) + (1:numel(group_defs)));
 %!   node_names = {group_defs.name};
 %!   cms_opt.nodes.modal.number = node_set(1);
@@ -358,7 +359,7 @@
 %!   endfor
 %!   bearing_surf = bearing_surf(1:num_comp_mat);
 %!   if (options.use_linear_mesh)
-%!     [mesh, mat_ass, dof_map, cms_opt, comp_mat, load_case, bearing_surf, sol_eig] = fem_ehd_pre_comp_mat_linear_mesh(mesh, load_case, cms_opt, bearing_surf);
+%!     [mesh, mat_ass, dof_map, cms_opt, comp_mat, bearing_surf, sol_eig] = fem_ehd_pre_comp_mat_linear_mesh(mesh, load_case, cms_opt, bearing_surf);
 %!   else
 %!     [load_case_pressure, bearing_surf] = fem_ehd_pre_comp_mat_load_case(mesh, bearing_surf);
 %!     load_case = fem_pre_load_case_merge(load_case, load_case_pressure);

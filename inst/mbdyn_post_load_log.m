@@ -402,6 +402,10 @@ function [log_dat] = mbdyn_post_load_log(mbdyn_filename, options)
                 for l=1:length(num_nodes)
                   num_nodes(l) = int32(data(++idx));
 
+                  empty_cell = cell(1, num_nodes(l));
+
+                  log_dat.bearings(iBearing).nodes(inode + 1:inode + num_nodes(l)) = struct("number", empty_cell, "x", empty_cell, "index", empty_cell, "type", empty_cell);
+
                   for i=1:num_nodes(l)
                     log_dat.bearings(iBearing).nodes(++inode).number = int32(data(++idx));
 

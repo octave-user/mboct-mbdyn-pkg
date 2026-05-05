@@ -420,34 +420,30 @@ function [log_dat] = mbdyn_post_load_log(mbdyn_filename, options)
                 inum_per_node_cols = zeros(length(node_types), 1, "int32");
                 inum_other_cols = int32(0);
 
-                for i=1:length(bflags)
-                  if (bflags(i))
-                    for k=1:length(output_columns)
-                      if (i == output_columns{k}.index)
-                        isize = output_columns{k}.size;
+                for i=find(bflags)
+                  for k=find(i == [[output_columns{:}].index])
+                    isize = output_columns{k}.size;
 
-                        switch (output_columns{k}.type)
-                          case node_types
-                            for l=1:length(node_types)
-                              if (strcmp(output_columns{k}.type, node_types{l}))
-                                break;
-                              endif
-                            endfor
-                            ++inum_per_node_cols(l);
-                            isize *= num_nodes(l);
-                            icol = ++icol_node(l);
-                          case "once"
-                            ++inum_other_cols;
-                            icol = ++icol_other;
-                        endswitch
+                    switch (output_columns{k}.type)
+                      case node_types
+                        for l=1:length(node_types)
+                          if (strcmp(output_columns{k}.type, node_types{l}))
+                            break;
+                          endif
+                        endfor
+                        ++inum_per_node_cols(l);
+                        isize *= num_nodes(l);
+                        icol = ++icol_node(l);
+                      case "once"
+                        ++inum_other_cols;
+                        icol = ++icol_other;
+                    endswitch
 
-                        log_dat.bearings(iBearing).column_output(++j).name = output_columns{k}.name;
-                        log_dat.bearings(iBearing).column_output(j).icol = icol;
-                        log_dat.bearings(iBearing).column_output(j).size = isize;
-                        log_dat.bearings(iBearing).column_output(j).type = output_columns{k}.type;
-                      endif
-                    endfor
-                  endif
+                    log_dat.bearings(iBearing).column_output(++j).name = output_columns{k}.name;
+                    log_dat.bearings(iBearing).column_output(j).icol = icol;
+                    log_dat.bearings(iBearing).column_output(j).size = isize;
+                    log_dat.bearings(iBearing).column_output(j).type = output_columns{k}.type;
+                  endfor
                 endfor
 
                 ilast_col = int32(0);

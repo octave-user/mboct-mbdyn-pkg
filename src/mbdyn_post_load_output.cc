@@ -955,7 +955,9 @@ DEFUN_DLD(mbdyn_post_ehd_parse_log, args, nargout,
                break;
           }
 
-          Cell ov_label(2), ov_o(2), ov_Rb(2);
+          dim_vector dv(1, 2);
+          Cell ov_label(dv), ov_o(dv), ov_Rb(dv);
+          
           for (octave_idx_type i = 0; i < 2; ++i) {
                octave_idx_type label = data.checkelem(idx++);
                ColumnVector o(3);
@@ -988,10 +990,11 @@ DEFUN_DLD(mbdyn_post_ehd_parse_log, args, nargout,
      }
 
      {
-          Cell ov_name(column_output.size()), ov_icol(column_output.size());
-          Cell ov_size(column_output.size()), ov_type(column_output.size());
-          Cell ov_column_start(column_output.size()), ov_column_step(column_output.size());
-          Cell ov_column_end(column_output.size());
+          dim_vector dv(1, column_output.size());
+          Cell ov_name(dv), ov_icol(dv);
+          Cell ov_size(dv), ov_type(dv);
+          Cell ov_column_start(dv), ov_column_step(dv);
+          Cell ov_column_end(dv);
 
           for (octave_idx_type i = 0; i < static_cast<octave_idx_type>(column_output.size()); ++i) {
                ov_name(i) = column_output[i].name;
@@ -1016,7 +1019,8 @@ DEFUN_DLD(mbdyn_post_ehd_parse_log, args, nargout,
      }
 
      {
-          Cell ov_number(nodes.size()), ov_x(nodes.size()), ov_index(nodes.size()), ov_type(nodes.size());
+          dim_vector dv(1, nodes.size());
+          Cell ov_number(dv), ov_x(dv), ov_index(dv), ov_type(dv);
 
           for (octave_idx_type i = 0; i < static_cast<octave_idx_type>(nodes.size()); ++i) {
                ov_number(i) = nodes[i].number;
@@ -1043,8 +1047,9 @@ DEFUN_DLD(mbdyn_post_ehd_parse_log, args, nargout,
      }
 
      {
-          Cell ov_number(elements.size());
-          Cell ov_nodes(elements.size());
+          dim_vector dv(1, elements.size());
+          Cell ov_number(dv);
+          Cell ov_nodes(dv);
 
           for (octave_idx_type i = 0; i < static_cast<octave_idx_type>(elements.size()); ++i) {
                ov_number(i) = elements[i].number;

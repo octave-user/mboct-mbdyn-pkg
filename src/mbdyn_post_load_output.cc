@@ -922,7 +922,7 @@ DEFUN_DLD(mbdyn_post_ehd_parse_log, args, nargout,
           Element element;
           element.number = data.checkelem(idx++);
           octave_idx_type num_nodes_elem = data.checkelem(idx++);
-          element.nodes.resize(dim_vector(num_nodes_elem, 1));
+          element.nodes.resize(dim_vector(1, num_nodes_elem));
 
           for (octave_idx_type j = 0; j < num_nodes_elem; ++j) {
                element.nodes(j) = data.checkelem(idx++);

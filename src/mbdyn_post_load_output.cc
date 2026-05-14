@@ -1,4 +1,4 @@
-//  Copyright (C) 2011(-2020) Reinhard <octave-user@a1.net>
+//  Copyright (C) 2011(-2026) Reinhard <octave-user@a1.net>
 
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 
 #include "config.h"
 
-//#define NDEBUG
+#define NDEBUG
 #include <algorithm>
 #include <cassert>
 #include <cmath>

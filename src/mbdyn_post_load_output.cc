@@ -974,7 +974,7 @@ DEFUN_DLD(mbdyn_post_ehd_parse_log, args, nargout,
                     }
                }
 
-               ov_label(i) = label;
+               ov_label(i) = octave_int32(label);
                ov_o(i) = o;
                ov_Rb(i) = Rb;
           }
@@ -998,12 +998,12 @@ DEFUN_DLD(mbdyn_post_ehd_parse_log, args, nargout,
 
           for (octave_idx_type i = 0; i < static_cast<octave_idx_type>(column_output.size()); ++i) {
                ov_name(i) = column_output[i].name;
-               ov_icol(i) = column_output[i].icol;
-               ov_size(i) = column_output[i].size;
+               ov_icol(i) = octave_int32(column_output[i].icol);
+               ov_size(i) = octave_int32(column_output[i].size);
                ov_type(i) = szType[column_output[i].type];
-               ov_column_start(i) = column_output[i].column_start;
-               ov_column_step(i) = column_output[i].column_step;
-               ov_column_end(i) = column_output[i].column_end;
+               ov_column_start(i) = octave_int32(column_output[i].column_start);
+               ov_column_step(i) = octave_int32(column_output[i].column_step);
+               ov_column_end(i) = octave_int32(column_output[i].column_end);
           }
 
           octave_map ma_column_output;
@@ -1023,7 +1023,7 @@ DEFUN_DLD(mbdyn_post_ehd_parse_log, args, nargout,
           Cell ov_number(dv), ov_x(dv), ov_index(dv), ov_type(dv);
 
           for (octave_idx_type i = 0; i < static_cast<octave_idx_type>(nodes.size()); ++i) {
-               ov_number(i) = nodes[i].number;
+               ov_number(i) = octave_int32(nodes[i].number);
 
                ColumnVector x(2);
 
@@ -1032,7 +1032,7 @@ DEFUN_DLD(mbdyn_post_ehd_parse_log, args, nargout,
                }
 
                ov_x(i) = x;
-               ov_index(i) = nodes[i].index;
+               ov_index(i) = octave_int32(nodes[i].index);
                ov_type(i) = szType[nodes[i].type];
           }
 
@@ -1052,7 +1052,7 @@ DEFUN_DLD(mbdyn_post_ehd_parse_log, args, nargout,
           Cell ov_nodes(dv);
 
           for (octave_idx_type i = 0; i < static_cast<octave_idx_type>(elements.size()); ++i) {
-               ov_number(i) = elements[i].number;
+               ov_number(i) = octave_int32(elements[i].number);
                ov_nodes(i) = elements[i].nodes;
           }
 

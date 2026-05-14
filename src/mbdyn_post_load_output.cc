@@ -707,7 +707,7 @@ DEFUN_DLD(mbdyn_post_ehd_parse_log, args, nargout,
      const ColumnVector data = args(0).column_vector_value();
      octave_scalar_map bearing;
      octave_idx_type idx = 0;
-     bearing.assign("label", data.checkelem(idx++));
+     bearing.assign("label", octave_int32(data.checkelem(idx++)));
      bearing.assign("type", "generic");
      bearing.assign("eta", data.checkelem(idx++));
 
@@ -837,7 +837,7 @@ DEFUN_DLD(mbdyn_post_ehd_parse_log, args, nargout,
      for (octave_idx_type i = 0; i < num_flags; ++i) {
           if (bflags[i]) {
                for (octave_idx_type k = 0; k < num_output_columns; ++k) {
-                    if (i == output_columns[k].index) {
+                    if (i == output_columns[k].index - 1) {
                          ++num_column_output;
                     }
                }
@@ -851,7 +851,7 @@ DEFUN_DLD(mbdyn_post_ehd_parse_log, args, nargout,
      for (octave_idx_type i = 0; i < num_flags; ++i) {
           if (bflags[i]) {
                for (octave_idx_type k = 0; k < num_output_columns; ++k) {
-                    if (i == output_columns[k].index) {
+                    if (i == output_columns[k].index - 1) {
                          octave_idx_type icol = -1;
                          octave_idx_type isize = output_columns[k].size;
                          switch (output_columns[k].type) {
@@ -912,7 +912,7 @@ DEFUN_DLD(mbdyn_post_ehd_parse_log, args, nargout,
           int32NDArray nodes;
      };
 
-     octave_idx_type num_elem = data.checkelem(++idx);
+     octave_idx_type num_elem = data.checkelem(idx++);
 
      std::vector<Element> elements;
 
@@ -957,7 +957,7 @@ DEFUN_DLD(mbdyn_post_ehd_parse_log, args, nargout,
 
           dim_vector dv(1, 2);
           Cell ov_label(dv), ov_o(dv), ov_Rb(dv);
-          
+
           for (octave_idx_type i = 0; i < 2; ++i) {
                octave_idx_type label = data.checkelem(idx++);
                ColumnVector o(3);

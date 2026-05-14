@@ -15,7 +15,7 @@
 
 #include "config.h"
 
-#define NDEBUG
+//#define NDEBUG
 #include <algorithm>
 #include <cassert>
 #include <cmath>
@@ -687,4 +687,379 @@ exit_load_data_loop:
         retval.append(octave_value(data));
 
     return retval;
+}
+
+// PKG_ADD: autoload ("mbdyn_post_ehd_parse_log", "__mboct_mbdyn__.oct");
+// PKG_DEL: autoload ("mbdyn_post_ehd_parse_log", "__mboct_mbdyn__.oct", "remove");
+
+DEFUN_DLD(mbdyn_post_ehd_parse_log, args, nargout,
+          "-*- texinfo -*-\n"
+          "@deftypefn {} [@var{bearing}] = mbdyn_post_ehd_parse_log(@var{data})\n"
+          "@end deftypefn")
+{
+     octave_value_list retval;
+
+     if (args.length() != 1 || nargout > 1) {
+          print_usage();
+          return retval;
+     }
+
+     const ColumnVector data = args(0).column_vector_value();
+     octave_scalar_map bearing;
+     octave_idx_type idx = 0;
+     bearing.assign("label", data.checkelem(idx++));
+     bearing.assign("type", "generic");
+     bearing.assign("eta", data.checkelem(idx++));
+
+     constexpr octave_idx_type num_flags = 21;
+
+     if (num_flags != data.checkelem(idx++)) {
+          error("incompatible file version");
+          return retval;
+     }
+
+     std::array<bool, num_flags> bflags;
+
+     for (octave_idx_type i = 0; i < num_flags; ++i) {
+          bflags[i] = data.checkelem(idx++);
+     }
+
+     enum Type {
+          HYDRO,
+          THERMAL,
+          FLUX_X,
+          FLUX_Z,
+          ONCE
+     };
+
+     static constexpr char szType[][8] = {
+          "hydro",
+          "thermal",
+          "flux_x",
+          "flux_z",
+          "once"
+     };
+
+     static constexpr struct OutputColumn {
+          char name[10];
+          octave_idx_type index;
+          Type type;
+          octave_idx_type size;
+     } output_columns[] = {
+          {"p", 1, HYDRO, 1},
+          {"pc", 2, HYDRO, 1},
+          {"rho", 3, HYDRO, 1},
+          {"h", 4, HYDRO, 1},
+          {"dh_dt", 5, HYDRO, 1},
+          {"U1x", 6, HYDRO, 1},
+          {"U1z", 6, HYDRO, 1},
+          {"U2x", 6, HYDRO, 1},
+          {"U2z", 6, HYDRO, 1},
+          {"tau_xy_0", 7, HYDRO, 1},
+          {"tau_yz_0", 7, HYDRO, 1},
+          {"tau_xy_h", 7, HYDRO, 1},
+          {"tau_yz_h", 7, HYDRO, 1},
+          {"tauc_xy_0", 8, HYDRO, 1},
+          {"tauc_yz_0", 8, HYDRO, 1},
+          {"wtot", 9, HYDRO, 1},
+          {"dwtot_dt", 9, HYDRO, 1},
+          {"T", 10, THERMAL, 1},
+          {"dT_dt", 10, THERMAL, 1},
+          {"F1", 11, ONCE, 3},
+          {"M1", 11, ONCE, 3},
+          {"F2", 11, ONCE, 3},
+          {"M2", 11, ONCE, 3},
+          {"Pff", 12, ONCE, 1},
+          {"Pfc", 12, ONCE, 1},
+          {"qx", 13, FLUX_X, 1},
+          {"mdotx", 14, FLUX_X, 1},
+          {"qz", 15, FLUX_Z, 1},
+          {"mdotz", 16, FLUX_Z, 1},
+          {"Qx", 17, FLUX_X, 1},
+          {"Qz", 18, FLUX_Z, 1},
+          {"w1", 19, HYDRO, 1},
+          {"w2", 20, HYDRO, 1}
+     };
+
+     static constexpr octave_idx_type num_output_columns = sizeof(output_columns) / sizeof(output_columns[0]);
+     static constexpr Type node_types[] = {HYDRO, THERMAL, FLUX_X, FLUX_Z};
+     static constexpr octave_idx_type NUM_NODE_TYPES = sizeof(node_types) / sizeof(node_types[0]);
+
+     struct Node {
+          octave_idx_type number;
+          std::array<double, 2> x;
+          octave_idx_type index;
+          Type type;
+     };
+
+     octave_idx_type num_nodes[NUM_NODE_TYPES];
+     octave_idx_type num_nodes_total = 0;
+     octave_idx_type idxtmp = idx;
+
+     for (octave_idx_type l = 0; l < NUM_NODE_TYPES; ++l) {
+          num_nodes[l] = data.checkelem(idxtmp++);
+          idxtmp += 4 * num_nodes[l];
+          num_nodes_total += num_nodes[l];
+     }
+
+     std::vector<Node> nodes;
+     nodes.reserve(num_nodes_total);
+
+     for (octave_idx_type l = 0; l < NUM_NODE_TYPES; ++l) {
+          idx++;
+          for (octave_idx_type i = 0; i < num_nodes[l]; ++i) {
+               Node node;
+
+               node.number = data.checkelem(idx++);
+
+               for (octave_idx_type j = 0; j < 2; ++j) {
+                    node.x[j] = data.checkelem(idx++);
+               }
+
+               node.index = data.checkelem(idx++);
+               node.type = node_types[l];
+
+               nodes.push_back(node);
+          }
+     }
+
+     std::array<octave_idx_type, NUM_NODE_TYPES> icol_node{0}, inum_per_node_cols{0};
+     octave_idx_type icol_other = 0, inum_other_cols = 0;
+
+     struct ColumnOutput {
+          char name[10];
+          octave_idx_type icol, size, column_start, column_step, column_end;
+          Type type;
+     };
+
+     octave_idx_type num_column_output = 0;
+
+     for (octave_idx_type i = 0; i < num_flags; ++i) {
+          if (bflags[i]) {
+               for (octave_idx_type k = 0; k < num_output_columns; ++k) {
+                    if (i == output_columns[k].index) {
+                         ++num_column_output;
+                    }
+               }
+          }
+     }
+
+     std::vector<ColumnOutput> column_output;
+
+     column_output.reserve(num_column_output);
+
+     for (octave_idx_type i = 0; i < num_flags; ++i) {
+          if (bflags[i]) {
+               for (octave_idx_type k = 0; k < num_output_columns; ++k) {
+                    if (i == output_columns[k].index) {
+                         octave_idx_type icol = -1;
+                         octave_idx_type isize = output_columns[k].size;
+                         switch (output_columns[k].type) {
+                         case ONCE:
+                              ++inum_other_cols;
+                              icol = ++icol_other;
+                              break;
+                         default:
+                              for (octave_idx_type l = 0; l < NUM_NODE_TYPES; ++l) {
+                                   if (output_columns[k].type == node_types[l]) {
+                                        ++inum_per_node_cols[l];
+                                        isize *= num_nodes[l];
+                                        icol = ++icol_node[l];
+                                        break;
+                                   }
+                              }
+                         }
+
+                         ColumnOutput output;
+
+                         std::copy(std::begin(output_columns[k].name), std::end(output_columns[k].name), std::begin(output.name));
+                         output.icol = icol;
+                         output.size = isize;
+                         output.type = output_columns[k].type;
+                         column_output.push_back(output);
+                    }
+               }
+          }
+     }
+
+     octave_idx_type ilast_col = 0;
+     octave_idx_type ioffset = 0;
+
+     for (octave_idx_type l = 0; l < NUM_NODE_TYPES; ++l) {
+          for (octave_idx_type i = 0; i < static_cast<octave_idx_type>(column_output.size()); ++i) {
+               if (column_output[i].type == node_types[l]) {
+                    column_output[i].column_start = column_output[i].icol + ioffset;
+                    column_output[i].column_step = inum_per_node_cols[l];
+                    ilast_col = column_output[i].icol + ioffset + (num_nodes[l] - 1) * inum_per_node_cols[l];
+                    column_output[i].column_end = ilast_col;
+               }
+          }
+
+          ioffset = ilast_col;
+     }
+
+     for (octave_idx_type i = 0; i < static_cast<octave_idx_type>(column_output.size()); ++i) {
+          if (column_output[i].type == ONCE) {
+               column_output[i].column_start = ++ilast_col;
+               column_output[i].column_step = 1;
+               ilast_col += column_output[i].size - 1;
+               column_output[i].column_end = ilast_col;
+          }
+     }
+
+     struct Element {
+          octave_idx_type number;
+          int32NDArray nodes;
+     };
+
+     octave_idx_type num_elem = data.checkelem(++idx);
+
+     std::vector<Element> elements;
+
+     elements.reserve(num_elem);
+
+     for (octave_idx_type i = 0; i < num_elem; ++i) {
+          Element element;
+          element.number = data.checkelem(idx++);
+          octave_idx_type num_nodes_elem = data.checkelem(idx++);
+          element.nodes.resize(dim_vector(num_nodes_elem, 1));
+
+          for (octave_idx_type j = 0; j < num_nodes_elem; ++j) {
+               element.nodes(j) = data.checkelem(idx++);
+          }
+
+          elements.push_back(element);
+     }
+
+     unsigned mesh_id = data.checkelem(idx++);
+
+     if (mesh_id & 0x1u) {
+          const double d = data.checkelem(idx++);
+          const double D = data.checkelem(idx++);
+          const double B = data.checkelem(idx++);
+
+          octave_scalar_map cylindrical;
+
+          cylindrical.assign("d", d);
+          cylindrical.assign("D", D);
+          cylindrical.assign("B", B);
+
+          switch (mesh_id & 0xF0u) {
+          case 0x10:
+               cylindrical.assign("dm", d);
+               cylindrical.assign("mesh_pos", "journal");
+               break;
+          case 0x20:
+               cylindrical.assign("dm", D);
+               cylindrical.assign("mesh_pos", "shell");
+               break;
+          }
+
+          Cell ov_label(2), ov_o(2), ov_Rb(2);
+          for (octave_idx_type i = 0; i < 2; ++i) {
+               octave_idx_type label = data.checkelem(idx++);
+               ColumnVector o(3);
+
+               for (octave_idx_type j = 0; j < 3; ++j) {
+                    o(j) = data.checkelem(idx++);
+               }
+
+               Matrix Rb(3, 3);
+
+               for (octave_idx_type j = 0; j < 3; ++j) {
+                    for (octave_idx_type k = 0; k < 3; ++k) {
+                         Rb(j, k) = data.checkelem(idx++);
+                    }
+               }
+
+               ov_label(i) = label;
+               ov_o(i) = o;
+               ov_Rb(i) = Rb;
+          }
+
+          octave_map ma_nodes;
+          ma_nodes.assign("label", ov_label);
+          ma_nodes.assign("o", ov_o);
+          ma_nodes.assign("Rb", ov_Rb);
+
+          cylindrical.assign("nodes", ma_nodes);
+
+          bearing.assign("cylindrical", cylindrical);
+     }
+
+     {
+          Cell ov_name(column_output.size()), ov_icol(column_output.size());
+          Cell ov_size(column_output.size()), ov_type(column_output.size());
+          Cell ov_column_start(column_output.size()), ov_column_step(column_output.size());
+          Cell ov_column_end(column_output.size());
+
+          for (octave_idx_type i = 0; i < static_cast<octave_idx_type>(column_output.size()); ++i) {
+               ov_name(i) = column_output[i].name;
+               ov_icol(i) = column_output[i].icol;
+               ov_size(i) = column_output[i].size;
+               ov_type(i) = szType[column_output[i].type];
+               ov_column_start(i) = column_output[i].column_start;
+               ov_column_step(i) = column_output[i].column_step;
+               ov_column_end(i) = column_output[i].column_end;
+          }
+
+          octave_map ma_column_output;
+          ma_column_output.assign("name", ov_name);
+          ma_column_output.assign("icol", ov_icol);
+          ma_column_output.assign("size", ov_size);
+          ma_column_output.assign("type", ov_type);
+          ma_column_output.assign("column_start", ov_column_start);
+          ma_column_output.assign("column_step", ov_column_step);
+          ma_column_output.assign("column_end", ov_column_end);
+
+          bearing.assign("column_output", ma_column_output);
+     }
+
+     {
+          Cell ov_number(nodes.size()), ov_x(nodes.size()), ov_index(nodes.size()), ov_type(nodes.size());
+
+          for (octave_idx_type i = 0; i < static_cast<octave_idx_type>(nodes.size()); ++i) {
+               ov_number(i) = nodes[i].number;
+
+               ColumnVector x(2);
+
+               for (octave_idx_type j = 0; j < 2; ++j) {
+                    x(j) = nodes[i].x[j];
+               }
+
+               ov_x(i) = x;
+               ov_index(i) = nodes[i].index;
+               ov_type(i) = szType[nodes[i].type];
+          }
+
+          octave_map ma_nodes;
+
+          ma_nodes.assign("number", ov_number);
+          ma_nodes.assign("x", ov_x);
+          ma_nodes.assign("index", ov_index);
+          ma_nodes.assign("type", ov_type);
+
+          bearing.assign("nodes", ma_nodes);
+     }
+
+     {
+          Cell ov_number(elements.size());
+          Cell ov_nodes(elements.size());
+
+          for (octave_idx_type i = 0; i < static_cast<octave_idx_type>(elements.size()); ++i) {
+               ov_number(i) = elements[i].number;
+               ov_nodes(i) = elements[i].nodes;
+          }
+
+          octave_map ma_elements;
+
+          ma_elements.assign("number", ov_number);
+          ma_elements.assign("nodes", ov_nodes);
+
+          bearing.assign("elements", ma_elements);
+     }
+
+     retval.append(bearing);
+
+     return retval;
 }

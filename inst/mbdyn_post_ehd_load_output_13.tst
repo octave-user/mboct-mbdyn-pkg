@@ -21,6 +21,9 @@
 %!   param.E = 210000e6 / SI_unit_pascal;
 %!   param.nu = 0.3;
 %!   param.rho = 7850 / (SI_unit_kilogram / SI_unit_meter^3);
+%!   param.E2 = 70000e6 / SI_unit_pascal;
+%!   param.nu2 = 0.3;
+%!   param.rho2 = 2700 / (SI_unit_kilogram / SI_unit_meter^3);
 %!   param.d = 47.8e-3 / SI_unit_meter;
 %!   param.w = 17.2e-3 / SI_unit_meter;
 %!   param.ds = 54e-3 / SI_unit_meter;
@@ -28,6 +31,13 @@
 %!   param.h1 = 2e-3 / SI_unit_meter;
 %!   param.l1 = param.w / 2 + param.ws / 2 + param.h1;
 %!   param.l2 = param.w / 2 + param.ws + param.h1;
+%!   param.l3 = 150e-3 / SI_unit_meter;
+%!   param.dl = 50e-3 / SI_unit_meter;
+%!   param.l4 = 50e-3 / SI_unit_meter;
+%!   param.wr = 100e-3 / SI_unit_meter;
+%!   param.d2 = 140e-3 / SI_unit_meter;
+%!   param.l5 = 150e-3 / SI_unit_meter;
+%!   param.l6 = 70e-3 / SI_unit_meter;
 %!   param.pref = 100e6 / SI_unit_pascal;
 %!   param.h = param.d * pi / 10;
 %!   param.num_modes_cms = 10;
@@ -76,7 +86,7 @@
 %!   group_defs(2).compliance_matrix.include_rigid_body_modes = true;
 %!   group_defs(2).bearing = "elem_id_support_bearing1";
 %!   group_defs(3).id = 3;
-%!   group_defs(3).name = "node_id_test_journal";
+%!   group_defs(3).name = "node_id_big_end_bearing_journal";
 %!   group_defs(3).R = [0, 0, -1;
 %!                      0, 1,  0;
 %!                      1, 0,  0];
@@ -93,7 +103,7 @@
 %!   group_defs(3).compliance_matrix.mesh_size = param.h;
 %!   group_defs(3).compliance_matrix.number_of_modes = param.num_modes_bearing;
 %!   group_defs(3).compliance_matrix.include_rigid_body_modes = true;
-%!   group_defs(3).bearing = "elem_id_test_bearing";
+%!   group_defs(3).bearing = "elem_id_big_end_bearing";
 %!   group_defs(4).id = 4;
 %!   group_defs(4).name = "node_id_support_journal2";
 %!   group_defs(4).R = [0, 0, -1;
@@ -113,11 +123,187 @@
 %!   group_defs(4).compliance_matrix.number_of_modes = param.num_modes_bearing;
 %!   group_defs(4).compliance_matrix.include_rigid_body_modes = true;
 %!   group_defs(4).bearing = "elem_id_support_bearing2";
+%!   empty_cell = cell(1, 2);
+%!   group_defs2 = struct("id", empty_cell, ...
+%!                        "name", empty_cell, ...
+%!                        "R", empty_cell, ...
+%!                        "X0", empty_cell, ...
+%!                        "Xi", empty_cell, ...
+%!                        "type", empty_cell, ...
+%!                        "geometry", empty_cell, ...
+%!                        "compliance_matrix", empty_cell);
+%!   group_defs2(1).id = 1;
+%!   group_defs2(1).name = "node_id_small_end";
+%!   group_defs2(1).R = [0, 0,-1;
+%!                       0, 1, 0;
+%!                       1, 0, 0];
+%!   group_defs2(1).X0 = [0; 0; param.l3];
+%!   group_defs2(1).type = "cylinder";
+%!   group_defs2(1).geometry.rmin = 0.5 * param.dl;
+%!   group_defs2(1).geometry.rmax = 0.5 * param.dl;
+%!   group_defs2(1).geometry.zmin = -0.5 * param.w;
+%!   group_defs2(1).geometry.zmax = 0.5 * param.w;
+%!   group_defs2(1).compliance_matrix.matrix_type = "none";
+%!   group_defs2(2).id = 2;
+%!   group_defs2(2).name = "node_id_big_end_bearing_shell";
+%!   group_defs2(2).R = [0, 0, -1;
+%!                       0, 1,  0;
+%!                       1, 0,  0];
+%!   group_defs2(2).X0 = [0; 0; 0];
+%!   group_defs2(2).type = "cylinder";
+%!   group_defs2(2).geometry.rmin = 0.5 * param.d;
+%!   group_defs2(2).geometry.rmax = 0.5 * param.d;
+%!   group_defs2(2).geometry.zmin = -0.5 * param.w;
+%!   group_defs2(2).geometry.zmax = 0.5 * param.w;
+%!   group_defs2(2).compliance_matrix.matrix_type = "modal substruct total";
+%!   group_defs2(2).compliance_matrix.bearing_type = "journal";
+%!   group_defs2(2).compliance_matrix.bearing_model = "EHD/FD";
+%!   group_defs2(2).compliance_matrix.reference_pressure = param.pref;
+%!   group_defs2(2).compliance_matrix.mesh_size = param.h;
+%!   group_defs2(2).compliance_matrix.number_of_modes = param.num_modes_bearing;
+%!   group_defs2(2).compliance_matrix.include_rigid_body_modes = true;
+%!   group_defs2(2).bearing = "elem_id_big_end_bearing";
 %!   fd = -1;
 %!   unwind_protect
-%!     fd = fopen([output_file, ".geo"], "w");
+%!     fd = fopen([output_file, "_conrod.geo"], "w");
 %!     if (fd == -1)
-%!       error("failed to open file \"%s\"", [output_file, ".geo"]);
+%!       error("failed to open file \"%s\"", [output_file, "_conrod.geo"]);
+%!     endif
+%!     fputs(fd, "SetFactory(\"OpenCASCADE\");\n");
+%!     fputs(fd, "Geometry.OCCUnionUnify = 0;\n");
+%!     fprintf(fd, "d = %g;\n", param.d);
+%!     fprintf(fd, "d2 = %g;\n", param.d2);
+%!     fprintf(fd, "w = %g;\n", param.w);
+%!     fprintf(fd, "dl = %g;\n", param.dl);
+%!     fprintf(fd, "wr = %g;\n", param.wr);
+%!     fprintf(fd, "l3 = %g;\n", param.l3);
+%!     fprintf(fd, "l4 = %g;\n", param.l4);
+%!     fprintf(fd, "l5 = %g;\n", param.l5);
+%!     fprintf(fd, "l6 = %g;\n", param.l6);
+%!     fputs(fd, "Point(1) = {-0.5 * w, -0.5 * wr, l3 + l4};\n");
+%!     fputs(fd, "Point(2) = {-0.5 * w, 0.5 * wr, l3 + l4};\n");
+%!     fputs(fd, "Point(3) = {-0.5 * w, 0.5 * wr, Sqrt((d2/2)^2-(wr/2)^2)};\n");
+%!     fputs(fd, "Point(4) = {-0.5 * w, Sqrt((d2/2)^2 - (l6/2)^2), 0.5 * l6};\n");
+%!     fputs(fd, "Point(5) = {-0.5 * w, 0.5 * l5, 0.5 * l6};\n");
+%!     fputs(fd, "Point(6) = {-0.5 * w, 0.5 * l5, -0.5 * l6};\n");
+%!     fputs(fd, "Point(7) = {-0.5 * w, Sqrt((d2/2)^2 - (l6/2)^2), -0.5 * l6};\n");
+%!     fputs(fd, "Point(8) = {-0.5 * w, -Sqrt((d2/2)^2 - (l6/2)^2), -0.5 * l6};\n");
+%!     fputs(fd, "Point(9) = {-0.5 * w, -0.5 * l5, -0.5 * l6};\n");
+%!     fputs(fd, "Point(10) = {-0.5 * w, -0.5 * l5, 0.5 * l6};\n");
+%!     fputs(fd, "Point(11) = {-0.5 * w, -Sqrt((d2/2)^2 - (l6/2)^2), 0.5 * l6};\n");
+%!     fputs(fd, "Point(12) = {-0.5 * w, -0.5 * wr, Sqrt((d2/2)^2-(wr/2)^2)};\n");
+%!     fputs(fd, "Point(13) = {-0.5 * w, 0, 0};\n");
+%!     fputs(fd, "Point(14) = {-0.5 * w, 0.5 * d, 0};\n");
+%!     fputs(fd, "Point(15) = {-0.5 * w, 0, -0.5 * d};\n");
+%!     fputs(fd, "Point(16) = {-0.5 * w, -0.5 * d, 0};\n");
+%!     fputs(fd, "Point(17) = {-0.5 * w, 0, 0.5 * d};\n");
+%!     fputs(fd, "Point(18) = {-0.5 * w, 0, l3};\n");
+%!     fputs(fd, "Point(19) = {-0.5 * w, 0.5 * dl, l3};\n");
+%!     fputs(fd, "Point(20) = {-0.5 * w, 0, l3 - 0.5 * dl};\n");
+%!     fputs(fd, "Point(21) = {-0.5 * w, -0.5 * dl, l3};\n");
+%!     fputs(fd, "Point(22) = {-0.5 * w, 0, l3 + 0.5 * dl};\n");
+%!     fputs(fd, "Line(1) = {1, 2};\n");
+%!     fputs(fd, "Line(2) = {2, 3};\n");
+%!     fputs(fd, "Circle(3) = {3, 13, 4};\n");
+%!     fputs(fd, "Line(4) = {4, 5};\n");
+%!     fputs(fd, "Line(5) = {5, 6};\n");
+%!     fputs(fd, "Line(6) = {6, 7};\n");
+%!     fputs(fd, "Circle(7) = {7, 13, 8};\n");
+%!     fputs(fd, "Line(8) = {8, 9};\n");
+%!     fputs(fd, "Line(9) = {9, 10};\n");
+%!     fputs(fd, "Line(10) = {10, 11};\n");
+%!     fputs(fd, "Circle(11) = {11, 13, 12};\n");
+%!     fputs(fd, "Line(12) = {12, 1};\n");
+%!     fputs(fd, "Circle(13) = {14, 13, 15};\n");
+%!     fputs(fd, "Circle(14) = {15, 13, 16};\n");
+%!     fputs(fd, "Circle(15) = {16, 13, 17};\n");
+%!     fputs(fd, "Circle(16) = {17, 13, 14};\n");
+%!     fputs(fd, "Circle(17) = {19, 18, 20};\n");
+%!     fputs(fd, "Circle(18) = {20, 18, 21};\n");
+%!     fputs(fd, "Circle(19) = {21, 18, 22};\n");
+%!     fputs(fd, "Circle(20) = {22, 18, 19};\n");
+%!     fputs(fd, "Curve Loop(1) = {1,2,3,4,5,6,7,8,9,10,11,12};\n");
+%!     fputs(fd, "Curve Loop(2) = {13, 14, 15, 16};\n");
+%!     fputs(fd, "Curve Loop(3) = {17, 18, 19, 20};\n");
+%!     fputs(fd, "Plane Surface(1) = {1, 2, 3};\n");
+%!     fputs(fd, "v = Extrude{w, 0, 0}{Surface{1};};\n");
+%!     fputs(fd, "Physical Surface(\"big_end\", 1) = {14, 15, 16, 17};\n");
+%!     fputs(fd, "Physical Surface(\"small_end\", 2) = {18, 19, 20, 21};\n");
+%!     fputs(fd, "Physical Volume(\"conrod\", 1) = {v[1]};\n");
+%!   unwind_protect_cleanup
+%!     if (fd ~= -1)
+%!       fclose(fd);
+%!     endif
+%!   end_unwind_protect
+%!   pid = spawn("gmsh", {"-format", "msh2", "-order", "2", "-3", [output_file, "_conrod.geo"]});
+%!   status = spawn_wait(pid);
+%!   mesh2 = fem_pre_mesh_import([output_file, "_conrod.msh"], "gmsh");
+%!   mesh2 = fem_pre_mesh_reorder(mesh2);
+%!   mesh2.groups.tria6 = fem_pre_mesh_groups_create(mesh2, group_defs2, 1e-3 * param.d).tria6;
+%!   mesh2.materials.tet10 = zeros(rows(mesh2.elements.tet10), 1, "int32");
+%!   mesh2.materials.tet10(mesh2.groups.tet10(find([mesh2.groups.tet10.id == 1])).elements) = 1;
+%!   mesh2.material_data(1).E = param.E2;
+%!   mesh2.material_data(1).nu = param.nu2;
+%!   mesh2.material_data(1).rho = param.rho2;
+%!   cms_opt2.invariants = true;
+%!   cms_opt2.refine_max_iter = int32(10);
+%!   cms_opt2.number_of_threads = mbdyn_solver_num_threads_default();
+%!   cms_opt2.verbose = false;
+%!   cms_opt2.modes.number = param.num_modes_cms;
+%!   cms_opt2.element.name = "elem_id_conrod";
+%!   node_set2 = int32(rows(mesh2.nodes) + (1:numel(group_defs2)));
+%!   node_names2 = {group_defs2.name};
+%!   cms_opt2.nodes.modal.number = node_set2(1);
+%!   cms_opt2.nodes.modal.name = node_names2{1};
+%!   for j=1:numel(node_set2) - 1
+%!     cms_opt2.nodes.interfaces(j).number = node_set2(j + 1);
+%!     cms_opt2.nodes.interfaces(j).name = node_names2{j + 1};
+%!   endfor
+%!   idx_grp_itf2 = find([group_defs2.id] > 1);
+%!   idx_grp_modal2 = find([group_defs2.id] == 1);
+%!   mesh2.nodes([cms_opt2.nodes.interfaces.number], 1:3) = [group_defs2(idx_grp_itf2).X0].';
+%!   mesh2.nodes(cms_opt2.nodes.modal.number, 1:3) = group_defs2(idx_grp_modal2).X0.';
+%!   mesh2.elements.rbe3 = fem_pre_mesh_rbe3_from_surf(mesh2, [group_defs2(idx_grp_modal2).id, group_defs2(idx_grp_itf2).id], [node_set2(idx_grp_modal2), node_set2(idx_grp_itf2)]);
+%!   load_case2.locked_dof = false(rows(mesh2.nodes), columns(mesh2.nodes));
+%!   bearing_surf2 = repmat(struct("group_idx", [], "X0", [], "R", [], "options", [], "name", [], "bearing", []), 1, numel(group_defs2));
+%!   num_comp_mat2 = int32(0);
+%!   for j=1:numel(group_defs2)
+%!     switch group_defs2(j).compliance_matrix.matrix_type
+%!       case "none"
+%!       otherwise
+%!         ++num_comp_mat2;
+%!         bearing_surf2(num_comp_mat2).group_idx = find([mesh2.groups.tria6.id] == group_defs2(j).id);
+%!         bearing_surf2(num_comp_mat2).group_id_interface = group_defs2(j).id + int32(1000);
+%!         bearing_surf2(num_comp_mat2).absolute_tolerance = 1e-3 * param.d;
+%!         bearing_surf2(num_comp_mat2).relative_tolerance = 0;
+%!         bearing_surf2(num_comp_mat2).name = group_defs2(j).name;
+%!         bearing_surf2(num_comp_mat2).bearing = group_defs2(j).bearing;
+%!         bearing_surf2(num_comp_mat2).X0 = group_defs2(j).X0;
+%!         bearing_surf2(num_comp_mat2).R = group_defs2(j).R;
+%!         bearing_surf2(num_comp_mat2).options = group_defs2(j).compliance_matrix;
+%!         bearing_surf2(num_comp_mat2).master_node_no = node_set2(j);
+%!         switch group_defs2(j).type
+%!           case "cylinder"
+%!             bearing_surf2(num_comp_mat2).r = mean([group_defs2(j).geometry.rmax, group_defs2(j).geometry.rmin]);
+%!             bearing_surf2(num_comp_mat2).w = group_defs2(j).geometry.zmax - group_defs2(j).geometry.zmin;
+%!           otherwise
+%!             error("bearing geometry type \"%s\" not implemented", group_defs2(j).type);
+%!         endswitch
+%!         bearing_surf2(num_comp_mat2).nodes = mesh2.groups.tria6(find([[mesh2.groups.tria6].id] == group_defs2(j).id)).nodes;
+%!     endswitch
+%!   endfor
+%!   bearing_surf2 = bearing_surf2(1:num_comp_mat2);
+%!   [mesh2, mat_ass2, dof_map2, cms_opt2, comp_mat2, bearing_surf2, sol_eig2] = fem_ehd_pre_comp_mat_linear_mesh(mesh2, load_case2, cms_opt2, bearing_surf2);
+%!   fem_cms_export([output_file, "_conrod_cms"], mesh2, dof_map2, mat_ass2, cms_opt2);
+%!   for j=1:numel(comp_mat2)
+%!     comp_mat_file = [output_file, "_", bearing_surf2(j).bearing, "_", bearing_surf2(j).options.bearing_type, ".dat"];
+%!     fem_ehd_pre_comp_mat_export(comp_mat2(j), bearing_surf2(j).options, comp_mat_file);
+%!   endfor
+%!   fd = -1;
+%!   unwind_protect
+%!     fd = fopen([output_file, "_shaft.geo"], "w");
+%!     if (fd == -1)
+%!       error("failed to open file \"%s\"", [output_file, "_shaft.geo"]);
 %!     endif
 %!     fputs(fd, "SetFactory(\"OpenCASCADE\");\n");
 %!     fputs(fd, "Geometry.OCCUnionUnify = 0;\n");
@@ -149,7 +335,7 @@
 %!     fputs(fd, "Line Loop(1) = {1,2,3,4,5,6,7,8,9,10};\n");
 %!     fputs(fd, "Plane Surface(1) = {1};\n");
 %!     fputs(fd, "v[] = Extrude {{1, 0, 0}, {0, 0, 0}, 2*Pi} { Surface{1}; };\n");
-%!     fputs(fd, "Physical Surface(\"test_bearing\", 1) = {6};\n");
+%!     fputs(fd, "Physical Surface(\"big_end_bearing\", 1) = {6};\n");
 %!     fputs(fd, "Physical Surface(\"support_bearing1\", 2) = {3};\n");
 %!     fputs(fd, "Physical Surface(\"support_bearing2\", 3) = {9};\n");
 %!     fputs(fd, "Physical Surface(\"torque_input\", 4) = {2};\n");
@@ -159,9 +345,9 @@
 %!       fclose(fd);
 %!     endif
 %!   end_unwind_protect
-%!   pid = spawn("gmsh", {"-format", "msh2", "-order", "2", "-3", [output_file, ".geo"]});
+%!   pid = spawn("gmsh", {"-format", "msh2", "-order", "2", "-3", [output_file, "_shaft.geo"]});
 %!   status = spawn_wait(pid);
-%!   mesh = fem_pre_mesh_import([output_file, ".msh"], "gmsh");
+%!   mesh = fem_pre_mesh_import([output_file, "_shaft.msh"], "gmsh");
 %!   mesh = fem_pre_mesh_reorder(mesh);
 %!   mesh.groups.tria6 = fem_pre_mesh_groups_create(mesh, group_defs, 1e-3 * param.d).tria6;
 %!   mesh.materials.tet10 = zeros(rows(mesh.elements.tet10), 1, "int32");
@@ -172,7 +358,7 @@
 %!   cms_opt.invariants = true;
 %!   cms_opt.refine_max_iter = int32(10);
 %!   cms_opt.number_of_threads = mbdyn_solver_num_threads_default();
-%!   cms_opt.verbose = true;
+%!   cms_opt.verbose = false;
 %!   cms_opt.modes.number = param.num_modes_cms;
 %!   cms_opt.element.name = "elem_id_shaft";
 %!   node_set = int32(rows(mesh.nodes) + (1:numel(group_defs)));
@@ -187,7 +373,7 @@
 %!   idx_grp_modal = find([group_defs.id] == 1);
 %!   mesh.nodes([cms_opt.nodes.interfaces.number], 1:3) = [group_defs(idx_grp_itf).X0].';
 %!   mesh.nodes(cms_opt.nodes.modal.number, 1:3) = group_defs(idx_grp_modal).X0.';
-%!   mesh.elements.rbe3 = fem_pre_mesh_rbe3_from_surf(mesh, [group_defs(idx_grp_itf).id], node_set(idx_grp_itf));
+%!   mesh.elements.rbe3 = fem_pre_mesh_rbe3_from_surf(mesh, [group_defs(idx_grp_modal).id, group_defs(idx_grp_itf).id], [node_set(idx_grp_modal), node_set(idx_grp_itf)]);
 %!   load_case.locked_dof = false(rows(mesh.nodes), columns(mesh.nodes));
 %!   bearing_surf = repmat(struct("group_idx", [], "X0", [], "R", [], "options", [], "name", [], "bearing", []), 1, numel(group_defs));
 %!   num_comp_mat = int32(0);
@@ -218,12 +404,14 @@
 %!   endfor
 %!   bearing_surf = bearing_surf(1:num_comp_mat);
 %!   [mesh, mat_ass, dof_map, cms_opt, comp_mat, bearing_surf, sol_eig] = fem_ehd_pre_comp_mat_linear_mesh(mesh, load_case, cms_opt, bearing_surf);
-%!   fem_cms_export([output_file, "_cms"], mesh, dof_map, mat_ass, cms_opt);
+%!   fem_cms_export([output_file, "_shaft_cms"], mesh, dof_map, mat_ass, cms_opt);
 %!   for j=1:numel(comp_mat)
 %!     comp_mat_file = [output_file, "_", bearing_surf(j).bearing, "_", bearing_surf(j).options.bearing_type, ".dat"];
 %!     fem_ehd_pre_comp_mat_export(comp_mat(j), bearing_surf(j).options, comp_mat_file);
 %!   endfor
-%!   return
+
+
+%! return
 %!   unwind_protect
 %!     fd = -1;
 %!     [fd, msg] = fopen([output_file, "_shell.set"], "w");

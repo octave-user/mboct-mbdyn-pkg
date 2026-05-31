@@ -362,9 +362,6 @@
 %!     comp_mat_file = [output_file, "_", bearing_surf3(j).bearing, "_", bearing_surf3(j).options.bearing_type, ".dat"];
 %!     fem_ehd_pre_comp_mat_export(comp_mat3(j), bearing_surf3(j).options, comp_mat_file);
 %!   endfor
-
-%!   return
-%!
 %!   fd = -1;
 %!   unwind_protect
 %!     fd = fopen([output_file, "_conrod.geo"], "w");
@@ -611,26 +608,7 @@
 %!     comp_mat_file = [output_file, "_", bearing_surf(j).bearing, "_", bearing_surf(j).options.bearing_type, ".dat"];
 %!     fem_ehd_pre_comp_mat_export(comp_mat(j), bearing_surf(j).options, comp_mat_file);
 %!   endfor
-
-
-%! return
-%!   unwind_protect
-%!     fd = -1;
-%!     [fd, msg] = fopen([output_file, "_shell.set"], "w");
-%!     if (fd == -1)
-%!       error("failed to open file \"%s\": %s", [output_file, "_shell.set"], msg);
-%!     endif
-%!     for j=1:numel(comp_mat)
-%!       fprintf(fd, "set: number_of_nodes_x = %d;\n", numel(comp_mat(j).bearing_surf.grid_x) + 1);
-%!       fprintf(fd, "set: number_of_nodes_z = %d;\n", numel(comp_mat(j).bearing_surf.grid_z));
-%!     endfor
-%!   unwind_protect_cleanup
-%!     if (fd ~= -1)
-%!       fclose(fd);
-%!       fd = -1;
-%!     endif
-%!   end_unwind_protect
-%!   mbdyn_pre_write_param_file([output_file, ".set"], param);
+%!   return
 %!   options_mbdyn.output_file = [output_file, "_mbd"];
 %!   options_mbdyn.f_run_mbdyn2easyanim = false;
 %!   fd = -1;

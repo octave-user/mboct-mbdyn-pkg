@@ -32,6 +32,7 @@
 %!   param.w = 17.2e-3 / SI_unit_meter; ## width of the conrod big end bearing (test bearing)
 %!   param.ds = 54e-3 / SI_unit_meter; ## journal diameter of the support bearings
 %!   param.wg = 5e-3 / SI_unit_meter; ## width of 180deg oil supply groove of the support bearings (assumption)
+%!   param.dg = 5e-3 / SI_unit_meter; ## diameter of oil supply groove for the big end bearing (assumption)
 %!   param.Psi = 1e-3; ## relative clearance of the conrod big end bearing (assumption)
 %!   param.Psis = 1e-3; ## relative clearance of the support bearings (assumption)
 %!   param.ws = 25e-3 / SI_unit_meter; ## width of the support bearings
@@ -687,7 +688,8 @@
 %!       error("failed to open file \"%s\"", [output_file, "_mbd.mbdyn"]);
 %!     endif
 %!     fprintf(fd, "set: real omega = %g;\n", param.omega(i));
-%!     fputs(fd, "set: real t2 = 2 * pi / 10 / omega;\n");
+%!     fputs(fd, "set: real t2 = 2 * pi / omega;\n");
+%!     fputs(fd, "set: real t1 = t2 / 10;\n");
 %!     fputs(fd, "set: real dt = 2. * pi / omega / 100;\n");
 %!     fprintf(fd, "set: real l1 = %g;\n", param.l1);
 %!     fprintf(fd, "set: real l2 = %g;\n", param.l2);
@@ -706,6 +708,7 @@
 %!     fprintf(fd, "set: real ws = %g;\n", param.ws);
 %!     fprintf(fd, "set: real Psis = %g;\n", param.Psis);
 %!     fprintf(fd, "set: real wg = %g;\n", param.wg);
+%!     fprintf(fd, "set: real dg = %g;\n", param.dg);
 %!     fprintf(fd, "set: real pside = %g;\n", param.pside);
 %!     fprintf(fd, "set: real pin = %g;\n", param.pin);
 %!     fprintf(fd, "set: real sigma = %g;\n", param.sigma);
@@ -757,7 +760,7 @@
 %!     fputs(fd, "        initial time: 0;\n");
 %!     fputs(fd, "        final time: t2;\n");
 %!     fputs(fd, "        time step: dt;\n");
-%!     fputs(fd, "        method: implicit euler;\n");
+%!     fputs(fd, "        method: hybrid, ms, 0.6;\n");
 %!     fputs(fd, "        linear solver: pardiso, grad, scale, row max column max, always;\n");
 %!     fprintf(fd, "      threads: assembly, %d;\n", mbdyn_solver_num_threads_default());
 %!     fprintf(fd, "      threads: solver, %d;\n", mbdyn_solver_num_threads_default());
@@ -808,7 +811,7 @@
 %!     fputs(fd, "        position, reference, ref_id_shaft, 0., 0., l3,\n");
 %!     fputs(fd, "        orientation, reference, ref_id_shaft, eye,\n");
 %!     fputs(fd, "        velocity, reference, ref_id_assembly, null,\n");
-%!     fputs(fd, "        angular velocity, reference, ref_id_assembly, null;\n");   
+%!     fputs(fd, "        angular velocity, reference, ref_id_assembly, null;\n");
 %!     fputs(fd, "reference: ref_id_support_bearing_journal_1,\n");
 %!     fputs(fd, "        position, reference, ref_id_shaft, -l1, 0., 0.,\n");
 %!     fputs(fd, "        orientation, reference, ref_id_shaft, eye,\n");
@@ -931,7 +934,7 @@
 %!     fputs(fd, "        force: force_id_load, absolute,\n");
 %!     fputs(fd, "          node_id_small_end_bearing_shell,\n");
 %!     fputs(fd, "          position,reference,node, null,\n");
-%!     fputs(fd, "          0.,0.,-1., mult, time, F1 / t2;\n");
+%!     fputs(fd, "          0.,0.,-1., string, \"F1 * (sin(pi / 2. * Time / t1)^2 * (Time <= t1) + (Time > t1))\";\n");
 %!     fputs(fd, "\n");
 %!     fputs(fd, "        joint: joint_id_supporting_area1, clamp, node_id_supporting_area_1, node, node;\n");
 %!     fputs(fd, "        joint: joint_id_supporting_area2, clamp, node_id_supporting_area_2, node, node;\n");
@@ -1001,7 +1004,7 @@
 %!     fputs(fd, "                output pressure, yes,\n");
 %!     fputs(fd, "                output contact pressure, yes,\n");
 %!     fputs(fd, "                output stress, no,\n");
-%!     fputs(fd, "                output density, no,\n");
+%!     fputs(fd, "                output density, yes,\n");
 %!     fputs(fd, "                output friction loss, yes,\n");
 %!     fputs(fd, "                output clearance, yes,\n");
 %!     fputs(fd, "                output reaction force, yes,\n");
@@ -1070,7 +1073,7 @@
 %!     fputs(fd, "                output pressure, yes,\n");
 %!     fputs(fd, "                output contact pressure, yes,\n");
 %!     fputs(fd, "                output stress, no,\n");
-%!     fputs(fd, "                output density, no,\n");
+%!     fputs(fd, "                output density, yes,\n");
 %!     fputs(fd, "                output friction loss, yes,\n");
 %!     fputs(fd, "                output clearance, yes,\n");
 %!     fputs(fd, "                output reaction force, yes,\n");
@@ -1109,8 +1112,8 @@
 %!     fputs(fd, "                        lubrication grooves, 1,\n");
 %!     fputs(fd, "                                at bearing,\n");
 %!     fputs(fd, "                                        pressure, pin,\n");
-%!     fputs(fd, "                                        position, 0., 0.,\n");
-%!     fputs(fd, "                                        circle, radius, ds / 2.,\n");
+%!     fputs(fd, "                                        position, d * (1. + Psi) * pi / 2, 0.,\n");
+%!     fputs(fd, "                                        circle, radius, dg / 2.,\n");
 %!     fputs(fd, "            contact model,\n");
 %!     fputs(fd, "              greenwood tripp,\n");
 %!     fputs(fd, "                 E1, 2 * (1 - nu^2) * Ered,\n");
@@ -1139,7 +1142,7 @@
 %!     fputs(fd, "                output pressure, yes,\n");
 %!     fputs(fd, "                output contact pressure, yes,\n");
 %!     fputs(fd, "                output stress, no,\n");
-%!     fputs(fd, "                output density, no,\n");
+%!     fputs(fd, "                output density, yes,\n");
 %!     fputs(fd, "                output friction loss, yes,\n");
 %!     fputs(fd, "                output clearance, yes,\n");
 %!     fputs(fd, "                output reaction force, yes,\n");
@@ -1175,6 +1178,13 @@
 %!   opt_post.step_end = intmax;
 %!   opt_post.elem_types = {"tet10"};
 %!   fem_post_cms_sol_export(cms_data, options_mbdyn.output_file, options_mbdyn.output_file, opt_scale, opt_post);
+%!   opt_post_h.deformation_scale = 10000;
+%!   opt_post_h.start = 1;
+%!   opt_post_h.step = 1;
+%!   opt_post_h.step_end = intmax;
+%!   res.mesh = mbdyn_post_ehd_create_mesh(res.log_dat);
+%!   mbdyn_post_ehd_export_mesh(res.mesh, [options_mbdyn.output_file, "_hydro.msh"]);
+%!   output_files = mbdyn_post_ehd_export_data(res.mesh, res, [options_mbdyn.output_file, "_hydro.msh"], 1:numel(res.t), opt_post_h);
 %!   endfor
 %! %unwind_protect_cleanup
 %!   if (numel(output_file))

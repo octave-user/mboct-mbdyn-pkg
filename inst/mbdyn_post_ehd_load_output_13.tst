@@ -87,6 +87,7 @@
 %!   opt_mesh.verbose = false;
 %!   opt_mesh.output_file = [output_file, "_msh"];
 %!   empty_cell = cell(1, 3);
+%!   ## steel shaft
 %!   group_defs = struct("id", empty_cell, ...
 %!                       "name", empty_cell, ...
 %!                       "R", empty_cell, ...
@@ -168,6 +169,7 @@
 %!   group_defs(4).compliance_matrix.include_rigid_body_modes = true;
 %!   group_defs(4).bearing = "elem_id_support_bearing_2";
 %!   empty_cell = cell(1, 2);
+%!   ## conrod
 %!   group_defs2 = struct("id", empty_cell, ...
 %!                        "name", empty_cell, ...
 %!                        "R", empty_cell, ...
@@ -200,7 +202,7 @@
 %!   group_defs2(2).geometry.zmin = -0.5 * param.w;
 %!   group_defs2(2).geometry.zmax = 0.5 * param.w;
 %!   group_defs2(2).compliance_matrix.matrix_type = "modal substruct total";
-%!   group_defs2(2).compliance_matrix.bearing_type = "journal";
+%!   group_defs2(2).compliance_matrix.bearing_type = "shell";
 %!   group_defs2(2).compliance_matrix.bearing_model = "EHD/FD";
 %!   group_defs2(2).compliance_matrix.reference_pressure = param.pref;
 %!   group_defs2(2).compliance_matrix.number_of_nodes_x = param.number_of_nodes_x;
@@ -209,6 +211,7 @@
 %!   group_defs2(2).compliance_matrix.include_rigid_body_modes = true;
 %!   group_defs2(2).bearing = "elem_id_big_end_bearing";
 %!   empty_cell = cell(1, 2);
+%!   ## support bracket
 %!   group_defs3 = struct("id", empty_cell, ...
 %!                        "name", empty_cell, ...
 %!                        "R", empty_cell, ...
@@ -711,6 +714,7 @@
 %!     fputs(fd, "set: integer elem_id_support_2 = 3008;\n");
 %!     fputs(fd, "set: integer elem_id_support_bearing_1 = 4001;\n");
 %!     fputs(fd, "set: integer elem_id_support_bearing_2 = 4002;\n");
+%!     fputs(fd, "set: integer elem_id_big_end_bearing = 4003;\n");
 %!     fputs(fd, "begin: data;\n");
 %!     fputs(fd, "        problem: initial value;\n");
 %!     fputs(fd, "end: data;\n");
@@ -887,13 +891,14 @@
 %!     fputs(fd, "                        component,\n");
 %!     fputs(fd, "                                null,\n");
 %!     fputs(fd, "                                null,\n");
-%!     fputs(fd, "                                mult, time, omega1;\n");
+%!     fputs(fd, "                                null;\n");
 %!     fputs(fd, "        joint: joint_id_supporting_area1, clamp, node_id_supporting_area_1, node, node;\n");
 %!     fputs(fd, "        joint: joint_id_supporting_area2, clamp, node_id_supporting_area_2, node, node;\n");
 %!     fprintf(fd, "        include: \"%s_shaft_cms.elm\";\n", output_file);
 %!     fprintf(fd, "        include: \"%s_conrod_cms.elm\";\n", output_file);
 %!     fprintf(fd, "        include: \"%s_support_cms_1.elm\";\n", output_file);
 %!     fprintf(fd, "        include: \"%s_support_cms_2.elm\";\n", output_file);
+%!     fputs(fd, "\n");
 %!     fputs(fd, "        user defined: elem_id_support_bearing_1, hydrodynamic plain bearing2,\n");
 %!     fputs(fd, "            hydraulic fluid, linear compressible,\n");
 %!     fputs(fd, "                density, rhol,\n");
@@ -961,6 +966,7 @@
 %!     fputs(fd, "                output mesh, yes,\n");
 %!     fputs(fd, "                output total deformation, yes,\n");
 %!     fputs(fd, "                output, yes;\n");
+%!     fputs(fd, "\n");
 %!     fputs(fd, "        user defined: elem_id_support_bearing_2, hydrodynamic plain bearing2,\n");
 %!     fputs(fd, "            hydraulic fluid, linear compressible,\n");
 %!     fputs(fd, "                density, rhol,\n");
@@ -1019,6 +1025,74 @@
 %!     fputs(fd, "                pressure dof scale, pref,\n");
 %!     fputs(fd, "                reynolds equation scale, dt / (rhol * Psi * ds),\n");
 %!     fputs(fd, "                elasticity equation scale, dt / (Psi * ds),\n");
+%!     fputs(fd, "                output pressure, yes,\n");
+%!     fputs(fd, "                output stress, no,\n");
+%!     fputs(fd, "                output density, no,\n");
+%!     fputs(fd, "                output friction loss, yes,\n");
+%!     fputs(fd, "                output clearance, yes,\n");
+%!     fputs(fd, "                output reaction force, yes,\n");
+%!     fputs(fd, "                output mesh, yes,\n");
+%!     fputs(fd, "                output total deformation, yes,\n");
+%!     fputs(fd, "                output, yes;\n");
+%!     fputs(fd, "\n");
+%!     fputs(fd, "        user defined: elem_id_big_end_bearing, hydrodynamic plain bearing2,\n");
+%!     fputs(fd, "            hydraulic fluid, linear compressible,\n");
+%!     fputs(fd, "                density, rhol,\n");
+%!     fputs(fd, "                betal,\n");
+%!     fputs(fd, "                pressure, pcl,\n");
+%!     fputs(fd, "                viscosity, etal,\n");
+%!     fputs(fd, "                temperature, Tl,\n");
+%!     fputs(fd, "            viscosity vapor, factor, fact_etav,\n");
+%!     fputs(fd, "                mesh, linear finite difference,\n");
+%!     fputs(fd, "                enable mcp, yes,\n");
+%!     fputs(fd, "                geometry, cylindrical,\n");
+%!     fputs(fd, "                        mesh position, at bearing,\n");
+%!     fputs(fd, "                        bearing width, w,\n");
+%!     fputs(fd, "                        shaft diameter, d,\n");
+%!     fputs(fd, "                        bearing diameter, d * (1. + Psi),\n");
+%!     fputs(fd, "                shaft node, node_id_drive,\n");
+%!     fputs(fd, "                offset, reference, ref_id_big_end_bearing_journal, null,\n");
+%!     fputs(fd, "                orientation, reference, ref_id_big_end_bearing_journal, 3, -1., 0., 0.,\n");
+%!     fputs(fd, "                                                                          2, 0., 1., 0.,\n");
+%!     fputs(fd, "                bearing node, node_id_small_end_bearing_shell,\n");
+%!     fputs(fd, "                offset, reference, ref_id_big_end_bearing_journal, null,\n");
+%!     fputs(fd, "                orientation, reference, ref_id_big_end_bearing_journal, 3, -1., 0., 0.,\n");
+%!     fputs(fd, "                                                                          2, 0., 1., 0.,\n");
+%!     fprintf(fd, "                        number of nodes z, %d,\n", numel(comp_mat2.bearing_surf.grid_z));
+%!     fprintf(fd, "                        number of nodes Phi, %d,\n", numel(comp_mat2.bearing_surf.grid_x) + 1);
+%!     fputs(fd, "                        boundary conditions,\n");
+%!     fputs(fd, "                                        pressure, pside,\n");
+%!     fputs(fd, "                                        pressure, pside,\n");
+%!     fputs(fd, "                        lubrication grooves, 1,\n");
+%!     fputs(fd, "                                at bearing,\n");
+%!     fputs(fd, "                                        pressure, pin,\n");
+%!     fputs(fd, "                                        position, 0., 0.,\n");
+%!     fputs(fd, "                                        circle, radius, ds / 2.,\n");
+%!     fputs(fd, "            contact model,\n");
+%!     fputs(fd, "              greenwood tripp,\n");
+%!     fputs(fd, "                 E1, 2 * (1 - nu^2) * Ered,\n");
+%!     fputs(fd, "                 nu1, nu,\n");
+%!     fputs(fd, "                 E2, 2 * (1 - nu^2) * Ered,\n");
+%!     fputs(fd, "                 nu2, nu,\n");
+%!     fputs(fd, "                      unit system, consistent,\n");
+%!     fputs(fd, "                      standard deviation, sigma,\n");
+%!     fputs(fd, "                      asperity density, eta,\n");
+%!     fputs(fd, "                      asperity curvature, beta,\n");
+%!     fputs(fd, "                      asperity mean height, delta,\n");
+%!     fputs(fd, "              friction model, lugre,\n");
+%!     fputs(fd, "                 method, implicit euler,\n");
+%!     fputs(fd, "                 coulomb friction coefficient, mu,\n");
+%!     fputs(fd, "                 micro slip stiffness, sigma0,\n");
+%!     fputs(fd, "                compliance model,\n");
+%!     fputs(fd, "                  double nodal,\n");
+%!     fprintf(fd, "                  matrix at shaft, from file, \"%s_elem_id_big_end_bearing_journal.dat\",\n", output_file);
+%!     fputs(fd, "                  modal element, elem_id_shaft,\n");
+%!     fprintf(fd, "                  matrix at bearing, from file, \"%s_elem_id_big_end_bearing_shell.dat\",\n", output_file);
+%!     fputs(fd, "                  modal element, elem_id_conrod,\n");
+%!     fputs(fd, "                  axial displacement, small,\n");
+%!     fputs(fd, "                pressure dof scale, pref,\n");
+%!     fputs(fd, "                reynolds equation scale, dt / (rhol * Psi * d),\n");
+%!     fputs(fd, "                elasticity equation scale, dt / (Psi * d),\n");
 %!     fputs(fd, "                output pressure, yes,\n");
 %!     fputs(fd, "                output stress, no,\n");
 %!     fputs(fd, "                output density, no,\n");

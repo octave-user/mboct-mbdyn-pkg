@@ -76,12 +76,12 @@
 %!   param.fact_etav = 1e-3;
 %!   param.pside = 1e5 / SI_unit_pascal;
 %!   param.pin = 1e5 / SI_unit_pascal;
-%!   param.hm = param.d * pi / 10; ## mesh size
-%!   param.hb = param.d * pi / 20;
+%!   param.hm = param.d * pi / 10; ## general mesh size 
+%!   param.hb = param.d * pi / 40; ## mesh size at the bearing surface
 %!   param.number_of_nodes_x = 50;
 %!   param.number_of_nodes_z = 10;
 %!   param.num_modes_cms = int32(10); ## number of dynamic Craig Bampton modes
-%!   param.num_modes_bearing = int32(10); ## number of bearing modes
+%!   param.num_modes_bearing = int32(30); ## number of bearing modes
 %!   param.omega = [150,3000] * pi / 30 / SI_unit_second^-1;
 %!   param.F1 = 8e3 / SI_unit_newton;
 %!   empty_cell = cell(1, 3);
@@ -699,8 +699,8 @@
 %!           error("failed to open file \"%s\"", [options_mbdyn.output_file, ".mbd"]);
 %!         endif
 %!         fprintf(fd, "set: real omega = %g;\n", param.omega(i));
-%!         fputs(fd, "set: real t2 = 2 * pi / omega;\n");
-%!         fputs(fd, "set: real t1 = t2 / 10;\n");
+%!         fputs(fd, "set: real t2 = pi / omega;\n");
+%!         fputs(fd, "set: real t1 = 0.5 * t2;\n");
 %!         fputs(fd, "set: real dt = 2. * pi / omega / 100;\n");
 %!         fprintf(fd, "set: real l1 = %g;\n", param.l1);
 %!         fprintf(fd, "set: real l2 = %g;\n", param.l2);
@@ -784,7 +784,7 @@
 %!         fputs(fd, "        output: iterations, cpu time, solver condition number, stat, yes;\n");
 %!         fputs(fd, "end: initial value;\n");
 %!         fputs(fd, "begin: control data;\n");
-%!         fputs(fd, "       output meter: closest next, t2, forever, dt;\n");
+%!         fputs(fd, "       ## output meter: closest next, t2, forever, dt;\n");
 %!         fputs(fd, "       use automatic differentiation;\n");
 %!         fputs(fd, "       output precision: 16;\n");
 %!         fputs(fd, "       max iterations: 0;\n");

@@ -81,7 +81,7 @@
 %!   param.number_of_nodes_x = 50;
 %!   param.number_of_nodes_z = 10;
 %!   param.num_modes_cms = int32(10); ## number of dynamic Craig Bampton modes
-%!   param.num_modes_bearing = int32(30); ## number of bearing modes
+%!   param.num_modes_bearing = int32(70); ## number of bearing modes
 %!   param.omega = [150,3000] * pi / 30 / SI_unit_second^-1;
 %!   param.F1 = 8e3 / SI_unit_newton;
 %!   empty_cell = cell(1, 3);
@@ -772,7 +772,7 @@
 %!         fputs(fd, "        final time: t2;\n");
 %!         fputs(fd, "        time step: dt;\n");
 %!         fputs(fd, "        method: hybrid, ms, 0.6;\n");
-%!         fputs(fd, "        linear solver: pardiso, grad, scale, row max column max, always;\n");
+%!         fputs(fd, "        linear solver: pardiso, grad, scale, row max column max, always, max iterations, 250;\n");
 %!         fprintf(fd, "      threads: assembly, %d;\n", mbdyn_solver_num_threads_default());
 %!         fprintf(fd, "      threads: solver, %d;\n", mbdyn_solver_num_threads_default());
 %!         fputs(fd, "        nonlinear solver: mcp newton min fb;\n");

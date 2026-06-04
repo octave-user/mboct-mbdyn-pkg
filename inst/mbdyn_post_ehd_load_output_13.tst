@@ -75,14 +75,13 @@
 %!   param.fact_etav = 1e-3;
 %!   param.pside = 1e5 / SI_unit_pascal;
 %!   param.pin = 1e5 / SI_unit_pascal;
-%!   #param.h = param.d * pi / 10; ## mesh size
-%!   param.number_of_nodes_x = 10;
-%!   param.number_of_nodes_z = 5;
+%!   param.hm = param.d * pi / 10; ## mesh size
+%!   param.number_of_nodes_x = 50;
+%!   param.number_of_nodes_z = 10;
 %!   param.num_modes_cms = 10; ## number of dynamic Craig Bampton modes
 %!   param.num_modes_bearing = 10; ## number of bearing modes
-%!   param.omega1 = 6000. * pi / 30 / SI_unit_second^-1;
-%!   param.omega2 = 150 * pi / 30 / SI_unit_second^-1;
-%!   param.t2 = 360 / SI_unit_second;
+%!   param.omega = (6000:150:6000) * pi / 30 / SI_unit_second^-1;
+%!   param.F1 = 8e3 / SI_unit_newton;
 %!   opt_mesh.mesh.jacobian_range = [0.5, 1.5];
 %!   opt_mesh.verbose = false;
 %!   opt_mesh.output_file = [output_file, "_msh"];
@@ -273,6 +272,7 @@
 %!     fprintf(fd, "l14 = %g;\n", param.l14);
 %!     fprintf(fd, "l15 = %g;\n", param.l15);
 %!     fprintf(fd, "l16 = %g;\n", param.l16);
+%!     fprintf(fd, "hm = %g;\n", param.hm);
 %!     fputs(fd, "Point(1) = {-0.5 * ws, -0.5 * l12, l7 + l11};\n");
 %!     fputs(fd, "Point(2) = {-0.5 * ws, 0.5 * l12, l7 + l11};\n");
 %!     fputs(fd, "Point(3) = {-0.5 * ws, 0.5 * l13, l7};\n");
@@ -318,6 +318,7 @@
 %!     fputs(fd, "Curve Loop(2) = {17,18,19,20};\n");
 %!     fputs(fd, "Plane Surface(1) = {1, 2};\n");
 %!     fputs(fd, "v = Extrude{ws, 0, 0}{Surface{1};};\n");
+%!     fputs(fd, "MeshSize{PointsOf{Volume{v[1]}; } } = hm;\n");
 %!     fputs(fd, "Physical Surface(\"support\", 1) = {12, 8};\n");
 %!     fputs(fd, "Physical Surface(\"support_bearing\", 2) = {19, 18, 21, 20};\n");
 %!     fputs(fd, "Physical Volume(\"support\", 1) = {v[1]};\n");
@@ -415,6 +416,7 @@
 %!     fprintf(fd, "l4 = %g;\n", param.l4);
 %!     fprintf(fd, "l5 = %g;\n", param.l5);
 %!     fprintf(fd, "l6 = %g;\n", param.l6);
+%!     fprintf(fd, "hm = %g;\n", param.hm);
 %!     fputs(fd, "Point(1) = {-0.5 * w, -0.5 * wr, l3 + l4};\n");
 %!     fputs(fd, "Point(2) = {-0.5 * w, 0.5 * wr, l3 + l4};\n");
 %!     fputs(fd, "Point(3) = {-0.5 * w, 0.5 * wr, Sqrt((d2/2)^2-(wr/2)^2)};\n");
@@ -462,6 +464,7 @@
 %!     fputs(fd, "Curve Loop(3) = {17, 18, 19, 20};\n");
 %!     fputs(fd, "Plane Surface(1) = {1, 2, 3};\n");
 %!     fputs(fd, "v = Extrude{w, 0, 0}{Surface{1};};\n");
+%!     fputs(fd, "MeshSize{PointsOf{Volume{v[1]}; } } = hm;\n");
 %!     fputs(fd, "Physical Surface(\"big_end\", 1) = {14, 15, 16, 17};\n");
 %!     fputs(fd, "Physical Surface(\"small_end\", 2) = {18, 19, 20, 21};\n");
 %!     fputs(fd, "Physical Volume(\"conrod\", 1) = {v[1]};\n");
@@ -547,6 +550,7 @@
 %!     fprintf(fd, "ds = %g;\n", param.ds);
 %!     fprintf(fd, "ws = %g;\n", param.ws);
 %!     fprintf(fd, "h = %g;\n", param.h1);
+%!     fprintf(fd, "hm = %g;\n", param.hm);
 %!     fputs(fd, "Point(1) = {-ws - w / 2 - h, 0, 0};\n");
 %!     fputs(fd, "Point(2) = {-ws - w / 2 - h, 0, ds / 2};\n");
 %!     fputs(fd, "Point(3) = {-w / 2 - h, 0, ds / 2};\n");
@@ -570,6 +574,7 @@
 %!     fputs(fd, "Line Loop(1) = {1,2,3,4,5,6,7,8,9,10};\n");
 %!     fputs(fd, "Plane Surface(1) = {1};\n");
 %!     fputs(fd, "v[] = Extrude {{1, 0, 0}, {0, 0, 0}, 2*Pi} { Surface{1}; };\n");
+%!     fputs(fd, "MeshSize{PointsOf{Volume{v[1]}; } } = hm;\n");
 %!     fputs(fd, "Physical Surface(\"big_end_bearing\", 1) = {6};\n");
 %!     fputs(fd, "Physical Surface(\"support_bearing1\", 2) = {3};\n");
 %!     fputs(fd, "Physical Surface(\"support_bearing2\", 3) = {9};\n");
@@ -644,18 +649,46 @@
 %!     comp_mat_file = [output_file, "_", bearing_surf(j).bearing, "_", bearing_surf(j).options.bearing_type, ".dat"];
 %!     fem_ehd_pre_comp_mat_export(comp_mat(j), bearing_surf(j).options, comp_mat_file);
 %!   endfor
+%!   empty_cell = cell(1, 4);
+%!   cms_data = struct("mesh", empty_cell, "dof_map", empty_cell, "cms_opt", empty_cell, "mat_ass", empty_cell, "load_case", empty_cell);
+%!   cms_data(1).mesh = mesh;
+%!   cms_data(1).dof_map = dof_map;
+%!   cms_data(1).cms_opt = cms_opt;
+%!   cms_data(1).mat_ass = mat_ass;
+%!   cms_data(1).load_case = load_case;
+%!   cms_data(2).mesh = mesh2;
+%!   cms_data(2).dof_map = dof_map2;
+%!   cms_data(2).cms_opt = cms_opt2;
+%!   cms_data(2).mat_ass = mat_ass2;
+%!   cms_data(2).load_case = load_case2;
+%!   cms_data(3).mesh = mesh3;
+%!   cms_data(3).dof_map = dof_map3;
+%!   cms_data(3).cms_opt = cms_opt3;
+%!   cms_data(3).mat_ass = mat_ass3;
+%!   cms_data(3).load_case = load_case3;
+%!   cms_data(3).cms_opt.element.name = [cms_data(3).cms_opt.element.name, "_1"];
+%!   cms_data(3).cms_opt.nodes.modal.name = [cms_data(3).cms_opt.nodes.modal.name, "_1"];
+%!   cms_data(3).cms_opt.nodes.interfaces.name = [cms_data(3).cms_opt.nodes.interfaces.name, "_1"];
+%!   cms_data(4).mesh = mesh3;
+%!   cms_data(4).dof_map = dof_map3;
+%!   cms_data(4).cms_opt = cms_opt3;
+%!   cms_data(4).mat_ass = mat_ass3;
+%!   cms_data(4).load_case = load_case3;
+%!   cms_data(4).cms_opt.element.name = [cms_data(4).cms_opt.element.name, "_2"];
+%!   cms_data(4).cms_opt.nodes.modal.name = [cms_data(4).cms_opt.nodes.modal.name, "_2"];
+%!   cms_data(4).cms_opt.nodes.interfaces.name = [cms_data(4).cms_opt.nodes.interfaces.name, "_2"];
 %!   options_mbdyn.output_file = [output_file, "_mbd"];
 %!   options_mbdyn.f_run_mbdyn2easyanim = false;
+%!   for i=1:numel(param.omega)
 %!   fd = -1;
 %!   unwind_protect
 %!     fd = fopen([output_file, "_mbd.mbdyn"], "w");
 %!     if (fd == -1)
 %!       error("failed to open file \"%s\"", [output_file, "_mbd.mbdyn"]);
 %!     endif
-%!     fprintf(fd, "set: real omega1 = %g;\n", param.omega1);
-%!     fprintf(fd, "set: real omega2 = %g;\n", param.omega2);
-%!     fprintf(fd, "set: real t2 = %g;\n", param.t2);
-%!     fputs(fd, "set: real dt = 2. * pi / 360 / omega1;\n");
+%!     fprintf(fd, "set: real omega = %g;\n", param.omega(i));
+%!     fputs(fd, "set: real t2 = 2 * pi / 10 / omega;\n");
+%!     fputs(fd, "set: real dt = 2. * pi / omega / 100;\n");
 %!     fprintf(fd, "set: real l1 = %g;\n", param.l1);
 %!     fprintf(fd, "set: real l2 = %g;\n", param.l2);
 %!     fprintf(fd, "set: real l3 = %g;\n", param.l3);
@@ -685,6 +718,7 @@
 %!     fprintf(fd, "set: real mu = %g;\n", param.mu);
 %!     fprintf(fd, "set: real sigma0 = %g;\n", param.sigma0);
 %!     fprintf(fd, "set: real pref = %g;\n", param.pref);
+%!     fprintf(fd, "set: real F1 = %g;\n", param.F1);
 %!     fputs(fd, "set: integer ref_id_assembly = 1001;\n");
 %!     fputs(fd, "set: integer ref_id_shaft = 1002;\n");
 %!     fputs(fd, "set: integer ref_id_drive = 1003;\n");
@@ -715,6 +749,7 @@
 %!     fputs(fd, "set: integer elem_id_support_bearing_1 = 4001;\n");
 %!     fputs(fd, "set: integer elem_id_support_bearing_2 = 4002;\n");
 %!     fputs(fd, "set: integer elem_id_big_end_bearing = 4003;\n");
+%!     fputs(fd, "set: integer force_id_load = 5001;\n");
 %!     fputs(fd, "begin: data;\n");
 %!     fputs(fd, "        problem: initial value;\n");
 %!     fputs(fd, "end: data;\n");
@@ -733,7 +768,6 @@
 %!     fputs(fd, "        derivatives max iterations: 5;\n");
 %!     fputs(fd, "        derivatives coefficient: 1e-6, auto;\n");
 %!     fputs(fd, "        output: iterations, cpu time, solver condition number, stat, yes;\n");
-%!     fputs(fd, "        threads: assembly, 1;\n");
 %!     fputs(fd, "end: initial value;\n");
 %!     fputs(fd, "begin: control data;\n");
 %!     fputs(fd, "       use automatic differentiation;\n");
@@ -745,6 +779,7 @@
 %!     fputs(fd, "       structural nodes: 10;\n");
 %!     fputs(fd, "       joints: 8;\n");
 %!     fputs(fd, "       loadable elements: 3;\n");
+%!     fputs(fd, "       forces: 1;\n");
 %!     fputs(fd, "end: control data;\n");
 %!     fputs(fd, "reference: ref_id_assembly,\n");
 %!     fputs(fd, "        position, reference, global, null,\n");
@@ -756,7 +791,7 @@
 %!     fputs(fd, "        orientation, reference, ref_id_assembly, eye,\n");
 %!     fputs(fd, "        velocity, reference, ref_id_assembly, null,\n");
 %!     fputs(fd, "        angular velocity, reference, ref_id_assembly,\n");
-%!     fputs(fd, "                omega1,\n");
+%!     fputs(fd, "                omega,\n");
 %!     fputs(fd, "                0.,\n");
 %!     fputs(fd, "                0.;\n");
 %!     fputs(fd, "reference: ref_id_drive,\n");
@@ -868,7 +903,7 @@
 %!     fputs(fd, "                        inactive,\n");
 %!     fputs(fd, "                        inactive,\n");
 %!     fputs(fd, "                        component,\n");
-%!     fputs(fd, "                                omega1,\n");
+%!     fputs(fd, "                                omega,\n");
 %!     fputs(fd, "                                null,\n");
 %!     fputs(fd, "                                null;\n");
 %!     fputs(fd, "        joint: joint_id_small_end_bearing, total pin joint,\n");
@@ -892,6 +927,12 @@
 %!     fputs(fd, "                                null,\n");
 %!     fputs(fd, "                                null,\n");
 %!     fputs(fd, "                                null;\n");
+%!     fputs(fd, "\n");
+%!     fputs(fd, "        force: force_id_load, absolute,\n");
+%!     fputs(fd, "          node_id_small_end_bearing_shell,\n");
+%!     fputs(fd, "          position,reference,node, null,\n");
+%!     fputs(fd, "          0.,0.,-1., mult, time, F1 / t2;\n");
+%!     fputs(fd, "\n");
 %!     fputs(fd, "        joint: joint_id_supporting_area1, clamp, node_id_supporting_area_1, node, node;\n");
 %!     fputs(fd, "        joint: joint_id_supporting_area2, clamp, node_id_supporting_area_2, node, node;\n");
 %!     fprintf(fd, "        include: \"%s_shaft_cms.elm\";\n", output_file);
@@ -958,6 +999,7 @@
 %!     fputs(fd, "                reynolds equation scale, dt / (rhol * Psi * ds),\n");
 %!     fputs(fd, "                elasticity equation scale, dt / (Psi * ds),\n");
 %!     fputs(fd, "                output pressure, yes,\n");
+%!     fputs(fd, "                output contact pressure, yes,\n");
 %!     fputs(fd, "                output stress, no,\n");
 %!     fputs(fd, "                output density, no,\n");
 %!     fputs(fd, "                output friction loss, yes,\n");
@@ -1026,6 +1068,7 @@
 %!     fputs(fd, "                reynolds equation scale, dt / (rhol * Psi * ds),\n");
 %!     fputs(fd, "                elasticity equation scale, dt / (Psi * ds),\n");
 %!     fputs(fd, "                output pressure, yes,\n");
+%!     fputs(fd, "                output contact pressure, yes,\n");
 %!     fputs(fd, "                output stress, no,\n");
 %!     fputs(fd, "                output density, no,\n");
 %!     fputs(fd, "                output friction loss, yes,\n");
@@ -1094,6 +1137,7 @@
 %!     fputs(fd, "                reynolds equation scale, dt / (rhol * Psi * d),\n");
 %!     fputs(fd, "                elasticity equation scale, dt / (Psi * d),\n");
 %!     fputs(fd, "                output pressure, yes,\n");
+%!     fputs(fd, "                output contact pressure, yes,\n");
 %!     fputs(fd, "                output stress, no,\n");
 %!     fputs(fd, "                output density, no,\n");
 %!     fputs(fd, "                output friction loss, yes,\n");
@@ -1122,11 +1166,21 @@
 %!    res.orientation_description] = mbdyn_post_load_output_struct(options_mbdyn.output_file);
 %!   [res.elem_id, res.q, res.qdot, res.qddot] = mbdyn_post_load_output_mod(options_mbdyn.output_file, numel(res.t));
 %!   res.bearings = mbdyn_post_ehd_load_output(options_mbdyn.output_file, res.log_dat);
+%!   opt_scale.scale_type = "least square";
+%!   opt_scale.scale = 5000;
+%!   opt_post.print_and_exit = false;
+%!   opt_scale.output_stress = FEM_SCA_STRESS_VMIS;
+%!   opt_post.step_start = -1;
+%!   opt_post.step_inc = -1;
+%!   opt_post.step_end = intmax;
+%!   opt_post.elem_types = {"tet10"};
+%!   fem_post_cms_sol_export(cms_data, options_mbdyn.output_file, options_mbdyn.output_file, opt_scale, opt_post);
+%!   endfor
 %! %unwind_protect_cleanup
 %!   if (numel(output_file))
 %!     fn = dir([output_file, "*"]);
 %!     for i=1:numel(fn)
-%!       status = unlink(fullfile(fn(i).folder, fn(i).name));
+%!       # status = unlink(fullfile(fn(i).folder, fn(i).name));
 %!       if (status ~= 0)
 %!         warning("failed to remove file \"%s\"", fn(i).name);
 %!       endif

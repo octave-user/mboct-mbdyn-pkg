@@ -37,8 +37,16 @@
 %!   param.Psis = 1e-3; ## relative clearance of the support bearings (assumption)
 %!   param.ws = 25e-3 / SI_unit_meter; ## width of the support bearings
 %!   param.h1 = 2e-3 / SI_unit_meter; ## axial gap between conrod big end bearing and support bearing (assumption)
-%!   param.sigma = sqrt(0.28e-6^2 + 0.13e-6^2) / SI_unit_meter;
-%!   param.delta = (0.39e-6 + 0.21e-6) / SI_unit_meter;
+%!   param.sigma1 = 0.13e-6 / SI_unit_meter;
+%!   param.sigma2 = 0.28e-6 / SI_unit_meter;
+%!   param.delta1 = 0.21e-6 / SI_unit_meter;
+%!   param.delta2 = 0.39e-6 / SI_unit_meter;
+%!   param.Rq1 = 0.20e-6 / SI_unit_meter;
+%!   param.Rq2 = 0.34e-6 / SI_unit_meter;
+%!   param.gamma1 = 4;
+%!   param.gamma2 = 12;
+%!   param.sigma = sqrt(param.sigma1^2 + param.sigma2^2);
+%!   param.delta = param.delta1 + param.delta2;
 %!   param.K = 0.001;
 %!   param.beta = param.sigma / (param.K / (16 * sqrt(2) * pi / 15 * 0.05^2))^2;
 %!   param.eta = 0.05 / (param.sigma * param.beta);
@@ -46,8 +54,6 @@
 %!   param.Ered = 53.3e9 / SI_unit_pascal;
 %!   param.mu = 0.02;
 %!   param.sigma0 = 1e-6 / SI_unit_meter;
-%!   param.gamma1 = 12;
-%!   param.gamma2 = 4;
 %!   param.l1 = param.w / 2 + param.ws / 2 + param.h1;
 %!   param.l2 = param.w / 2 + param.ws + param.h1;
 %!   param.l3 = 150e-3 / SI_unit_meter;
@@ -76,14 +82,14 @@
 %!   param.fact_etav = 1e-3;
 %!   param.pside = 1e5 / SI_unit_pascal;
 %!   param.pin = 1e5 / SI_unit_pascal;
-%!   param.hm = param.d * pi / 10; ## general mesh size 
+%!   param.hm = param.d * pi / 10; ## general mesh size
 %!   param.hb = param.d * pi / 40; ## mesh size at the bearing surface
-%!   param.number_of_nodes_x = 50;
-%!   param.number_of_nodes_z = 10;
+%!   param.number_of_nodes_x = 100;
+%!   param.number_of_nodes_z = 15;
 %!   param.num_modes_cms = int32(10); ## number of dynamic Craig Bampton modes
 %!   param.num_modes_bearing = int32(70); ## number of bearing modes
-%!   param.omega = [150,3000] * pi / 30 / SI_unit_second^-1;
-%!   param.F1 = 8e3 / SI_unit_newton;
+%!   param.omega = [150,200,250,300,400,500,1000,3000] * pi / 30 / SI_unit_second^-1;
+%!   param.F1 = [4e3, 8e3] / SI_unit_newton;
 %!   empty_cell = cell(1, 3);
 %!   ## steel shaft
 %!   group_defs = struct("id", empty_cell, ...
@@ -726,6 +732,10 @@
 %!         fprintf(fd, "set: real eta = %g;\n", param.eta);
 %!         fprintf(fd, "set: real beta = %g;\n", param.beta);
 %!         fprintf(fd, "set: real delta = %g;\n", param.delta);
+%!         fprintf(fd, "set: real Rq1 = %g;\n", param.Rq1);
+%!         fprintf(fd, "set: real Rq2 = %g;\n", param.Rq2);
+%!         fprintf(fd, "set: real gamma1 = %g;\n", param.gamma1);
+%!         fprintf(fd, "set: real gamma2 = %g;\n", param.gamma2);
 %!         fprintf(fd, "set: real Ered = %g;\n", param.Ered);
 %!         fprintf(fd, "set: real E = %g;\n", param.E);
 %!         fprintf(fd, "set: real nu = %g;\n", param.nu);
@@ -965,6 +975,7 @@
 %!         fputs(fd, "            viscosity vapor, factor, fact_etav,\n");
 %!         fputs(fd, "                mesh, linear finite difference,\n");
 %!         fputs(fd, "                enable mcp, yes,\n");
+%!         fputs(fd, "                flow factors, patir cheng, sigma, Rq1, Rq2, lambdax, gamma1, gamma2, lambdaz, 1., 1.,\n");
 %!         fputs(fd, "                geometry, cylindrical,\n");
 %!         fputs(fd, "                        mesh position, at bearing,\n");
 %!         fputs(fd, "                        bearing width, ws,\n");
@@ -1180,6 +1191,7 @@
 %!        data(i, j).res.force_node_id, ...
 %!        data(i, j).res.orientation_description] = mbdyn_post_load_output_struct(options_mbdyn.output_file);
 %!       [data(i, j).res.elem_id, data(i, j).res.q, data(i, j).res.qdot, data(i, j).res.qddot] = mbdyn_post_load_output_mod(options_mbdyn.output_file, numel(data(i, j).res.t));
+%!       [data(i, j).res.joint_id, data(i, j).res.local_reaction, data(i, j).res.global_reaction] = mbdyn_post_load_output_jnt(options_mbdyn.output_file);
 %!       data(i, j).res.bearings = mbdyn_post_ehd_load_output(options_mbdyn.output_file, data(i, j).res.log_dat);
 %!       opt_scale.scale_type = "least square";
 %!       opt_scale.scale = 5000;
@@ -1199,6 +1211,45 @@
 %!       output_files = mbdyn_post_ehd_export_data(data(i, j).res.mesh, data(i, j).res, [options_mbdyn.output_file, "_hydro.msh"], 1:numel(data(i, j).res.t), opt_post_h);
 %!     endfor
 %!   endfor
+%!   omega_ref_h_10MPa = [3000, 150] * pi / 30 / SI_unit_second^-1;
+%!   h_ref_10MPa = [2e-6, 0.7e-6] / SI_unit_meter;
+%!   omega_ref_10MPa = [3000,  1000,  500,  400,  300,   250,   200,  150] * pi / 30 / SI_unit_second^-1;
+%!   M_ref_10MPa     = [1.06, 0.544, 0.43, 0.46, 0.58, 0.747, 1.076, 1.71] / (SI_unit_newton * SI_unit_meter);
+%!   omega_ref_5MPa = [3000,  1000,   500,   400,   300,  250, 150] * pi / 30 / SI_unit_second^-1;
+%!   M_ref_5MPa     = [0.96,  0.46, 0.297, 0.257, 0.243, 0.34, 0.5] / (SI_unit_newton * SI_unit_meter);
+%!   omega_ref = {omega_ref_5MPa, omega_ref_10MPa};
+%!   M_ref = {M_ref_5MPa, M_ref_10MPa};
+%!   M_shaft = zeros(numel(param.omega), numel(param.F1));
+%!   min_h = zeros(numel(param.omega), numel(param.F1));
+%!   for j=1:numel(param.F1)
+%!     for i=1:numel(param.omega)
+%!       joint_idx = data(i, j).res.log_dat.vars.joint_id_drive == data(i, j).res.joint_id;
+%!       bearing_idx = data(i, j).res.log_dat.vars.elem_id_big_end_bearing == [data(i, j).res.bearings.label];
+%!       M_shaft(i, j) = -data(i, j).res.global_reaction{joint_idx}(end, 4);
+%!       min_h(i, j) = min(data(i, j).res.bearings(bearing_idx).columns.h_n(:));
+%!     endfor
+%!   endfor
+%!   for j=1:numel(param.F1)
+%!     figure("visible", "off");
+%!     hold on;
+%!     plot(omega_ref{j} * 30 / pi * SI_unit_second^-1, M_ref{j} * SI_unit_newton * SI_unit_meter, "-;Sander New;k");
+%!     plot(param.omega * 30 / pi * SI_unit_second^-1, M_shaft(:, j) * SI_unit_newton * SI_unit_meter, sprintf("-;MBDyn F1=%gN;r", param.F1(j)));
+%!     xlabel("n [rpm]");
+%!     ylabel("M [Nm]");
+%!     title("shaft input torque versus speed");
+%!     grid on;
+%!     grid minor on;
+%!   endfor
+%!   figure("visible", "off");
+%!   hold on;
+%!   plot(omega_ref_h_10MPa * 30 / pi * SI_unit_second^-1, 1e6 * h_ref_10MPa * SI_unit_meter, "-;Sander New;k");
+%!   plot(param.omega * 30 / pi * SI_unit_second^-1, 1e6 * min_h(:, 2) * SI_unit_meter, "-;MBDyn F1=8kN;r");
+%!   xlabel("n [rpm]");
+%!   ylabel("h [\\mum]");
+%!   grid on;
+%!   grid minor on;
+%!   title("minimum film thickness versus speed");
+%!   figure_list();
 %!                                 %unwind_protect_cleanup
 %!   if (numel(output_file))
 %!     fn = dir([output_file, "*"]);

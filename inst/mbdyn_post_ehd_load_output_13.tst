@@ -1255,6 +1255,38 @@
 %!     title(sprintf("frictional torque versus speed F1=%gN", param.F1(j) * SI_unit_newton));
 %!     grid minor on;
 %!   endfor
+%!   for j=1:numel(param.F1)
+%!     M_big_end_bearing = zeros(numel(param.omega), 2);
+%!     for i=1:numel(param.omega)
+%!       M_big_end_bearing(i, 1) = -data(i, j).res.bearings(3).columns.Pff(end) / param.omega(i);
+%!       M_big_end_bearing(i, 2) = -data(i, j).res.bearings(3).columns.Pfc(end) / param.omega(i);
+%!     endfor
+%!     M_big_end_bearing(:, 3) = M_big_end_bearing(:, 1) + M_big_end_bearing(:, 2);
+%!     figure("visible", "off");
+%!     hold on;
+%!     plot(param.omega * 30 / pi * SI_unit_second^-1, M_big_end_bearing(:, 1) * SI_unit_newton * SI_unit_meter, "-;hydrodynamic friction torque;r");
+%!     plot(param.omega * 30 / pi * SI_unit_second^-1, M_big_end_bearing(:, 2) * SI_unit_newton * SI_unit_meter, "-;asperity friction torque;b");
+%!     plot(param.omega * 30 / pi * SI_unit_second^-1, M_big_end_bearing(:, 3) * SI_unit_newton * SI_unit_meter, "-;total friction torque;k");
+%!     xlabel("n [rpm]");
+%!     ylabel("M [Nm]");
+%!     title(sprintf("frictional torque versus speed F1=%gN", param.F1(j) * SI_unit_newton));
+%!     grid minor on;
+%!   endfor
+%!   for j=1:numel(param.F1)
+%!     max_p = max_pc = zeros(numel(param.omega), 1);
+%!     for i=1:numel(param.omega)
+%!       max_p(i) = max(data(i, j).res.bearings(3).columns.p(:));
+%!       max_pc(i) = max(data(i, j).res.bearings(3).columns.pc(:));
+%!     endfor
+%!     figure("visible", "off");
+%!     hold on;
+%!     plot(param.omega * 30 / pi * SI_unit_second^-1, 1e-6 * max_p * SI_unit_pascal, "-;max(p);r");
+%!     plot(param.omega * 30 / pi * SI_unit_second^-1, 1e-6 * max_pc * SI_unit_pascal, "-;max(pc);b");
+%!     xlabel("n [rpm]");
+%!     ylabel("p [MPa]");
+%!     grid minor on;
+%!     title(sprintf("maximum pressure versus speed F1=%gN", param.F1(j) * SI_unit_newton));
+%!   endfor
 %!   figure("visible", "off");
 %!   hold on;
 %!   plot(omega_ref_h_10MPa * 30 / pi * SI_unit_second^-1, 1e6 * h_ref_10MPa * SI_unit_meter, "-;Sander New;k");

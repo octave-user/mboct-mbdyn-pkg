@@ -19,6 +19,7 @@
 %!   SI_unit_kelvin = 1;
 %!   SI_unit_newton = SI_unit_kilogram * SI_unit_meter / SI_unit_second^2;
 %!   SI_unit_pascal = SI_unit_newton / SI_unit_meter^2;
+%!   param.enable_Patir_Cheng = true;
 %!   param.E = 210000e6 / SI_unit_pascal; ## Young's modulus of the shaft
 %!   param.nu = 0.3; ## Poisson's ratio of the shaft
 %!   param.rho = 7850 / (SI_unit_kilogram / SI_unit_meter^3); ## density of the shaft
@@ -83,11 +84,11 @@
 %!   param.pside = 1e5 / SI_unit_pascal;
 %!   param.pin = 1e5 / SI_unit_pascal;
 %!   param.hm = param.d * pi / 10; ## general mesh size
-%!   param.hb = param.d * pi / 40; ## mesh size at the bearing surface
-%!   param.number_of_nodes_x = 100;
-%!   param.number_of_nodes_z = 15;
+%!   param.hb = param.d * pi / 20; ## mesh size at the bearing surface
+%!   param.number_of_nodes_x = 50;
+%!   param.number_of_nodes_z = 10;
 %!   param.num_modes_cms = int32(10); ## number of dynamic Craig Bampton modes
-%!   param.num_modes_bearing = int32(70); ## number of bearing modes
+%!   param.num_modes_bearing = int32(30); ## number of bearing modes
 %!   param.omega = [150,200,250,300,400,500,1000,3000] * pi / 30 / SI_unit_second^-1;
 %!   param.F1 = [4e3, 8e3] / SI_unit_newton;
 %!   empty_cell = cell(1, 3);
@@ -975,7 +976,9 @@
 %!         fputs(fd, "            viscosity vapor, factor, fact_etav,\n");
 %!         fputs(fd, "                mesh, linear finite difference,\n");
 %!         fputs(fd, "                enable mcp, yes,\n");
-%!         fputs(fd, "                flow factors, patir cheng, sigma, Rq1, Rq2, lambdax, gamma1, gamma2, lambdaz, 1., 1.,\n");
+%!         if (param.enable_Patir_Cheng)
+%!           fputs(fd, "                flow factors, patir cheng, sigma, Rq1, Rq2, lambdax, gamma1, gamma2, lambdaz, 1., 1.,\n");
+%!         endif
 %!         fputs(fd, "                geometry, cylindrical,\n");
 %!         fputs(fd, "                        mesh position, at bearing,\n");
 %!         fputs(fd, "                        bearing width, ws,\n");
@@ -1045,6 +1048,9 @@
 %!         fputs(fd, "            viscosity vapor, factor, fact_etav,\n");
 %!         fputs(fd, "                mesh, linear finite difference,\n");
 %!         fputs(fd, "                enable mcp, yes,\n");
+%!         if (param.enable_Patir_Cheng)
+%!           fputs(fd, "                flow factors, patir cheng, sigma, Rq1, Rq2, lambdax, gamma1, gamma2, lambdaz, 1., 1.,\n");
+%!         endif
 %!         fputs(fd, "                geometry, cylindrical,\n");
 %!         fputs(fd, "                        mesh position, at bearing,\n");
 %!         fputs(fd, "                        bearing width, ws,\n");
@@ -1114,6 +1120,9 @@
 %!         fputs(fd, "            viscosity vapor, factor, fact_etav,\n");
 %!         fputs(fd, "                mesh, linear finite difference,\n");
 %!         fputs(fd, "                enable mcp, yes,\n");
+%!         if (param.enable_Patir_Cheng)
+%!           fputs(fd, "                flow factors, patir cheng, sigma, Rq1, Rq2, lambdax, gamma1, gamma2, lambdaz, 1., 1.,\n");
+%!         endif
 %!         fputs(fd, "                geometry, cylindrical,\n");
 %!         fputs(fd, "                        mesh position, at bearing,\n");
 %!         fputs(fd, "                        bearing width, w,\n");

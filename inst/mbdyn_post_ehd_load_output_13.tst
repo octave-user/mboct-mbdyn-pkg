@@ -56,21 +56,21 @@
 %!   param.sigma0 = 1e-6 / SI_unit_meter;
 %!   param.l1 = param.w / 2 + param.ws / 2 + param.h1;
 %!   param.l2 = param.w / 2 + param.ws + param.h1;
-%!   param.l3 = 150e-3 / SI_unit_meter;
+%!   param.l3 = 182e-3 / SI_unit_meter;
 %!   param.dl = 50e-3 / SI_unit_meter;
 %!   param.l4 = 50e-3 / SI_unit_meter;
-%!   param.wr = 100e-3 / SI_unit_meter;
+%!   param.wr = 90e-3 / SI_unit_meter;
 %!   param.d2 = 140e-3 / SI_unit_meter;
-%!   param.l5 = 150e-3 / SI_unit_meter;
-%!   param.l6 = 70e-3 / SI_unit_meter;
-%!   param.l7 = 60e-3 / SI_unit_meter;
+%!   param.l5 = 162e-3 / SI_unit_meter;
+%!   param.l6 = 57e-3 / SI_unit_meter;
+%!   param.l7 = 54e-3 / SI_unit_meter;
 %!   param.l8 = 150e-3 / SI_unit_meter;
-%!   param.l9 = 200e-3 / SI_unit_meter;
-%!   param.l10 = 50e-3 / SI_unit_meter;
+%!   param.l9 = 246e-3 / SI_unit_meter;
+%!   param.l10 = 57e-3 / SI_unit_meter;
 %!   param.l11 = 10e-3 / SI_unit_meter;
 %!   param.l12 = 50e-3 / SI_unit_meter;
 %!   param.l13 = 70e-3 / SI_unit_meter;
-%!   param.l14 = 100e-3 / SI_unit_meter;
+%!   param.l14 = 132e-3 / SI_unit_meter;
 %!   param.l15 = 20e-3 / SI_unit_meter;
 %!   param.l16 = 20e-3 / SI_unit_meter;
 %!   param.pref = 100e6 / SI_unit_pascal; ## reference pressure
@@ -1233,11 +1233,26 @@
 %!     figure("visible", "off");
 %!     hold on;
 %!     plot(omega_ref{j} * 30 / pi * SI_unit_second^-1, M_ref{j} * SI_unit_newton * SI_unit_meter, "-;Sander New;k");
-%!     plot(param.omega * 30 / pi * SI_unit_second^-1, M_shaft(:, j) * SI_unit_newton * SI_unit_meter, sprintf("-;MBDyn F1=%gN;r", param.F1(j)));
+%!     plot(param.omega * 30 / pi * SI_unit_second^-1, M_shaft(:, j) * SI_unit_newton * SI_unit_meter, "-;MBDyn;r");
 %!     xlabel("n [rpm]");
 %!     ylabel("M [Nm]");
-%!     title("shaft input torque versus speed");
+%!     title(sprintf("shaft input torque versus speed F1=%gN", param.F1(j) * SI_unit_newton));
 %!     grid on;
+%!     grid minor on;
+%!   endfor
+%!   for j=1:numel(param.F1)
+%!     M_bearing = zeros(numel(param.omega), 3);
+%!     for i=1:numel(param.omega)
+%!       for k=1:3
+%!         M_bearing(i, k) = -data(i, j).res.bearings(k).columns.M1(end, 1);
+%!       endfor
+%!     endfor
+%!     figure("visible", "off");
+%!     area(param.omega * 30 / pi * SI_unit_second^-1, M_bearing);
+%!     xlabel("n [rpm]");
+%!     ylabel("M [Nm]");
+%!     legend("support bearing 1", "support bearing 2", "big end bearing");
+%!     title(sprintf("frictional torque versus speed F1=%gN", param.F1(j) * SI_unit_newton));
 %!     grid minor on;
 %!   endfor
 %!   figure("visible", "off");

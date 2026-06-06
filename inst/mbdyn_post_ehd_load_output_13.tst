@@ -85,8 +85,8 @@
 %!   param.pin = 1e5 / SI_unit_pascal;
 %!   param.hm = param.d * pi / 10; ## general mesh size
 %!   param.hb = param.d * pi / 40; ## mesh size at the bearing surface
-%!   param.number_of_nodes_x = 100;
-%!   param.number_of_nodes_z = 15;
+%!   param.number_of_nodes_x = 200;
+%!   param.number_of_nodes_z = 25;
 %!   param.num_modes_cms = int32(10); ## number of dynamic Craig Bampton modes
 %!   param.num_modes_bearing = int32(70); ## number of bearing modes
 %!   param.omega = [150,200,250,300,400,500,1000,3000] * pi / 30 / SI_unit_second^-1;
@@ -786,7 +786,7 @@
 %!         fputs(fd, "        linear solver: pardiso, grad, scale, row max column max, always, max iterations, 250;\n");
 %!         fprintf(fd, "      threads: assembly, %d;\n", mbdyn_solver_num_threads_default());
 %!         fprintf(fd, "      threads: solver, %d;\n", mbdyn_solver_num_threads_default());
-%!         fputs(fd, "        nonlinear solver: mcp newton min fb;\n");
+%!         fputs(fd, "          nonlinear solver: linesearch, modified, 0, default solver options, heavy nonlinear, divergence check, no, lambda min, 0., tolerance x, 1e-4, verbose, yes, print convergence info, yes;\n");
 %!         fputs(fd, "        tolerance: 1e-4, test, minmax, 1e-4, test, norm;\n");
 %!         fputs(fd, "        max iterations: 100;\n");
 %!         fputs(fd, "        derivatives tolerance: 1e-3;\n");
@@ -975,7 +975,7 @@
 %!         fputs(fd, "                temperature, Tl,\n");
 %!         fputs(fd, "            viscosity vapor, factor, fact_etav,\n");
 %!         fputs(fd, "                mesh, linear finite difference,\n");
-%!         fputs(fd, "                enable mcp, yes,\n");
+%!         fputs(fd, "                enable mcp, no,\n");
 %!         if (param.enable_Patir_Cheng)
 %!           fputs(fd, "                flow factors, patir cheng, sigma, Rq1, Rq2, lambdax, gamma1, gamma2, lambdaz, 1., 1.,\n");
 %!         endif
@@ -1047,7 +1047,7 @@
 %!         fputs(fd, "                temperature, Tl,\n");
 %!         fputs(fd, "            viscosity vapor, factor, fact_etav,\n");
 %!         fputs(fd, "                mesh, linear finite difference,\n");
-%!         fputs(fd, "                enable mcp, yes,\n");
+%!         fputs(fd, "                enable mcp, no,\n");
 %!         if (param.enable_Patir_Cheng)
 %!           fputs(fd, "                flow factors, patir cheng, sigma, Rq1, Rq2, lambdax, gamma1, gamma2, lambdaz, 1., 1.,\n");
 %!         endif
@@ -1119,7 +1119,7 @@
 %!         fputs(fd, "                temperature, Tl,\n");
 %!         fputs(fd, "            viscosity vapor, factor, fact_etav,\n");
 %!         fputs(fd, "                mesh, linear finite difference,\n");
-%!         fputs(fd, "                enable mcp, yes,\n");
+%!         fputs(fd, "                enable mcp, no,\n");
 %!         if (param.enable_Patir_Cheng)
 %!           fputs(fd, "                flow factors, patir cheng, sigma, Rq1, Rq2, lambdax, gamma1, gamma2, lambdaz, 1., 1.,\n");
 %!         endif

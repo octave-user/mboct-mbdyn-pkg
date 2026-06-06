@@ -1257,7 +1257,7 @@
 %!       endfor
 %!     endfor
 %!     figure("visible", "off");
-%!     area(param.omega * 30 / pi * SI_unit_second^-1, M_bearing);
+%!     area(param.omega * 30 / pi * SI_unit_second^-1, M_bearing * SI_unit_newton * SI_unit_meter);
 %!     xlabel("n [rpm]");
 %!     ylabel("M [Nm]");
 %!     legend("support bearing 1", "support bearing 2", "big end bearing");

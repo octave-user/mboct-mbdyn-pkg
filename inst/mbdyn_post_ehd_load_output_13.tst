@@ -5,20 +5,25 @@
 %!   ## EHD TEST CASE according D.E. Sander, H. Allmaier, H.H. Priebsch, M. Witt and A. Skiadas
 %!   ## Simulation of journal bearing friction in severe mixed lubrication - Validation and effect of surface smoothing due to running-in.
 %!   ####################################################################################################################################
-%!   close all;
 %!   pkg load mboct-fem-pkg;
 %!   output_file = "";
 %!   output_file = tempname();
 %!   if (ispc())
 %!     output_file(output_file == "\\") = "/";
 %!   endif
-%!                                 %unwind_protect
+%!   %unwind_protect
 %!   SI_unit_meter = 1e-3;
 %!   SI_unit_kilogram = 1e-3;
 %!   SI_unit_second = 1e-3;
 %!   SI_unit_kelvin = 1;
 %!   SI_unit_newton = SI_unit_kilogram * SI_unit_meter / SI_unit_second^2;
 %!   SI_unit_pascal = SI_unit_newton / SI_unit_meter^2;
+%!   options.enable_plots = false;
+%!   options.enable_post_proc = false;
+%!   options.enable_all_cond = false;
+%!   if (options.enable_plots)
+%!     close all;
+%!   endif
 %!   param.enable_Patir_Cheng = true;
 %!   param.E = 210000e6 / SI_unit_pascal; ## Young's modulus of the shaft
 %!   param.nu = 0.3; ## Poisson's ratio of the shaft
@@ -84,13 +89,18 @@
 %!   param.pside = 1e5 / SI_unit_pascal;
 %!   param.pin = 1e5 / SI_unit_pascal;
 %!   param.hm = param.d * pi / 10; ## general mesh size
-%!   param.hb = param.d * pi / 40; ## mesh size at the bearing surface
-%!   param.number_of_nodes_x = 200;
-%!   param.number_of_nodes_z = 25;
+%!   param.hb = param.d * pi / 30; ## mesh size at the bearing surface
+%!   param.number_of_nodes_x = 100;
+%!   param.number_of_nodes_z = 15;
 %!   param.num_modes_cms = int32(10); ## number of dynamic Craig Bampton modes
-%!   param.num_modes_bearing = int32(70); ## number of bearing modes
-%!   param.omega = [150,200,250,300,400,500,1000,3000] * pi / 30 / SI_unit_second^-1;
-%!   param.F1 = [4e3, 8e3] / SI_unit_newton;
+%!   param.num_modes_bearing = int32(40); ## number of bearing modes
+%!   if (options.enable_all_cond)
+%!     param.omega = [150,200,250,300,400,500,1000,3000] * pi / 30 / SI_unit_second^-1;
+%!     param.F1 = [4e3, 8e3] / SI_unit_newton;
+%!   else
+%!     param.omega = [150,500,3000] * pi / 30 / SI_unit_second^-1;
+%!     param.F1 = [8e3] / SI_unit_newton;
+%!   endif
 %!   empty_cell = cell(1, 3);
 %!   ## steel shaft
 %!   group_defs = struct("id", empty_cell, ...
@@ -257,7 +267,6 @@
 %!   group_defs3(2).compliance_matrix.number_of_modes = param.num_modes_bearing;
 %!   group_defs3(2).compliance_matrix.include_rigid_body_modes = true;
 %!   group_defs3(2).bearing = "elem_id_support_bearing";
-
 %!   fd = -1;
 %!   unwind_protect
 %!     fd = fopen([output_file, "_support.geo"], "w");
@@ -336,7 +345,6 @@
 %!       fclose(fd);
 %!     endif
 %!   end_unwind_protect
-%!   ##spawn_wait(spawn("gmsh", {[output_file, "_support.geo"]}));
 %!   pid = spawn("gmsh", {"-format", "msh2", "-order", "2", "-3", [output_file, "_support.geo"]});
 %!   status = spawn_wait(pid);
 %!   mesh3 = fem_pre_mesh_import([output_file, "_support.msh"], "gmsh");
@@ -1202,6 +1210,7 @@
 %!       [data(i, j).res.elem_id, data(i, j).res.q, data(i, j).res.qdot, data(i, j).res.qddot] = mbdyn_post_load_output_mod(options_mbdyn.output_file, numel(data(i, j).res.t));
 %!       [data(i, j).res.joint_id, data(i, j).res.local_reaction, data(i, j).res.global_reaction] = mbdyn_post_load_output_jnt(options_mbdyn.output_file);
 %!       data(i, j).res.bearings = mbdyn_post_ehd_load_output(options_mbdyn.output_file, data(i, j).res.log_dat);
+%!       if (options.enable_post_proc)
 %!       opt_scale.scale_type = "least square";
 %!       opt_scale.scale = 5000;
 %!       opt_post.print_and_exit = false;
@@ -1218,6 +1227,7 @@
 %!       data(i, j).res.mesh = mbdyn_post_ehd_create_mesh(data(i, j).res.log_dat);
 %!       mbdyn_post_ehd_export_mesh(data(i, j).res.mesh, [options_mbdyn.output_file, "_hydro.msh"]);
 %!       output_files = mbdyn_post_ehd_export_data(data(i, j).res.mesh, data(i, j).res, [options_mbdyn.output_file, "_hydro.msh"], 1:numel(data(i, j).res.t), opt_post_h);
+%!       endif
 %!     endfor
 %!   endfor
 %!   omega_ref_h_10MPa = [3000, 150] * pi / 30 / SI_unit_second^-1;
@@ -1226,8 +1236,13 @@
 %!   M_ref_10MPa     = [1.06, 0.544, 0.43, 0.46, 0.58, 0.747, 1.076, 1.71] / (SI_unit_newton * SI_unit_meter);
 %!   omega_ref_5MPa = [3000,  1000,   500,   400,   300,  250, 150] * pi / 30 / SI_unit_second^-1;
 %!   M_ref_5MPa     = [0.96,  0.46, 0.297, 0.257, 0.243, 0.34, 0.5] / (SI_unit_newton * SI_unit_meter);
-%!   omega_ref = {omega_ref_5MPa, omega_ref_10MPa};
-%!   M_ref = {M_ref_5MPa, M_ref_10MPa};
+%!   if (options.enable_all_cond)
+%!     omega_ref = {omega_ref_5MPa, omega_ref_10MPa};
+%!     M_ref = {M_ref_5MPa, M_ref_10MPa};
+%!   else
+%!     omega_ref = {omega_ref_10MPa};
+%!     M_ref = {M_ref_10MPa};
+%!   endif
 %!   M_shaft = zeros(numel(param.omega), numel(param.F1));
 %!   min_h = zeros(numel(param.omega), numel(param.F1));
 %!   for j=1:numel(param.F1)
@@ -1238,6 +1253,7 @@
 %!       min_h(i, j) = min(data(i, j).res.bearings(bearing_idx).columns.h_n(:));
 %!     endfor
 %!   endfor
+%!   if (options.enable_plots)
 %!   for j=1:numel(param.F1)
 %!     figure("visible", "off");
 %!     hold on;
@@ -1306,17 +1322,25 @@
 %!   grid minor on;
 %!   title("minimum film thickness versus speed");
 %!   figure_list();
-%!                                 %unwind_protect_cleanup
+%!   endif
+%!   tol = 0.15;
+%!   for j=1:numel(param.F1)
+%!     for i=1:numel(param.omega)
+%!       M_ref_ij = interp1(omega_ref{j}, M_ref{j}, param.omega(i), "linear");
+%!       assert(M_shaft(i, j), M_ref_ij, tol * max(abs(M_ref{j})))
+%!     endfor
+%!   endfor
+%!   %unwind_protect_cleanup
 %!   if (numel(output_file))
 %!     fn = dir([output_file, "*"]);
 %!     for i=1:numel(fn)
-%!       #status = unlink(fullfile(fn(i).folder, fn(i).name));
+%!       status = unlink(fullfile(fn(i).folder, fn(i).name));
 %!       if (status ~= 0)
 %!         warning("failed to remove file \"%s\"", fn(i).name);
 %!       endif
 %!     endfor
 %!   endif
-%!                                 %end_unwind_protect
+%!   %end_unwind_protect
 %! catch
 %!   gtest_error = lasterror();
 %!   gtest_fail(gtest_error, evalin("caller", "__file"));

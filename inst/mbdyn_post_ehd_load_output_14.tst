@@ -1,19 +1,20 @@
 ## mbdyn_post_ehd_load_output.tst:01
 %!test
 %! try
+%!   close all;
 %!   pkg load mbdyn_util_oct;
 %!   ## References: Elastohydrodynamic Lubrication in a Cylindrical Journal Bearing
 %!   ##             COMSOL Multiphysics 6.4
-%!   SI_unit_meter = 1e-3;
-%!   SI_unit_kilogram = 1e-3;
-%!   SI_unit_second = 1e-3;
+%!   SI_unit_meter = 1;
+%!   SI_unit_kilogram = 1;
+%!   SI_unit_second = 1;
 %!   SI_unit_newton = SI_unit_kilogram * SI_unit_meter / SI_unit_second^2;
 %!   SI_unit_pascal = SI_unit_newton / SI_unit_meter^2;
 %!   omega = [100, 316.23, 1000, 3162.3, 10000] * pi / 30 / SI_unit_second^-1;
-%!   omega = omega(1);
+%!   omega = omega([1,5]);
 %!   res = repmat(struct(), 1, numel(omega));
 %!   for j=1:numel(omega)
-%!     param.F1 = 20e3 / SI_unit_newton;
+%!     param.F1 = 40e3 / SI_unit_newton;
 %!     param.omega = omega(j);
 %!     param.d = 200e-3 / SI_unit_meter;
 %!     param.h0 = 200e-6 / SI_unit_meter;
@@ -23,16 +24,16 @@
 %!     param.eta0 = 75e-3 / (SI_unit_pascal * SI_unit_second);
 %!     param.alpha = 25e-9 / SI_unit_pascal^-1;
 %!     param.rho0 = 850 / (SI_unit_kilogram / SI_unit_meter^3);
-%!     param.Arho1 = 0*0.6e-9 / SI_unit_pascal^-1;
-%!     param.Arho2 = 0*1.7e-9 / SI_unit_pascal^-1;
+%!     param.Arho1 = 0.6e-9 / SI_unit_pascal^-1;
+%!     param.Arho2 = 1.7e-9 / SI_unit_pascal^-1;
 %!     param.pref = 100 / SI_unit_pascal;
 %!     param.p_side = param.pref;
 %!     param.p_in = 2e5 / SI_unit_pascal;
 %!     param.pmax = 100e5 / SI_unit_pascal;
 %!     param.M = int32(20);
-%!     param.N = int32(85);
+%!     param.N = int32(200);
 %!     param.output_bearing_data = true;
-%!     param.cavitation_model = "mass conserving";
+%!     param.cavitation_model = "non mass conserving";
 %!     param.hydraulic_nodes = true;
 %!     param.jacobian_check = false;
 %!     param.nonlinear_solver = "nox";
@@ -64,7 +65,7 @@
 %!         endif
 %!         fputs(fd, "set: real n = 3;\n");
 %!         fputs(fd, "set: real t1 = abs(2 * pi * n / omega);\n");
-%!         fputs(fd, "set: real dt = t1 / 100;\n");
+%!         fputs(fd, "set: real dt = t1 / 200;\n");
 %!         fputs(fd, "begin: data;\n");
 %!         fputs(fd, "        problem: initial value; # the default\n");
 %!         fputs(fd, "end: data;\n");
@@ -74,10 +75,10 @@
 %!         fputs(fd, "        time step: dt;\n");
 %!         fputs(fd, "        max iterations: 50;\n");
 %!         fputs(fd, "        tolerance: 1e-6, test, norm, 1e-4, test, norm;\n");
-%!         fputs(fd, "        linear solver: umfpack, grad, colamd, scale, row max column max, always;\n");
+%!         fputs(fd, "        linear solver: umfpack, grad, colamd, scale, row max column max, always, max iterations, 10;\n");
 %!         fputs(fd, "        enforce constraint equations: constraint violations, scale factor, 1e5;\n");
 %!         fputs(fd, "        threads: assembly, 1;\n");
-%!         fputs(fd, "        method: hybrid, ms, 0.;\n");
+%!         fputs(fd, "        method: implicit euler;\n");
 %!         fputs(fd, "        output: messages;\n");
 %!         fputs(fd, "        derivatives tolerance: 3e-3, 1e-3;\n");
 %!         fputs(fd, "        derivatives max iterations: 20;\n");
@@ -240,6 +241,8 @@
 %!             fputs(fd, "                Arho1, Arho1,\n");
 %!             fputs(fd, "                Arho2, Arho2,\n");
 %!             fputs(fd, "            viscosity vapor, factor, 1e-3,\n");
+%!         otherwise
+%!             error("unknown cavitation model");
 %!         endswitch
 %!         fputs(fd, "            mesh, linear finite difference,\n");
 %!         switch (param.nonlinear_solver)
@@ -317,8 +320,8 @@
 %!       endif
 %!       res(j).log_dat.vars = mbdyn_post_id_to_index(res(j), res(j).log_dat.vars);
 %!       opt_load.verbose = false;
-%!       opt_load.num_steps = numel(res.t);
-%!       opt_load.output_index = 1:numel(res.t);
+%!       opt_load.num_steps = numel(res(j).t);
+%!       opt_load.output_index = 1:numel(res(j).t);
 %!       opt_load.loaded_fields = {};
 %!       opt_load.interpolate_mesh = true;
 %!       res(j).bearings = mbdyn_post_ehd_load_output(opt_sol.output_file, res(j).log_dat, opt_load);
@@ -327,20 +330,30 @@
 %!         fn = dir([output_file, "*"]);
 %!         for i=1:numel(fn)
 %!           fn_i = fullfile(fn(i).folder, fn(i).name);
+%!    %{
 %!           status = unlink(fn_i);
 %!           if (status ~= 0)
 %!             warning("failed to remove file \"%s\"", fn_i);
 %!           endif
+%!    %}
 %!         endfor
 %!       endif
 %!     end_unwind_protect
 %!   endfor
+%!   pref_10000   = [  0, 18, 67,   79, 78, 60, 40, 24, 10,  2];
+%!   Phiref_10000 = [330,320,300,287.6,280,260,240,220,200,188];
+%!   pref_100 =     [  0,200,200,48,   9,  4,  2];
+%!   Phiref_100 =   [282,280,271,260,240,220,200];
+%!   colors = rainbow(numel(omega));
 %!   figure("visible", "off");
 %!   hold on;
 %!   for j=1:numel(res)
-%!     plot(1e3 * res(j).bearings.xi(1,:) * SI_unit_meter, 1e-5 * res(j).bearings.columns.p(floor(end/2),:, end) * SI_unit_pascal, sprintf("-;%.2f;", 30 / pi * omega(j) * SI_unit_second^-1));
+%!     set(plot(res(j).bearings.xi(1,:) / (0.5 * res(j).log_dat.bearings.cylindrical.dm) * 180 / pi, 1e-5 * res(j).bearings.columns.p(floor(end/2),:, end) * SI_unit_pascal, sprintf("-;MBDyn %.2frpm;", 30 / pi * omega(j) * SI_unit_second^-1)), "color", colors(j, :));
 %!   endfor
-%!   xlabel("x [mm]");
+%!   set(plot(Phiref_100, pref_100, "--;COMSOL 100rpm;k"), "color", colors(1, :));
+%!   set(plot(Phiref_10000, pref_10000, "--;COMSOL 10000rpm;k"), "color", colors(2, :));
+%!   xlim([180,360]);
+%!   xlabel("\\phi [deg]");
 %!   ylabel("p [bar]");
 %!   title("midplane pressure");
 %!   grid minor on;

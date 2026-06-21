@@ -11,7 +11,6 @@
 %!   SI_unit_newton = SI_unit_kilogram * SI_unit_meter / SI_unit_second^2;
 %!   SI_unit_pascal = SI_unit_newton / SI_unit_meter^2;
 %!   omega = [100, 316.23, 1000, 3162.3, 10000] * pi / 30 / SI_unit_second^-1;
-%!   omega = omega([1,5]);
 %!   res = repmat(struct(), 1, numel(omega));
 %!   for j=1:numel(omega)
 %!     param.F1 = 40e3 / SI_unit_newton;
@@ -30,16 +29,16 @@
 %!     param.p_side = param.pref;
 %!     param.p_in = 2e5 / SI_unit_pascal;
 %!     param.pmax = 100e5 / SI_unit_pascal;
-%!     param.M = int32(20);
-%!     param.N = int32(200);
+%!     param.M = int32(10);
+%!     param.N = int32(50);
 %!     param.output_bearing_data = true;
 %!     param.cavitation_model = "non mass conserving";
-%!     param.hydraulic_nodes = true;
+%!     param.hydraulic_nodes = false;
 %!     param.jacobian_check = false;
 %!     param.nonlinear_solver = "nox";
 %!     fd = -1;
 %!     output_file = "";
-%!     unwind_protect
+%!     %unwind_protect
 %!       unwind_protect
 %!         output_dir = tempdir();
 %!         [fd, output_file] = mkstemp(fullfile(output_dir, "oct-mbdyn_post_ehd_load_output_XXXXXX"));
@@ -306,7 +305,6 @@
 %!         endif
 %!       end_unwind_protect
 %!       opt_sol.output_file = output_file;
-%!       shell(sprintf("nl %s", output_file));
 %!       info = mbdyn_solver_run(output_file, opt_sol);
 %!       res(j).log_dat = mbdyn_post_load_log(opt_sol.output_file);
 %!       [res(j).t, ...
@@ -325,20 +323,18 @@
 %!       opt_load.loaded_fields = {};
 %!       opt_load.interpolate_mesh = true;
 %!       res(j).bearings = mbdyn_post_ehd_load_output(opt_sol.output_file, res(j).log_dat, opt_load);
-%!     unwind_protect_cleanup
+%!     %unwind_protect_cleanup
 %!       if (numel(output_file))
 %!         fn = dir([output_file, "*"]);
 %!         for i=1:numel(fn)
 %!           fn_i = fullfile(fn(i).folder, fn(i).name);
-%!    %{
 %!           status = unlink(fn_i);
 %!           if (status ~= 0)
 %!             warning("failed to remove file \"%s\"", fn_i);
 %!           endif
-%!    %}
 %!         endfor
 %!       endif
-%!     end_unwind_protect
+%!     %end_unwind_protect
 %!   endfor
 %!   pref_10000   = [  0, 18, 67,   79, 78, 60, 40, 24, 10,  2];
 %!   Phiref_10000 = [330,320,300,287.6,280,260,240,220,200,188];
@@ -351,12 +347,13 @@
 %!     set(plot(res(j).bearings.xi(1,:) / (0.5 * res(j).log_dat.bearings.cylindrical.dm) * 180 / pi, 1e-5 * res(j).bearings.columns.p(floor(end/2),:, end) * SI_unit_pascal, sprintf("-;MBDyn %.2frpm;", 30 / pi * omega(j) * SI_unit_second^-1)), "color", colors(j, :));
 %!   endfor
 %!   set(plot(Phiref_100, pref_100, "--;COMSOL 100rpm;k"), "color", colors(1, :));
-%!   set(plot(Phiref_10000, pref_10000, "--;COMSOL 10000rpm;k"), "color", colors(2, :));
+%!   set(plot(Phiref_10000, pref_10000, "--;COMSOL 10000rpm;k"), "color", colors(5, :));
 %!   xlim([180,360]);
 %!   xlabel("\\phi [deg]");
 %!   ylabel("p [bar]");
 %!   title("midplane pressure");
 %!   grid minor on;
+%!   figure_list();
 %! catch
 %!   gtest_error = lasterror();
 %!   gtest_fail(gtest_error, evalin("caller", "__file"));

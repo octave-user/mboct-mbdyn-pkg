@@ -352,7 +352,9 @@
 %!   endfor
 %!   pref_10000   = [  0, 18, 67,   79, 78, 60, 40, 24, 10,  2];
 %!   Phiref_10000 = [330,320,300,287.6,280,260,240,220,200,188];
-%!   pref_100 =     [  0,200,200,48,   9,  4,  2];
+%!   pref_316 =     [  0,214,150, 60, 16,  6,  4];
+%!   Phiref_316 =   [289,280,271,260,240,220,200];
+%!   pref_100 =     [  0,200,200, 48,  9,  4,  2];
 %!   Phiref_100 =   [282,280,271,260,240,220,200];
 %!   colors = rainbow(numel(omega));
 %!   figure("visible", "off");
@@ -361,6 +363,7 @@
 %!     set(plot(res(j).bearings.xi(1,:) / (0.5 * res(j).log_dat.bearings.cylindrical.dm) * 180 / pi, 1e-5 * res(j).bearings.columns.p(floor(end/2),:, end) * SI_unit_pascal, sprintf("-;MBDyn %.2frpm;", 30 / pi * omega(j) * SI_unit_second^-1)), "color", colors(j, :));
 %!   endfor
 %!   set(plot(Phiref_100, pref_100, "--;COMSOL 100rpm;k"), "color", colors(1, :));
+%!   set(plot(Phiref_316, pref_316, "--;COMSOL 316.23rpm;k"), "color", colors(2, :));
 %!   set(plot(Phiref_10000, pref_10000, "--;COMSOL 10000rpm;k"), "color", colors(5, :));
 %!   xlim([180,360]);
 %!   xlabel("\\phi [deg]");

@@ -33,7 +33,7 @@
 %!     param.N = int32(50);
 %!     param.output_bearing_data = true;
 %!     param.cavitation_model = "non mass conserving";
-%!     param.hydraulic_nodes = false;
+%!     param.hydraulic_nodes = true;
 %!     param.jacobian_check = false;
 %!     param.nonlinear_solver = "nox";
 %!     fd = -1;

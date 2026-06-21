@@ -32,10 +32,10 @@
 %!     param.M = int32(15);
 %!     param.N = int32(85);
 %!     param.output_bearing_data = true;
-%!     param.cavitation_model = "mass conserving";
+%!     param.cavitation_model = "non mass conserving";
 %!     param.hydraulic_nodes = true;
 %!     param.jacobian_check = false;
-%!     param.nonlinear_solver = "mcp";
+%!     param.nonlinear_solver = "nox";
 %!     fd = -1;
 %!     output_file = "";
 %!     %unwind_protect
@@ -85,6 +85,19 @@
 %!         fputs(fd, "        output: iterations, solver condition number, stat, yes;\n");
 %!         switch (param.nonlinear_solver)
 %!         case "nox"
+%!         switch (param.cavitation_model)
+%!         case "non mass conserving"
+%!         fputs(fd, "        nonlinear solver: nox, modified, 10,\n");
+%!         fputs(fd, "             jacobian operator, newton krylov,\n");
+%!         fputs(fd, "             solver, line search based,\n");
+%!         fputs(fd, "             forcing term, type 2,\n");
+%!         fputs(fd, "             direction, newton,\n");
+%!         fputs(fd, "             weighted rms absolute tolerance, 0.,\n");
+%!         fputs(fd, "             weighted rms relative tolerance, 0.,\n");
+%!         fputs(fd, "             linear solver, gmres,\n");
+%!         fputs(fd, "             linear solver max iterations, 100,\n");
+%!         fputs(fd, "             krylov subspace size, 100;\n");
+%!         otherwise
 %!         fputs(fd, "        nonlinear solver: nox,\n");
 %!         fputs(fd, "             jacobian operator, newton,\n");
 %!         fputs(fd, "             solver, line search based,\n");
@@ -95,6 +108,7 @@
 %!         fputs(fd, "             linear solver, gmres,\n");
 %!         fputs(fd, "             linear solver max iterations, 100,\n");
 %!         fputs(fd, "             krylov subspace size, 100;\n");
+%!         endswitch
 %!         case "mcp"
 %!         fputs(fd, "        nonlinear solver: mcp newton min fb;\n");
 %!         otherwise

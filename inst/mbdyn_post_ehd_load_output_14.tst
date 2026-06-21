@@ -29,8 +29,8 @@
 %!     param.p_side = param.pref;
 %!     param.p_in = 2e5 / SI_unit_pascal;
 %!     param.pmax = 100e5 / SI_unit_pascal;
-%!     param.M = int32(10);
-%!     param.N = int32(50);
+%!     param.M = int32(15);
+%!     param.N = int32(85);
 %!     param.output_bearing_data = true;
 %!     param.cavitation_model = "mass conserving";
 %!     param.hydraulic_nodes = true;

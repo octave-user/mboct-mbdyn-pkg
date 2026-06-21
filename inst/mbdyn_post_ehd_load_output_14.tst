@@ -32,10 +32,10 @@
 %!     param.M = int32(10);
 %!     param.N = int32(50);
 %!     param.output_bearing_data = true;
-%!     param.cavitation_model = "non mass conserving";
+%!     param.cavitation_model = "mass conserving";
 %!     param.hydraulic_nodes = true;
 %!     param.jacobian_check = false;
-%!     param.nonlinear_solver = "nox";
+%!     param.nonlinear_solver = "mcp";
 %!     fd = -1;
 %!     output_file = "";
 %!     %unwind_protect

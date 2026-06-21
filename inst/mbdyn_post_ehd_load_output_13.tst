@@ -80,8 +80,9 @@
 %!   param.l15 = 20e-3 / SI_unit_meter;
 %!   param.l16 = 20e-3 / SI_unit_meter;
 %!   param.pref = 100e6 / SI_unit_pascal; ## reference pressure
-%!   param.rhol = 900 / (SI_unit_kilogram / SI_unit_meter^3);
+%!   param.rhol = 832.5 / (SI_unit_kilogram / SI_unit_meter^3);
 %!   param.etal = 6.8e-3 / (SI_unit_pascal * SI_unit_second);
+%!   param.alpha = 9.5e-9 / SI_unit_pascal^-1;
 %!   param.betal = 2.4e9 / SI_unit_pascal;
 %!   param.Tl = 100 / SI_unit_kelvin;
 %!   param.pcl = 100 / SI_unit_pascal;
@@ -89,11 +90,12 @@
 %!   param.pside = 1e5 / SI_unit_pascal;
 %!   param.pin = 1e5 / SI_unit_pascal;
 %!   param.hm = param.d * pi / 10; ## general mesh size
-%!   param.hb = param.d * pi / 30; ## mesh size at the bearing surface
+%!   param.hb = param.d * pi / 40; ## mesh size at the bearing surface
 %!   param.number_of_nodes_x = 100;
 %!   param.number_of_nodes_z = 15;
 %!   param.num_modes_cms = int32(10); ## number of dynamic Craig Bampton modes
-%!   param.num_modes_bearing = int32(40); ## number of bearing modes
+%!   param.num_modes_bearing = int32(70); ## number of bearing modes
+%!   param.solver = "mcp";
 %!   if (options.enable_all_cond)
 %!     param.omega = [150,200,250,300,400,500,1000,3000] * pi / 30 / SI_unit_second^-1;
 %!     param.F1 = [4e3, 8e3] / SI_unit_newton;
@@ -723,6 +725,7 @@
 %!         fprintf(fd, "set: real l14 = %g;\n", param.l14);
 %!         fprintf(fd, "set: real pcl = %g;\n", param.pcl);
 %!         fprintf(fd, "set: real etal = %g;\n", param.etal);
+%!         fprintf(fd, "set: real alpha = %g;\n", param.alpha);
 %!         fprintf(fd, "set: real betal = %g;\n", param.betal);
 %!         fprintf(fd, "set: real rhol = %g;\n", param.rhol);
 %!         fprintf(fd, "set: real Tl = %g;\n", param.Tl);
@@ -794,11 +797,18 @@
 %!         fputs(fd, "        linear solver: pardiso, grad, scale, row max column max, always, max iterations, 250;\n");
 %!         fprintf(fd, "      threads: assembly, %d;\n", mbdyn_solver_num_threads_default());
 %!         fprintf(fd, "      threads: solver, %d;\n", mbdyn_solver_num_threads_default());
-%!         fputs(fd, "          nonlinear solver: linesearch, modified, 0, default solver options, heavy nonlinear, divergence check, no, lambda min, 0., tolerance x, 1e-4, verbose, yes, print convergence info, yes;\n");
+%!         switch (param.solver)
+%!         case "linesearch"
+%!           fputs(fd, "        nonlinear solver: linesearch, modified, 0, default solver options, heavy nonlinear, divergence check, no, lambda min, 0., tolerance x, 1e-4, verbose, yes, print convergence info, yes;\n");
+%!         case "mcp"
+%!           fputs(fd, "        nonlinear solver: mcp newton min fb;\n");
+%!         case "nox"
+%!           fputs(fd, "        nonlinear solver: nox, use preconditioner as solver, yes, minimum step, 1e-11, recovery step, 1e-5;\n");
+%!         endswitch
 %!         fputs(fd, "        tolerance: 1e-4, test, minmax, 1e-4, test, norm;\n");
 %!         fputs(fd, "        max iterations: 100;\n");
-%!         fputs(fd, "        derivatives tolerance: 1e-3;\n");
-%!         fputs(fd, "        derivatives max iterations: 5;\n");
+%!         fputs(fd, "        derivatives tolerance: 1e-4, 1e-4;\n");
+%!         fputs(fd, "        derivatives max iterations: 10;\n");
 %!         fputs(fd, "        derivatives coefficient: 1e-6, auto;\n");
 %!         fputs(fd, "        output: iterations, cpu time, solver condition number, stat, yes;\n");
 %!         fputs(fd, "end: initial value;\n");
@@ -981,9 +991,15 @@
 %!         fputs(fd, "                pressure, pcl,\n");
 %!         fputs(fd, "                viscosity, etal,\n");
 %!         fputs(fd, "                temperature, Tl,\n");
+%!         fputs(fd, "                alpha, alpha,\n");
 %!         fputs(fd, "            viscosity vapor, factor, fact_etav,\n");
 %!         fputs(fd, "                mesh, linear finite difference,\n");
-%!         fputs(fd, "                enable mcp, no,\n");
+%!         switch (param.solver)
+%!         case "mcp"
+%!           fputs(fd, "                enable mcp, yes,\n");
+%!         otherwise
+%!           fputs(fd, "                enable mcp, no,\n");
+%!         endswitch
 %!         if (param.enable_Patir_Cheng)
 %!           fputs(fd, "                flow factors, patir cheng, sigma, Rq1, Rq2, lambdax, gamma1, gamma2, lambdaz, 1., 1.,\n");
 %!         endif
@@ -1055,7 +1071,12 @@
 %!         fputs(fd, "                temperature, Tl,\n");
 %!         fputs(fd, "            viscosity vapor, factor, fact_etav,\n");
 %!         fputs(fd, "                mesh, linear finite difference,\n");
-%!         fputs(fd, "                enable mcp, no,\n");
+%!         switch (param.solver)
+%!         case "mcp"
+%!           fputs(fd, "                enable mcp, yes,\n");
+%!         otherwise
+%!           fputs(fd, "                enable mcp, no,\n");
+%!         endswitch
 %!         if (param.enable_Patir_Cheng)
 %!           fputs(fd, "                flow factors, patir cheng, sigma, Rq1, Rq2, lambdax, gamma1, gamma2, lambdaz, 1., 1.,\n");
 %!         endif
@@ -1127,7 +1148,12 @@
 %!         fputs(fd, "                temperature, Tl,\n");
 %!         fputs(fd, "            viscosity vapor, factor, fact_etav,\n");
 %!         fputs(fd, "                mesh, linear finite difference,\n");
-%!         fputs(fd, "                enable mcp, no,\n");
+%!         switch (param.solver)
+%!         case "mcp"
+%!           fputs(fd, "                enable mcp, yes,\n");
+%!         otherwise
+%!           fputs(fd, "                enable mcp, no,\n");
+%!         endswitch
 %!         if (param.enable_Patir_Cheng)
 %!           fputs(fd, "                flow factors, patir cheng, sigma, Rq1, Rq2, lambdax, gamma1, gamma2, lambdaz, 1., 1.,\n");
 %!         endif
@@ -1315,7 +1341,7 @@
 %!   figure("visible", "off");
 %!   hold on;
 %!   plot(omega_ref_h_10MPa * 30 / pi * SI_unit_second^-1, 1e6 * h_ref_10MPa * SI_unit_meter, "-;Sander New;k");
-%!   plot(param.omega * 30 / pi * SI_unit_second^-1, 1e6 * min_h(:, 2) * SI_unit_meter, "-;MBDyn F1=8kN;r");
+%!   plot(param.omega * 30 / pi * SI_unit_second^-1, 1e6 * min_h(:, end) * SI_unit_meter, "-;MBDyn F1=8kN;r");
 %!   xlabel("n [rpm]");
 %!   ylabel("h [\\mum]");
 %!   grid on;

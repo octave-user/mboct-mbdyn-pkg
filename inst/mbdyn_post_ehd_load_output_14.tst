@@ -1,10 +1,9 @@
 ## mbdyn_post_ehd_load_output.tst:01
 %!test
+%! ## References: Elastohydrodynamic Lubrication in a Cylindrical Journal Bearing
+%! ##             COMSOL Multiphysics 6.4 http://www.comsol.com
 %! try
-%!   close all;
 %!   pkg load mbdyn_util_oct;
-%!   ## References: Elastohydrodynamic Lubrication in a Cylindrical Journal Bearing
-%!   ##             COMSOL Multiphysics 6.4
 %!   SI_unit_meter = 1;
 %!   SI_unit_kilogram = 1;
 %!   SI_unit_second = 1;
@@ -12,6 +11,10 @@
 %!   SI_unit_pascal = SI_unit_newton / SI_unit_meter^2;
 %!   omega = [100, 316.23, 1000, 3162.3, 10000] * pi / 30 / SI_unit_second^-1;
 %!   res = repmat(struct(), 1, numel(omega));
+%!   options.do_plot = false;
+%!   if (options.do_plot)
+%!     close all;
+%!   endif
 %!   for j=1:numel(omega)
 %!     param.F1 = 40e3 / SI_unit_newton;
 %!     param.omega = omega(j);
@@ -79,7 +82,7 @@
 %!         fputs(fd, "        threads: assembly, 1;\n");
 %!         fputs(fd, "        method: implicit euler;\n");
 %!         fputs(fd, "        output: messages;\n");
-%!         fputs(fd, "        derivatives tolerance: 3e-3, 1e-3;\n");
+%!         fputs(fd, "        derivatives tolerance: 4e-3, 1e-3;\n");
 %!         fputs(fd, "        derivatives max iterations: 20;\n");
 %!         fputs(fd, "        derivatives coefficient: 1e-3, auto;\n");
 %!         fputs(fd, "        output: iterations, solver condition number, stat, yes;\n");
@@ -356,11 +359,17 @@
 %!   Phiref_316 =   [289,280,271,260,240,220,200];
 %!   pref_100 =     [  0,200,200, 48,  9,  4,  2];
 %!   Phiref_100 =   [282,280,271,260,240,220,200];
+%!   Phi = p = zeros(numel(res), columns(res(1).bearings.xi));
+%!   for j=1:numel(res)
+%!     Phi(j, :) = res(j).bearings.xi(1,:) / (0.5 * res(j).log_dat.bearings.cylindrical.dm) * 180 / pi;
+%!     p(j, :) = 1e-5 * res(j).bearings.columns.p(ceil(end/2),:, end) * SI_unit_pascal;
+%!   endfor
+%!   if (options.do_plot)
 %!   colors = rainbow(numel(omega));
 %!   figure("visible", "off");
 %!   hold on;
 %!   for j=1:numel(res)
-%!     set(plot(res(j).bearings.xi(1,:) / (0.5 * res(j).log_dat.bearings.cylindrical.dm) * 180 / pi, 1e-5 * res(j).bearings.columns.p(floor(end/2),:, end) * SI_unit_pascal, sprintf("-;MBDyn %.2frpm;", 30 / pi * omega(j) * SI_unit_second^-1)), "color", colors(j, :));
+%!     set(plot(Phi(j, :), p(j, :),sprintf("-;MBDyn %.2frpm;", 30 / pi * omega(j) * SI_unit_second^-1)), "color", colors(j, :));
 %!   endfor
 %!   set(plot(Phiref_100, pref_100, "--;COMSOL 100rpm;k"), "color", colors(1, :));
 %!   set(plot(Phiref_316, pref_316, "--;COMSOL 316.23rpm;k"), "color", colors(2, :));
@@ -371,6 +380,20 @@
 %!   title("midplane pressure");
 %!   grid minor on;
 %!   figure_list();
+%!   endif
+%!   tolx = 5;
+%!   toly = 7e-2;
+%!   function [status, dy] = compare_curves(x1, y1, x2, y2, tolx, toly)
+%!     dx = linspace(-tolx, tolx, 21);
+%!     dy = realmax(size(y2));
+%!     for i=1:numel(dx)
+%!       dy = min(dy, abs(interp1(x1 + dx(i), y1, x2, "extrap", "linear") - y2));
+%!     endfor
+%!     status = max(dy) <= toly;
+%!   endfunction
+%!   assert_simple(compare_curves(Phi(5, :), p(5, :), Phiref_10000, pref_10000, tolx, toly * max(abs(pref_10000))));
+%!   assert_simple(compare_curves(Phi(2, :), p(2, :), Phiref_316,   pref_316,   tolx, toly * max(abs(pref_316))));
+%!   assert_simple(compare_curves(Phi(1, :), p(1, :), Phiref_100,   pref_100,   tolx, toly * max(abs(pref_100))));
 %! catch
 %!   gtest_error = lasterror();
 %!   gtest_fail(gtest_error, evalin("caller", "__file"));

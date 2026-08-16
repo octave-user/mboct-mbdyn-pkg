@@ -1060,9 +1060,16 @@
 %! param.g = 9.81 / (SI_unit.meter / SI_unit.second^2);
 %! m1 = param.D^2 * pi / 4 * param.w * param.rho;
 %! param.dr = param.ecg * (m1 + param.dm) / param.dm;
-%! param.omega0 = 1000 * pi / 30 / (1 / SI_unit.second);
-%! param.omega1 = 10000 * pi / 30 / (1 / SI_unit.second);
-%! param.n = 5;
+%! switch (mbdyn_testsuite_test_type())
+%! case "full"
+%!   param.n = 5;
+%!   param.omega0 = 1000 * pi / 30 / (1 / SI_unit.second);
+%!   param.omega1 = 10000 * pi / 30 / (1 / SI_unit.second);
+%! case "quick"
+%!   param.n = 1;
+%!   param.omega0 = 1000 * pi / 30 / (1 / SI_unit.second);
+%!   param.omega1 = 5000 * pi / 30 / (1 / SI_unit.second);
+%! endswitch
 %! options.number_of_modes = int32(10);
 %! options.scale_def = 10e-3;
 %! options.geo_tol = sqrt(eps);

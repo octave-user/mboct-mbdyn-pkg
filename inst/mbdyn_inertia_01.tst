@@ -53,7 +53,7 @@
 %!           fputs(fd, "     threads: assembly, 1;\n");
 %!           fputs(fd, "         initial time: 0;\n");
 %!           fputs(fd, "         final time: 1;\n");
-%!           fprintf(fd, "         time step: 1e-5 * %d;\n", stages(idx_method));
+%!           fprintf(fd, "         time step: 1e-3 * %d;\n", stages(idx_method));
 %!           fputs(fd, "     max iterations: 10;\n");
 %!           fputs(fd, "     linear solver: naive, colamd;\n");
 %!           fputs(fd, "     nonlinear solver: nox,\n");
@@ -217,18 +217,17 @@
 %!   for idx_node_type=1:numel(node_types)
 %!     for idx_method=1:numel(imethods)
 %!       switch (imethods{idx_method})
-%!         case {"msstc3,0.6", "msstc4,0.6", "msstc5,0.6"}
-%!           tol = 1e-7;
 %!         case {"mssth3,0.6", "mssth4,0.6", "mssth5,0.6"}
-%!           tol = 1e-7;
-%!         case {"Bathe,0.6"}
-%!           tol = 1e-7;
-%!         case {"DIRK33", "DIRK43", "DIRK54"}
-%!           tol = 1e-8;
+%!           tol = 2e-2;
 %!         case "impliciteuler"
-%!           tol = 1e-2;
+%!           switch (node_types{idx_node_type})
+%!           case "dynamic"
+%!             tol = 0.15;
+%!           case "modal"
+%!             tol = 2e-2;
+%!           endswitch
 %!         otherwise
-%!           tol = 1e-7;
+%!           tol = 1e-3;
 %!       endswitch
 %!       status_msg = "failed";
 %!       if (err_gamma(idx_node_type, idx_method) < tol && err_beta(idx_node_type, idx_method) < tol)

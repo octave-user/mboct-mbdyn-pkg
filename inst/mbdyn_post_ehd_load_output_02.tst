@@ -72,8 +72,14 @@
 %!        2.3923	1.7362	1.4746	1.2690	0.9782	0.7904	0.6617	0.4982];
 %! So = beta = mu = Q = dQ = nan(numel(epsilon_r), numel(B_d_r));
 %! cavitation = "mass conserving";
-%! test_freq_eps = 1;
-%! test_freq_B = 1000;
+%! switch (mbdyn_testsuite_test_type())
+%! case "full"
+%!   test_freq_eps = 1;
+%!   test_freq_B = 1000;
+%! case "quick"
+%!   test_freq_eps = 7;
+%!   test_freq_B = 1000;
+%! endswitch
 %! verbose = false;
 %! for j=1:test_freq_eps:numel(epsilon_r)
 %! for k=1:test_freq_B:numel(B_d_r)
@@ -467,14 +473,27 @@
 %!   title(sprintf("Non-dimensional oil flow pure displacement B/d=%.2f", B_d_r(i)));
 %! endfor
 %! endif
-%! assert_simple(mean(mean(abs(So(1:test_freq_eps:end, 1:test_freq_B:end) ./ So_r(1:test_freq_eps:end,1:test_freq_B:end) - 1))) < 0.02);
-%! assert_simple(mean(mean(abs(beta(1:test_freq_eps:end,1:test_freq_B:end) - beta_r(1:test_freq_eps:end, 1:test_freq_B:end)))) < 1e-6 * pi / 180);
-%! assert_simple(mean(mean(abs(mu(1:test_freq_eps:end,1:test_freq_B:end)))) < 1e-8);
-%! assert_simple(mean(mean(abs(Q(1:test_freq_eps:end,1:test_freq_B:end) ./ Q_r(1:test_freq_eps:end,1:test_freq_B:end) - 1))) < 0.06);
-%! assert_simple(max(max(abs(So(1:test_freq_eps:end,1:test_freq_B:end) ./ So_r(1:test_freq_eps:end,1:test_freq_B:end) - 1))) < 0.11);
-%! assert_simple(max(max(abs(beta(1:test_freq_eps:end,1:test_freq_B:end) - beta_r(1:test_freq_eps:end,1:test_freq_B:end)))) < 1e-6 * pi / 180);
-%! assert_simple(max(max(abs(mu(1:test_freq_eps:end,1:test_freq_B:end)))) < 1e-8);
-%! assert_simple(max(max(abs(Q(1:test_freq_eps:end,1:test_freq_B:end) ./ Q_r(1:test_freq_eps:end,1:test_freq_B:end) - 1))) < 0.07);
+%! switch (mbdyn_testsuite_test_type())
+%! case "full"
+%!   tol_So_mean = 0.02;
+%! case "quick"
+%!   tol_So_mean = 0.04;
+%! endswitch
+%! tol_beta_mean = 1e-6 * pi / 180;
+%! tol_mu_mean = 1e-8;
+%! tol_Q_mean = 0.06;
+%! tol_So_max = 0.11;
+%! tol_beta_max = 1e-6 * pi / 180;
+%! tol_mu_max = 1e-8;
+%! tol_Q_max = 0.07;
+%! assert_simple(mean(mean(abs(So(1:test_freq_eps:end, 1:test_freq_B:end) ./ So_r(1:test_freq_eps:end,1:test_freq_B:end) - 1))) < tol_So_mean);
+%! assert_simple(mean(mean(abs(beta(1:test_freq_eps:end,1:test_freq_B:end) - beta_r(1:test_freq_eps:end, 1:test_freq_B:end)))) < tol_beta_mean);
+%! assert_simple(mean(mean(abs(mu(1:test_freq_eps:end,1:test_freq_B:end)))) < tol_mu_mean);
+%! assert_simple(mean(mean(abs(Q(1:test_freq_eps:end,1:test_freq_B:end) ./ Q_r(1:test_freq_eps:end,1:test_freq_B:end) - 1))) < tol_Q_mean);
+%! assert_simple(max(max(abs(So(1:test_freq_eps:end,1:test_freq_B:end) ./ So_r(1:test_freq_eps:end,1:test_freq_B:end) - 1))) < tol_So_max);
+%! assert_simple(max(max(abs(beta(1:test_freq_eps:end,1:test_freq_B:end) - beta_r(1:test_freq_eps:end,1:test_freq_B:end)))) < tol_beta_max);
+%! assert_simple(max(max(abs(mu(1:test_freq_eps:end,1:test_freq_B:end)))) < tol_mu_max);
+%! assert_simple(max(max(abs(Q(1:test_freq_eps:end,1:test_freq_B:end) ./ Q_r(1:test_freq_eps:end,1:test_freq_B:end) - 1))) < tol_Q_max);
 %! catch
 %!   gtest_error = lasterror();
 %!   gtest_fail(gtest_error, evalin("caller", "__file"));

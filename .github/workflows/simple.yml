@@ -154,7 +154,7 @@ jobs:
 
       - name: Check mboct-mbdyn-pkg
         run: |
-          make NUM_TASKS=${MBD_NUM_TASKS} -C "${GITHUB_WORKSPACE}" check_installed_parallel
+          MBD_TEST_TYPE=full make NUM_TASKS=${MBD_NUM_TASKS} -C "${GITHUB_WORKSPACE}" check_installed_parallel
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4

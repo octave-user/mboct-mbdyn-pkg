@@ -93,7 +93,7 @@
 %!             fprintf(fd, " set: real E = %g;\n", E(i));
 %!             fprintf(fd, " set: real G = %g;\n", G);
 %!             fprintf(fd, " set: real rho = %g;\n", rho(i));
-%!             fprintf(fd, " set: real fmin = %g;\n", 1e-1 * min(omega_crit) / (2 * pi));
+%!             fprintf(fd, " set: real fmin = %g;\n", 0.5 * min(omega_crit) / (2 * pi));
 %!             fprintf(fd, " set: real fmax = %g;\n", 1.5 * max(omega_crit) / (2 * pi));
 %!             fputs(fd, " begin: data;\n");
 %!             fputs(fd, "         problem: initial value;\n");
@@ -124,7 +124,7 @@
 %!                 ncv = 2 * nev + 1;
 %!                 fprintf(fd, ",\n        use arpack, %d, %d, 0", nev, ncv);
 %!               case "lapack"
-%!                 fprintf(fd, ",\n        use lapack");
+%!                 fprintf(fd, ",\n        use lapack, balance, permute");
 %!             endswitch
 %!             fputs(fd, ";\n");
 %!             fputs(fd, "         nonlinear solver: nox, modified, 10,\n");
@@ -215,6 +215,18 @@
 %!             endfor
 %!           endif
 %! %end_unwind_protect
+%!         for idxnc=1:numel(F)
+%!           fprintf(stderr, "eigenvalues MBDyn #%d(%s,%s,%s):\n", idxnc, linear_solvers{n}, solvers{m}, which_eigenvalues{k});
+%!           for o=1:numel(modal{idxnc}.f)
+%!             fprintf(stderr, "%d: %.3fHz\n", o, modal{idxnc}.f(o));
+%!           endfor
+%!           fprintf(stderr, "\n\n");
+%!         endfor
+%!         fprintf(stderr, "analytical eigenvalues:\n");
+%!         for o=1:numel(omega_crit)
+%!           fprintf(stderr, "%d: %.3fHz\n", o, omega_crit(o) / (2 * pi));
+%!         endfor
+%!         fprintf(stderr, "\n\n");
 %!         tol = 2e-2;
 %!         for idxnc=1:numel(F)
 %!           assert_simple(sum(abs(F{idxnc} - V.' * wstat).^2) / sum(abs(V * wstat).^2) < tol);

@@ -57,8 +57,14 @@
 %!        1.5277  0.9351  0.7674  0.6461  0.4892  0.393   0.3282  0.2467];
 %!
 %! So = beta = mu = Q = dQ = mu_r = nan(numel(epsilon_r), numel(B_d_r));
-%! test_freq_eps = 4;
-%! test_freq_B = 4;
+%! switch (mbdyn_testsuite_test_type())
+%! case "full"
+%!   test_freq_eps = 4;
+%!   test_freq_B = 4;
+%! case "quick"
+%!   test_freq_eps = 7;
+%!   test_freq_B = 8;
+%! endswitch
 %! verbose = false;
 %! f_plot = true;
 %! for j=1:test_freq_eps:numel(epsilon_r)

@@ -21,7 +21,12 @@
 %!   b = 40e-3 / SI_unit_meter;
 %!   c = 10e-3 / SI_unit_meter;
 %!   d = 0e-3 / SI_unit_meter;
-%!   h = 2 * c;
+%!   switch (mbdyn_testsuite_test_type())
+%!   case "full"
+%!     h = 2 * c;
+%!   case "quick"
+%!     h = 10 * c;
+%!   endswitch
 %!   options.interactive = false;
 %!   options.plot = false;
 %!   options.verbose = false;
@@ -52,9 +57,9 @@
 %!     fputs(fd, "Line(4) = {4, 1};\n");
 %!     fputs(fd, "Line Loop(1) = {1, 2, 3, 4};\n");
 %!     fputs(fd, "Plane Surface(1) = {1};\n");
-%!     fputs(fd, "Transfinite Curve(1) = Max(1, Round(b / h)) + 1;\n");
+%!     fputs(fd, "Transfinite Curve(1) = Max(2, Round(b / h)) + 1;\n");
 %!     fputs(fd, "Transfinite Curve(2) = Max(1, Round(a / h)) + 1;\n");
-%!     fputs(fd, "Transfinite Curve(3) = Max(1, Round(b / h)) + 1;\n");
+%!     fputs(fd, "Transfinite Curve(3) = Max(2, Round(b / h)) + 1;\n");
 %!     fputs(fd, "Transfinite Curve(4) = Max(1, Round(a / h)) + 1;\n");
 %!     fputs(fd, "v1 = Extrude{0,0,c}{Surface{1}; Layers{Max(1, Round(c / h))}; Recombine;};\n");
 %!     fputs(fd, "Recombine Surface{1,v1[0]};\n");
@@ -82,16 +87,17 @@
 %!   if (status ~= 0)
 %!     warning("gmsh failed with status %d", status);
 %!   endif
-%!   mesh = fem_pre_mesh_reorder(fem_pre_mesh_import([filename, ".msh"], "gmsh"));
+%!   opt_msh.elem_type = {"quad8r", "iso20r"};
+%!   mesh = fem_pre_mesh_reorder(fem_pre_mesh_import([filename, ".msh"], "gmsh", opt_msh));
 %!   mesh.material_data.E = 70000e6 / SI_unit_pascal;
 %!   mesh.material_data.nu = 0.3;
 %!   mesh.material_data.rho = 2700 / (SI_unit_kilogram / SI_unit_meter^3);
 %!   mesh.material_data.alpha = 0e-5 / (1 / SI_unit_second);
 %!   mesh.material_data.beta = 0e-5 / (SI_unit_second);
-%!   mesh.materials.iso20 = zeros(rows(mesh.elements.iso20), 1, "int32");
-%!   grp_idx_beam = find([[mesh.groups.iso20].id] == 1);
-%!   grp_idx_clamp = find([[mesh.groups.quad8].id] == 1);
-%!   mesh.materials.iso20(mesh.groups.iso20(grp_idx_beam).elements) = 1;
+%!   mesh.materials.iso20r = zeros(rows(mesh.elements.iso20r), 1, "int32");
+%!   grp_idx_beam = find([[mesh.groups.iso20r].id] == 1);
+%!   grp_idx_clamp = find([[mesh.groups.quad8r].id] == 1);
+%!   mesh.materials.iso20r(mesh.groups.iso20r(grp_idx_beam).elements) = 1;
 %!   cms_opt.number_of_threads = options.number_of_threads;
 %!   cms_opt.algorithm = "diag-shift-invert";
 %!   cms_opt.nodes.modal.number = rows(mesh.nodes) + 2;
@@ -100,7 +106,7 @@
 %!   cms_opt.nodes.interfaces.name = "node_id_interface1";
 %!   mesh.nodes(cms_opt.nodes.modal.number, 1:3) = [0, 0, 0];
 %!   mesh.nodes(cms_opt.nodes.interfaces.number, 1:3) = [a + d, 0, 0];
-%!   mesh.elements.rbe3 = fem_pre_mesh_rbe3_from_surf(mesh, [2], [cms_opt.nodes.interfaces.number], "quad8");
+%!   mesh.elements.rbe3 = fem_pre_mesh_rbe3_from_surf(mesh, [2], [cms_opt.nodes.interfaces.number], "quad8r");
 %!   cms_opt.refine_max_iter = 30;
 %!   cms_opt.pre_scaling = false;
 %!   cms_opt.solver = "umfpack"; ## Need to test at least one case with an unsymmetric solver
@@ -112,7 +118,7 @@
 %!   cms_opt.update_binary = true;
 %!   cms_opt.invariants = true;
 %!   load_case_dof.locked_dof = false(size(mesh.nodes));
-%!   load_case_dof.locked_dof(mesh.groups.quad8(grp_idx_clamp).nodes, 1:3) = true;
+%!   load_case_dof.locked_dof(mesh.groups.quad8r(grp_idx_clamp).nodes, 1:3) = true;
 %!   load_case_dof.locked_dof(cms_opt.nodes.modal.number, :) = true; ## Avoid singular matrix
 %!   [mesh_cms, mat_ass_cms, dof_map_cms, sol_eig_cms, cms_opt, sol_tau_cms] = fem_cms_create2(mesh, load_case_dof, cms_opt);
 %!   fem_cms_export(filename, mesh_cms, dof_map_cms, mat_ass_cms, cms_opt);
@@ -692,7 +698,7 @@
 %!     endfor
 %!   endfor
 %!   load_case_dof.locked_dof = false(size(mesh.nodes));
-%!   load_case_dof.locked_dof(mesh.groups.quad8(grp_idx_clamp).nodes, 1:3) = true;
+%!   load_case_dof.locked_dof(mesh.groups.quad8r(grp_idx_clamp).nodes, 1:3) = true;
 %!   load_case_dof.locked_dof(cms_opt.nodes.modal.number, :) = true; ## Avoid singular matrix
 %!   dof_map = fem_ass_dof_map(mesh, load_case_dof);
 %!   dof_map.parallel.threads_ass = options.number_of_threads;
@@ -710,7 +716,7 @@
 %!     load_case(i).omega = zeros(3, 1);
 %!     load_case(i).omegadot = zeros(3, 1);
 %!     load_case(i).g = zeros(3, 1);
-%!     load_case(i).tau0.iso20 = zeros(rows(mesh.elements.iso20), columns(mesh.elements.iso20), 6);
+%!     load_case(i).tau0.iso20r = zeros(rows(mesh.elements.iso20r), columns(mesh.elements.iso20r), 6);
 %!   endfor
 %!   sol_eig = struct("def", empty_cell, "lambda", empty_cell, "f", empty_cell, "D", empty_cell);
 %!   sol_eig_red = struct("lambda_red", empty_cell, "Ured", empty_cell);
@@ -801,9 +807,16 @@
 %!       [sol_eig_red(j, k).Ured, sol_eig_red(j, k).lambda_red] = fem_sol_eigsd(Kred, Dred, Mred, cms_opt.modes.number, cms_opt);
 %!     endfor
 %!   endfor
-%!   tol_abs = [0, 0, 0] / SI_unit_second^-1;
-%!   tol_rel = [0.3e-2, 4.5e-2, 3e-2];
-%!   tol_disp_rel = 4e-2;
+%!   switch (mbdyn_testsuite_test_type())
+%!   case "full"
+%!     tol_abs = [0, 0, 0] / SI_unit_second^-1;
+%!     tol_rel = [0.3e-2, 4.5e-2, 3e-2];
+%!     tol_disp_rel = 4e-2;
+%!   case "quick"
+%!     tol_abs = [0, 0, 0] / SI_unit_second^-1;
+%!     tol_rel = [1e-2,   8e-2,   5e-2];
+%!     tol_disp_rel = 7e-2;
+%!   endswitch
 %!   err_u_modal = err_v_modal = zeros(size(param));
 %!   printf("deformation/velocity:\n");
 %!   colors = rainbow(3);

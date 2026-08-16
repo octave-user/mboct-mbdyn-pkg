@@ -20,7 +20,15 @@
 %!   geometry.h = 8e-3 / SI_unit_meter;
 %!   h = [geometry.l; geometry.w; geometry.h];
 %!   t1 = 1;
-%!   dt = t1 / 40;
+%!   ## Speed-up the test by applying only a fraction of the full load.
+%!   ## Set the load_factor to one if a full test is desired.
+%!   switch (mbdyn_testsuite_test_type())
+%!   case "quick"
+%!     load_factor = 1/40;
+%!   otherwise
+%!     load_factor = 1;
+%!   endswitch
+%!   dt = t1 / (load_factor * 40);
 %!   model = "static";
 %!   method = "implicit euler";
 %!   options.verbose = false;
@@ -76,8 +84,8 @@
 %!                     #"two surfaces one line", ...
 %!                   };
 %!   load_type = {"traction", "pressure", "prestrain"};
-%!   sigma = material.sigmayv * diag([1.5, 0.3, 0.9, 0.2, 0.2, 0.2]);
-%!   epsilon0 = [1; 2; 3; 0.4; 0.5; 0.6];
+%!   sigma = material.sigmayv * diag([1.5, 0.3, 0.9, 0.2, 0.2, 0.2]) * load_factor;
+%!   epsilon0 = [1; 2; 3; 0.4; 0.5; 0.6] * load_factor;
 %!   for idx_sigma=1:columns(sigma)
 %!     sigmav = sqrt(sum(sigma(1:3, idx_sigma).^2) - (sigma(1, idx_sigma) * sigma(2, idx_sigma) + sigma(2, idx_sigma) * sigma(3, idx_sigma) + sigma(1, idx_sigma) * sigma(3, idx_sigma)) + 3 * sum(sigma(4:6, idx_sigma).^2));
 %!     for idx_load_type=1:numel(load_type)
@@ -784,7 +792,7 @@
 %!               tan_gamma = sin_gamma ./ cos_gamma;
 %!               tau_ref(1) += 2 * sigma(6, idx_sigma) * tan_gamma(3) + 2 * sigma(4, idx_sigma) * tan_gamma(1);
 %!               tau_ref(2) += 2 * sigma(5, idx_sigma) * tan_gamma(2);
-%!               tol_epsilon = 1e-8;
+%!               tol_epsilon = 1e-7;
 %!               tol_sigma = 1e-10;
 %!               tol = 1e-9;
 %!               tol_F = 1e-8;

@@ -1,17 +1,17 @@
 ## mbdyn_post_ehd_load_output.tst:10
 %!test
 %! try
-%!   ####################################################################################################################################
-%!   ## EHD TEST CASE according D.E. Sander, H. Allmaier, H.H. Priebsch, M. Witt and A. Skiadas
-%!   ## Simulation of journal bearing friction in severe mixed lubrication - Validation and effect of surface smoothing due to running-in.
-%!   ####################################################################################################################################
+%! ####################################################################################################################################
+%! ## EHD TEST CASE according D.E. Sander, H. Allmaier, H.H. Priebsch, M. Witt and A. Skiadas
+%! ## Simulation of journal bearing friction in severe mixed lubrication - Validation and effect of surface smoothing due to running-in.
+%! ####################################################################################################################################
 %!   pkg load mboct-fem-pkg;
 %!   output_file = "";
 %!   output_file = tempname();
 %!   if (ispc())
 %!     output_file(output_file == "\\") = "/";
 %!   endif
-%!   %unwind_protect
+%!                                 %unwind_protect
 %!   SI_unit_meter = 1e-3;
 %!   SI_unit_kilogram = 1e-3;
 %!   SI_unit_second = 1e-3;
@@ -25,6 +25,7 @@
 %!     close all;
 %!   endif
 %!   param.enable_Patir_Cheng = true;
+%!   param.enable_JFO = true;
 %!   param.E = 210000e6 / SI_unit_pascal; ## Young's modulus of the shaft
 %!   param.nu = 0.3; ## Poisson's ratio of the shaft
 %!   param.rho = 7850 / (SI_unit_kilogram / SI_unit_meter^3); ## density of the shaft
@@ -89,12 +90,24 @@
 %!   param.fact_etav = 1e-3;
 %!   param.pside = 1e5 / SI_unit_pascal;
 %!   param.pin = 1e5 / SI_unit_pascal;
-%!   param.hm = param.d * pi / 10; ## general mesh size
-%!   param.hb = param.d * pi / 40; ## mesh size at the bearing surface
-%!   param.number_of_nodes_x = 100;
-%!   param.number_of_nodes_z = 15;
-%!   param.num_modes_cms = int32(10); ## number of dynamic Craig Bampton modes
-%!   param.num_modes_bearing = int32(70); ## number of bearing modes
+%!   switch (mbdyn_testsuite_test_type())
+%!   case "quick"
+%!     param.hm = param.d * pi / 5; ## general mesh size
+%!     param.hb = param.d * pi / 20; ## mesh size at the bearing surface
+%!     param.number_of_nodes_x = 50;
+%!     param.number_of_nodes_z = 10;
+%!     param.num_modes_cms = int32(10); ## number of dynamic Craig Bampton modes
+%!     param.num_modes_big_end_bearing = int32(30); ## number of pressure modes
+%!     param.num_modes_support_bearing = int32(30);
+%!   case "full"
+%!     param.hm = param.d * pi / 10; ## general mesh size
+%!     param.hb = param.d * pi / 40; ## mesh size at the bearing surface
+%!     param.number_of_nodes_x = 100;
+%!     param.number_of_nodes_z = 15;
+%!     param.num_modes_cms = int32(10); ## number of dynamic Craig Bampton modes
+%!     param.num_modes_big_end_bearing = int32(70); ## number of pressure modes
+%!     param.num_modes_support_bearing = int32(70);
+%!   endswitch
 %!   param.solver = "mcp";
 %!   if (options.enable_all_cond)
 %!     param.omega = [150,200,250,300,400,500,1000,3000] * pi / 30 / SI_unit_second^-1;
@@ -140,9 +153,9 @@
 %!   group_defs(2).compliance_matrix.bearing_type = "journal";
 %!   group_defs(2).compliance_matrix.bearing_model = "EHD/FD";
 %!   group_defs(2).compliance_matrix.reference_pressure = param.pref;
-%!   group_defs(2).compliance_matrix.number_of_nodes_x = 50;
-%!   group_defs(2).compliance_matrix.number_of_nodes_z = 5;
-%!   group_defs(2).compliance_matrix.number_of_modes = param.num_modes_bearing;
+%!   group_defs(2).compliance_matrix.number_of_nodes_x = param.number_of_nodes_x;
+%!   group_defs(2).compliance_matrix.number_of_nodes_z = param.number_of_nodes_z;
+%!   group_defs(2).compliance_matrix.number_of_modes = param.num_modes_support_bearing;
 %!   group_defs(2).compliance_matrix.include_rigid_body_modes = true;
 %!   group_defs(2).bearing = "elem_id_support_bearing_1";
 %!   group_defs(3).id = 3;
@@ -162,7 +175,7 @@
 %!   group_defs(3).compliance_matrix.reference_pressure = param.pref;
 %!   group_defs(3).compliance_matrix.number_of_nodes_x = param.number_of_nodes_x;
 %!   group_defs(3).compliance_matrix.number_of_nodes_z = param.number_of_nodes_z;
-%!   group_defs(3).compliance_matrix.number_of_modes = param.num_modes_bearing;
+%!   group_defs(3).compliance_matrix.number_of_modes = param.num_modes_big_end_bearing;
 %!   group_defs(3).compliance_matrix.include_rigid_body_modes = true;
 %!   group_defs(3).bearing = "elem_id_big_end_bearing";
 %!   group_defs(4).id = 4;
@@ -182,7 +195,7 @@
 %!   group_defs(4).compliance_matrix.reference_pressure = param.pref;
 %!   group_defs(4).compliance_matrix.number_of_nodes_x = param.number_of_nodes_x;
 %!   group_defs(4).compliance_matrix.number_of_nodes_z = param.number_of_nodes_z;
-%!   group_defs(4).compliance_matrix.number_of_modes = param.num_modes_bearing;
+%!   group_defs(4).compliance_matrix.number_of_modes = param.num_modes_support_bearing;
 %!   group_defs(4).compliance_matrix.include_rigid_body_modes = true;
 %!   group_defs(4).bearing = "elem_id_support_bearing_2";
 %!   empty_cell = cell(1, 2);
@@ -224,7 +237,7 @@
 %!   group_defs2(2).compliance_matrix.reference_pressure = param.pref;
 %!   group_defs2(2).compliance_matrix.number_of_nodes_x = param.number_of_nodes_x;
 %!   group_defs2(2).compliance_matrix.number_of_nodes_z = param.number_of_nodes_z;
-%!   group_defs2(2).compliance_matrix.number_of_modes = param.num_modes_bearing;
+%!   group_defs2(2).compliance_matrix.number_of_modes = param.num_modes_big_end_bearing;
 %!   group_defs2(2).compliance_matrix.include_rigid_body_modes = true;
 %!   group_defs2(2).bearing = "elem_id_big_end_bearing";
 %!   empty_cell = cell(1, 2);
@@ -266,7 +279,7 @@
 %!   group_defs3(2).compliance_matrix.reference_pressure = param.pref;
 %!   group_defs3(2).compliance_matrix.number_of_nodes_x = param.number_of_nodes_x;
 %!   group_defs3(2).compliance_matrix.number_of_nodes_z = param.number_of_nodes_z;
-%!   group_defs3(2).compliance_matrix.number_of_modes = param.num_modes_bearing;
+%!   group_defs3(2).compliance_matrix.number_of_modes = param.num_modes_support_bearing;
 %!   group_defs3(2).compliance_matrix.include_rigid_body_modes = true;
 %!   group_defs3(2).bearing = "elem_id_support_bearing";
 %!   fd = -1;
@@ -604,7 +617,7 @@
 %!     fputs(fd, "Physical Surface(\"support_bearing1\", 2) = {3};\n");
 %!     fputs(fd, "Physical Surface(\"support_bearing2\", 3) = {9};\n");
 %!     fputs(fd, "Physical Surface(\"torque_input\", 4) = {2};\n");
-%!     #fputs(fd, "Physical Surface(\"transition\", 5) = {5, 4, 7, 8};\n");
+%!   #fputs(fd, "Physical Surface(\"transition\", 5) = {5, 4, 7, 8};\n");
 %!     fputs(fd, "Physical Volume(\"shaft\",1) = {v[1]};\n");
 %!   unwind_protect_cleanup
 %!     if (fd ~= -1)
@@ -798,12 +811,33 @@
 %!         fprintf(fd, "      threads: assembly, %d;\n", mbdyn_solver_num_threads_default());
 %!         fprintf(fd, "      threads: solver, %d;\n", mbdyn_solver_num_threads_default());
 %!         switch (param.solver)
-%!         case "linesearch"
-%!           fputs(fd, "        nonlinear solver: linesearch, modified, 0, default solver options, heavy nonlinear, divergence check, no, lambda min, 0., tolerance x, 1e-4, verbose, yes, print convergence info, yes;\n");
-%!         case "mcp"
-%!           fputs(fd, "        nonlinear solver: mcp newton min fb;\n");
-%!         case "nox"
-%!           fputs(fd, "        nonlinear solver: nox, use preconditioner as solver, yes, minimum step, 1e-11, recovery step, 1e-5;\n");
+%!           case "linesearch"
+%!             fputs(fd, "        nonlinear solver: linesearch, modified, 0, default solver options, heavy nonlinear, divergence check, no, lambda min, 0., tolerance x, 1e-4, verbose, yes, print convergence info, yes;\n");
+%!           case "mcp"
+%!             fputs(fd, "        nonlinear solver: mcp newton min fb;\n");
+%!           case "nox"
+%!             if (param.enable_JFO)
+%!               fputs(fd, "        nonlinear solver: nox, use preconditioner as solver, yes, minimum step, 1e-11, recovery step, 1e-5;\n");
+%!             else
+%!               fputs(fd, " nonlinear solver: nox,\n");
+%!               fputs(fd, " modified, 100,\n");
+%!               fputs(fd, " keep jacobian matrix,\n");
+%!               fputs(fd, " inner iterations before assembly, 10,\n");
+%!               fputs(fd, " jacobian operator, newton krylov,\n");
+%!               fputs(fd, " solver, line search based,\n");
+%!               fputs(fd, " linesearch method, backtrack,\n");
+%!               fputs(fd, " direction, newton,\n");
+%!               fputs(fd, " forcing term, type 2,\n");
+%!               fputs(fd, " print convergence info, no,\n");
+%!               fputs(fd, " verbose, yes,\n");
+%!               fputs(fd, " minimum step, 1e-12,\n");
+%!               fputs(fd, " recovery step, 1e-6,\n");
+%!               fputs(fd, " forcing term min tolerance, 1e-12,\n");
+%!               fputs(fd, " forcing term max tolerance, 1e-6,\n");
+%!               fputs(fd, " linear solver max iterations, 30,\n");
+%!               fputs(fd, " krylov subspace size, 30,\n");
+%!               fputs(fd, " verbose, yes;\n");
+%!             endif
 %!         endswitch
 %!         fputs(fd, "        tolerance: 1e-4, test, minmax, 1e-4, test, norm;\n");
 %!         fputs(fd, "        max iterations: 100;\n");
@@ -985,20 +1019,27 @@
 %!         fprintf(fd, "        include: \"%s_support_cms_2.elm\";\n", output_file);
 %!         fputs(fd, "\n");
 %!         fputs(fd, "        user defined: elem_id_support_bearing_1, hydrodynamic plain bearing2,\n");
-%!         fputs(fd, "            hydraulic fluid, linear compressible,\n");
-%!         fputs(fd, "                density, rhol,\n");
-%!         fputs(fd, "                betal,\n");
-%!         fputs(fd, "                pressure, pcl,\n");
-%!         fputs(fd, "                viscosity, etal,\n");
-%!         fputs(fd, "                temperature, Tl,\n");
-%!         fputs(fd, "                alpha, alpha,\n");
-%!         fputs(fd, "            viscosity vapor, factor, fact_etav,\n");
+%!         if (param.enable_JFO)
+%!           fputs(fd, "            hydraulic fluid, linear compressible,\n");
+%!           fputs(fd, "                density, rhol,\n");
+%!           fputs(fd, "                betal,\n");
+%!           fputs(fd, "                pressure, pcl,\n");
+%!           fputs(fd, "                viscosity, etal,\n");
+%!           fputs(fd, "                temperature, Tl,\n");
+%!           fputs(fd, "                alpha, alpha,\n");
+%!           fputs(fd, "            viscosity vapor, factor, fact_etav,\n");
+%!         else
+%!           fputs(fd, "            hydraulic fluid, incompressible,\n");
+%!           fputs(fd, "               density, rhol,\n");
+%!           fputs(fd, "               viscosity, etal,\n");
+%!           fputs(fd, "               pressure, pcl,\n");
+%!         endif
 %!         fputs(fd, "                mesh, linear finite difference,\n");
 %!         switch (param.solver)
-%!         case "mcp"
-%!           fputs(fd, "                enable mcp, yes,\n");
-%!         otherwise
-%!           fputs(fd, "                enable mcp, no,\n");
+%!           case "mcp"
+%!             fputs(fd, "                enable mcp, yes,\n");
+%!           otherwise
+%!             fputs(fd, "                enable mcp, no,\n");
 %!         endswitch
 %!         if (param.enable_Patir_Cheng)
 %!           fputs(fd, "                flow factors, patir cheng, sigma, Rq1, Rq2, lambdax, gamma1, gamma2, lambdaz, 1., 1.,\n");
@@ -1072,10 +1113,10 @@
 %!         fputs(fd, "            viscosity vapor, factor, fact_etav,\n");
 %!         fputs(fd, "                mesh, linear finite difference,\n");
 %!         switch (param.solver)
-%!         case "mcp"
-%!           fputs(fd, "                enable mcp, yes,\n");
-%!         otherwise
-%!           fputs(fd, "                enable mcp, no,\n");
+%!           case "mcp"
+%!             fputs(fd, "                enable mcp, yes,\n");
+%!           otherwise
+%!             fputs(fd, "                enable mcp, no,\n");
 %!         endswitch
 %!         if (param.enable_Patir_Cheng)
 %!           fputs(fd, "                flow factors, patir cheng, sigma, Rq1, Rq2, lambdax, gamma1, gamma2, lambdaz, 1., 1.,\n");
@@ -1149,10 +1190,10 @@
 %!         fputs(fd, "            viscosity vapor, factor, fact_etav,\n");
 %!         fputs(fd, "                mesh, linear finite difference,\n");
 %!         switch (param.solver)
-%!         case "mcp"
-%!           fputs(fd, "                enable mcp, yes,\n");
-%!         otherwise
-%!           fputs(fd, "                enable mcp, no,\n");
+%!           case "mcp"
+%!             fputs(fd, "                enable mcp, yes,\n");
+%!           otherwise
+%!             fputs(fd, "                enable mcp, no,\n");
 %!         endswitch
 %!         if (param.enable_Patir_Cheng)
 %!           fputs(fd, "                flow factors, patir cheng, sigma, Rq1, Rq2, lambdax, gamma1, gamma2, lambdaz, 1., 1.,\n");
@@ -1237,31 +1278,37 @@
 %!       [data(i, j).res.joint_id, data(i, j).res.local_reaction, data(i, j).res.global_reaction] = mbdyn_post_load_output_jnt(options_mbdyn.output_file);
 %!       data(i, j).res.bearings = mbdyn_post_ehd_load_output(options_mbdyn.output_file, data(i, j).res.log_dat);
 %!       if (options.enable_post_proc)
-%!       opt_scale.scale_type = "least square";
-%!       opt_scale.scale = 5000;
-%!       opt_post.print_and_exit = false;
-%!       opt_scale.output_stress = FEM_SCA_STRESS_VMIS;
-%!       opt_post.step_start = -1;
-%!       opt_post.step_inc = -1;
-%!       opt_post.step_end = intmax;
-%!       opt_post.elem_types = {"tet10"};
-%!       fem_post_cms_sol_export(cms_data, options_mbdyn.output_file, options_mbdyn.output_file, opt_scale, opt_post);
-%!       opt_post_h.deformation_scale = 10000;
-%!       opt_post_h.start = 1;
-%!       opt_post_h.step = 1;
-%!       opt_post_h.step_end = intmax;
-%!       data(i, j).res.mesh = mbdyn_post_ehd_create_mesh(data(i, j).res.log_dat);
-%!       mbdyn_post_ehd_export_mesh(data(i, j).res.mesh, [options_mbdyn.output_file, "_hydro.msh"]);
-%!       output_files = mbdyn_post_ehd_export_data(data(i, j).res.mesh, data(i, j).res, [options_mbdyn.output_file, "_hydro.msh"], 1:numel(data(i, j).res.t), opt_post_h);
+%!         opt_scale.scale_type = "least square";
+%!         opt_scale.scale = 5000;
+%!         opt_post.print_and_exit = false;
+%!         opt_scale.output_stress = FEM_SCA_STRESS_VMIS;
+%!         opt_post.step_start = -1;
+%!         opt_post.step_inc = -1;
+%!         opt_post.step_end = intmax;
+%!         opt_post.elem_types = {"tet10"};
+%!         fem_post_cms_sol_export(cms_data, options_mbdyn.output_file, options_mbdyn.output_file, opt_scale, opt_post);
+%!         opt_post_h.deformation_scale = 10000;
+%!         opt_post_h.start = 1;
+%!         opt_post_h.step = 1;
+%!         opt_post_h.step_end = intmax;
+%!         data(i, j).res.mesh = mbdyn_post_ehd_create_mesh(data(i, j).res.log_dat);
+%!         mbdyn_post_ehd_export_mesh(data(i, j).res.mesh, [options_mbdyn.output_file, "_hydro.msh"]);
+%!         output_files = mbdyn_post_ehd_export_data(data(i, j).res.mesh, data(i, j).res, [options_mbdyn.output_file, "_hydro.msh"], 1:numel(data(i, j).res.t), opt_post_h);
 %!       endif
 %!     endfor
 %!   endfor
-%!   omega_ref_h_10MPa = [3000, 150] * pi / 30 / SI_unit_second^-1;
-%!   h_ref_10MPa = [2e-6, 0.7e-6] / SI_unit_meter;
-%!   omega_ref_10MPa = [3000,  1000,  500,  400,  300,   250,   200,  150] * pi / 30 / SI_unit_second^-1;
-%!   M_ref_10MPa     = [1.06, 0.544, 0.43, 0.46, 0.58, 0.747, 1.076, 1.71] / (SI_unit_newton * SI_unit_meter);
-%!   omega_ref_5MPa = [3000,  1000,   500,   400,   300,  250, 150] * pi / 30 / SI_unit_second^-1;
-%!   M_ref_5MPa     = [0.96,  0.46, 0.297, 0.257, 0.243, 0.34, 0.5] / (SI_unit_newton * SI_unit_meter);
+%!   switch (mbdyn_testsuite_test_type())
+%!   case "full"
+%!     omega_ref_h_10MPa = [3000, 150] * pi / 30 / SI_unit_second^-1;
+%!     h_ref_10MPa = [2e-6, 0.7e-6] / SI_unit_meter;
+%!     omega_ref_10MPa = [3000,  1000,  500,  400,  300,   250,   200,  150] * pi / 30 / SI_unit_second^-1;
+%!     M_ref_10MPa     = [1.06, 0.544, 0.43, 0.46, 0.58, 0.747, 1.076, 1.71] / (SI_unit_newton * SI_unit_meter);
+%!     omega_ref_5MPa = [3000,  1000,   500,   400,   300,  250, 150] * pi / 30 / SI_unit_second^-1;
+%!     M_ref_5MPa     = [0.96,  0.46, 0.297, 0.257, 0.243, 0.34, 0.5] / (SI_unit_newton * SI_unit_meter);
+%!   case "quick"
+%!     omega_ref_10MPa = [150,500,3000] * pi / 30 / SI_unit_second^-1;
+%!     M_ref_10MPa = [2.339165422042972, 0.5112121251382301,1.120440242176203] / (SI_unit_newton * SI_unit_meter);
+%!   endswitch
 %!   if (options.enable_all_cond)
 %!     omega_ref = {omega_ref_5MPa, omega_ref_10MPa};
 %!     M_ref = {M_ref_5MPa, M_ref_10MPa};
@@ -1280,83 +1327,88 @@
 %!     endfor
 %!   endfor
 %!   if (options.enable_plots)
-%!   for j=1:numel(param.F1)
+%!     for j=1:numel(param.F1)
+%!       figure("visible", "off");
+%!       hold on;
+%!       plot(omega_ref{j} * 30 / pi * SI_unit_second^-1, M_ref{j} * SI_unit_newton * SI_unit_meter, "-;Sander New;k");
+%!       plot(param.omega * 30 / pi * SI_unit_second^-1, M_shaft(:, j) * SI_unit_newton * SI_unit_meter, "-;MBDyn;r");
+%!       xlabel("n [rpm]");
+%!       ylabel("M [Nm]");
+%!       title(sprintf("shaft input torque versus speed F1=%gN", param.F1(j) * SI_unit_newton));
+%!       grid on;
+%!       grid minor on;
+%!     endfor
+%!     for j=1:numel(param.F1)
+%!       M_bearing = zeros(numel(param.omega), 3);
+%!       for i=1:numel(param.omega)
+%!         for k=1:3
+%!           M_bearing(i, k) = -data(i, j).res.bearings(k).columns.M1(end, 1);
+%!         endfor
+%!       endfor
+%!       figure("visible", "off");
+%!       area(param.omega * 30 / pi * SI_unit_second^-1, M_bearing * SI_unit_newton * SI_unit_meter);
+%!       xlabel("n [rpm]");
+%!       ylabel("M [Nm]");
+%!       legend("support bearing 1", "support bearing 2", "big end bearing");
+%!       title(sprintf("frictional torque versus speed F1=%gN", param.F1(j) * SI_unit_newton));
+%!       grid minor on;
+%!     endfor
+%!     for j=1:numel(param.F1)
+%!       M_big_end_bearing = zeros(numel(param.omega), 2);
+%!       for i=1:numel(param.omega)
+%!         M_big_end_bearing(i, 1) = -data(i, j).res.bearings(3).columns.Pff(end) / param.omega(i);
+%!         M_big_end_bearing(i, 2) = -data(i, j).res.bearings(3).columns.Pfc(end) / param.omega(i);
+%!       endfor
+%!       M_big_end_bearing(:, 3) = M_big_end_bearing(:, 1) + M_big_end_bearing(:, 2);
+%!       figure("visible", "off");
+%!       hold on;
+%!       plot(param.omega * 30 / pi * SI_unit_second^-1, M_big_end_bearing(:, 1) * SI_unit_newton * SI_unit_meter, "-;hydrodynamic friction torque;r");
+%!       plot(param.omega * 30 / pi * SI_unit_second^-1, M_big_end_bearing(:, 2) * SI_unit_newton * SI_unit_meter, "-;asperity friction torque;b");
+%!       plot(param.omega * 30 / pi * SI_unit_second^-1, M_big_end_bearing(:, 3) * SI_unit_newton * SI_unit_meter, "-;total friction torque;k");
+%!       xlabel("n [rpm]");
+%!       ylabel("M [Nm]");
+%!       title(sprintf("frictional torque versus speed F1=%gN", param.F1(j) * SI_unit_newton));
+%!       grid minor on;
+%!     endfor
+%!     for j=1:numel(param.F1)
+%!       max_p = max_pc = zeros(numel(param.omega), 1);
+%!       for i=1:numel(param.omega)
+%!         max_p(i) = max(data(i, j).res.bearings(3).columns.p(:));
+%!         max_pc(i) = max(data(i, j).res.bearings(3).columns.pc(:));
+%!       endfor
+%!       figure("visible", "off");
+%!       hold on;
+%!       plot(param.omega * 30 / pi * SI_unit_second^-1, 1e-6 * max_p * SI_unit_pascal, "-;max(p);r");
+%!       plot(param.omega * 30 / pi * SI_unit_second^-1, 1e-6 * max_pc * SI_unit_pascal, "-;max(pc);b");
+%!       xlabel("n [rpm]");
+%!       ylabel("p [MPa]");
+%!       grid minor on;
+%!       title(sprintf("maximum pressure versus speed F1=%gN", param.F1(j) * SI_unit_newton));
+%!     endfor
 %!     figure("visible", "off");
 %!     hold on;
-%!     plot(omega_ref{j} * 30 / pi * SI_unit_second^-1, M_ref{j} * SI_unit_newton * SI_unit_meter, "-;Sander New;k");
-%!     plot(param.omega * 30 / pi * SI_unit_second^-1, M_shaft(:, j) * SI_unit_newton * SI_unit_meter, "-;MBDyn;r");
+%!     plot(omega_ref_h_10MPa * 30 / pi * SI_unit_second^-1, 1e6 * h_ref_10MPa * SI_unit_meter, "-;Sander New;k");
+%!     plot(param.omega * 30 / pi * SI_unit_second^-1, 1e6 * min_h(:, end) * SI_unit_meter, "-;MBDyn F1=8kN;r");
 %!     xlabel("n [rpm]");
-%!     ylabel("M [Nm]");
-%!     title(sprintf("shaft input torque versus speed F1=%gN", param.F1(j) * SI_unit_newton));
+%!     ylabel("h [\\mum]");
 %!     grid on;
 %!     grid minor on;
-%!   endfor
-%!   for j=1:numel(param.F1)
-%!     M_bearing = zeros(numel(param.omega), 3);
-%!     for i=1:numel(param.omega)
-%!       for k=1:3
-%!         M_bearing(i, k) = -data(i, j).res.bearings(k).columns.M1(end, 1);
-%!       endfor
-%!     endfor
-%!     figure("visible", "off");
-%!     area(param.omega * 30 / pi * SI_unit_second^-1, M_bearing * SI_unit_newton * SI_unit_meter);
-%!     xlabel("n [rpm]");
-%!     ylabel("M [Nm]");
-%!     legend("support bearing 1", "support bearing 2", "big end bearing");
-%!     title(sprintf("frictional torque versus speed F1=%gN", param.F1(j) * SI_unit_newton));
-%!     grid minor on;
-%!   endfor
-%!   for j=1:numel(param.F1)
-%!     M_big_end_bearing = zeros(numel(param.omega), 2);
-%!     for i=1:numel(param.omega)
-%!       M_big_end_bearing(i, 1) = -data(i, j).res.bearings(3).columns.Pff(end) / param.omega(i);
-%!       M_big_end_bearing(i, 2) = -data(i, j).res.bearings(3).columns.Pfc(end) / param.omega(i);
-%!     endfor
-%!     M_big_end_bearing(:, 3) = M_big_end_bearing(:, 1) + M_big_end_bearing(:, 2);
-%!     figure("visible", "off");
-%!     hold on;
-%!     plot(param.omega * 30 / pi * SI_unit_second^-1, M_big_end_bearing(:, 1) * SI_unit_newton * SI_unit_meter, "-;hydrodynamic friction torque;r");
-%!     plot(param.omega * 30 / pi * SI_unit_second^-1, M_big_end_bearing(:, 2) * SI_unit_newton * SI_unit_meter, "-;asperity friction torque;b");
-%!     plot(param.omega * 30 / pi * SI_unit_second^-1, M_big_end_bearing(:, 3) * SI_unit_newton * SI_unit_meter, "-;total friction torque;k");
-%!     xlabel("n [rpm]");
-%!     ylabel("M [Nm]");
-%!     title(sprintf("frictional torque versus speed F1=%gN", param.F1(j) * SI_unit_newton));
-%!     grid minor on;
-%!   endfor
-%!   for j=1:numel(param.F1)
-%!     max_p = max_pc = zeros(numel(param.omega), 1);
-%!     for i=1:numel(param.omega)
-%!       max_p(i) = max(data(i, j).res.bearings(3).columns.p(:));
-%!       max_pc(i) = max(data(i, j).res.bearings(3).columns.pc(:));
-%!     endfor
-%!     figure("visible", "off");
-%!     hold on;
-%!     plot(param.omega * 30 / pi * SI_unit_second^-1, 1e-6 * max_p * SI_unit_pascal, "-;max(p);r");
-%!     plot(param.omega * 30 / pi * SI_unit_second^-1, 1e-6 * max_pc * SI_unit_pascal, "-;max(pc);b");
-%!     xlabel("n [rpm]");
-%!     ylabel("p [MPa]");
-%!     grid minor on;
-%!     title(sprintf("maximum pressure versus speed F1=%gN", param.F1(j) * SI_unit_newton));
-%!   endfor
-%!   figure("visible", "off");
-%!   hold on;
-%!   plot(omega_ref_h_10MPa * 30 / pi * SI_unit_second^-1, 1e6 * h_ref_10MPa * SI_unit_meter, "-;Sander New;k");
-%!   plot(param.omega * 30 / pi * SI_unit_second^-1, 1e6 * min_h(:, end) * SI_unit_meter, "-;MBDyn F1=8kN;r");
-%!   xlabel("n [rpm]");
-%!   ylabel("h [\\mum]");
-%!   grid on;
-%!   grid minor on;
-%!   title("minimum film thickness versus speed");
-%!   figure_list();
+%!     title("minimum film thickness versus speed");
+%!     figure_list();
 %!   endif
-%!   tol = 0.15;
+%!   switch (mbdyn_testsuite_test_type())
+%!   case "full"
+%!     tol = 0.15; ## Validate against Sander's results.
+%!   case "quick"
+%!     tol = 0.5e-2; ## Use a more agressive tolerance since it is about a pure regression test.
+%!   endswitch
 %!   for j=1:numel(param.F1)
 %!     for i=1:numel(param.omega)
 %!       M_ref_ij = interp1(omega_ref{j}, M_ref{j}, param.omega(i), "linear");
 %!       assert(M_shaft(i, j), M_ref_ij, tol * max(abs(M_ref{j})))
 %!     endfor
 %!   endfor
-%!   %unwind_protect_cleanup
+%!                                 %unwind_protect_cleanup
 %!   if (numel(output_file))
 %!     fn = dir([output_file, "*"]);
 %!     for i=1:numel(fn)
@@ -1366,7 +1418,7 @@
 %!       endif
 %!     endfor
 %!   endif
-%!   %end_unwind_protect
+%!                                 %end_unwind_protect
 %! catch
 %!   gtest_error = lasterror();
 %!   gtest_fail(gtest_error, evalin("caller", "__file"));

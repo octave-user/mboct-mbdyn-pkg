@@ -21,7 +21,12 @@
 %!   b = 40e-3 / SI_unit_meter;
 %!   c = 10e-3 / SI_unit_meter;
 %!   d = 0e-3 / SI_unit_meter;
-%!   h = 2 * c;
+%!   switch (mbdyn_testsuite_test_type())
+%!   case "full"
+%!     h = 2 * c;
+%!   case "quick"
+%!     h = 5 * c;
+%!   endswitch
 %!   options.interactive = false;
 %!   options.plot = false;
 %!   options.verbose = false;
@@ -801,9 +806,16 @@
 %!       [sol_eig_red(j, k).Ured, sol_eig_red(j, k).lambda_red] = fem_sol_eigsd(Kred, Dred, Mred, cms_opt.modes.number, cms_opt);
 %!     endfor
 %!   endfor
-%!   tol_abs = [0, 0, 0] / SI_unit_second^-1;
-%!   tol_rel = [0.3e-2, 4.5e-2, 3e-2];
-%!   tol_disp_rel = 4e-2;
+%!   switch (mbdyn_testsuite_test_type())
+%!   case "full"
+%!     tol_abs = [0, 0, 0] / SI_unit_second^-1;
+%!     tol_rel = [0.3e-2, 4.5e-2, 3e-2];
+%!     tol_disp_rel = 4e-2;
+%!   case "quick"
+%!     tol_abs = [0, 0, 0] / SI_unit_second^-1;
+%!     tol_rel = [1e-2,   8e-2,   5e-2];
+%!     tol_disp_rel = 7e-2;
+%!   endswitch
 %!   err_u_modal = err_v_modal = zeros(size(param));
 %!   printf("deformation/velocity:\n");
 %!   colors = rainbow(3);

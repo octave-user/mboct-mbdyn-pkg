@@ -1,5 +1,5 @@
 # mboct-mbdyn-pkg<sup>&copy;</sup>
-**mboct-mbdyn-pkg** belongs to a suite of packages which can be used for pre- and postprocessing of MBDyn models (https://www.mbdyn.org) with GNU-Octave (http://www.gnu.org/software/octave/). This package provides interfaces between the multibody dynamics software MBDyn and the GNU Octave programming language.
+**mboct-mbdyn-pkg** belongs to a suite of packages which can be used for pre- and postprocessing of MBDyn models (https://www.mbdyn.org) with GNU-Octave (http://www.gnu.org/software/octave/). This package provides interfaces between the multibody dynamics software MBDyn and the GNU Octave programming language. It contains interfaces to MBDyn's built in modal elements, solid elements and hydrodynamic lubricated journal and slider plain bearings. See also this article about hydrodynamic lubricated journal and slider plain bearings: [doi:10.1007/s11044-026-10193-2](https://doi.org/10.1007/s11044-026-10193-2). The full text of this article is available also [here](https://rdcu.be/fA4qb).
 
 # List of features
   - Generate MBDyn input files for arbitrary curved beam structures represented by Non-Uniform Rational B-Splines (NURBS).

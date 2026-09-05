@@ -170,6 +170,10 @@
 %!           if (~options.verbose)
 %! # options.logfile = [fname, ".stdout"];
 %!           endif
+%!           f_repeat = false;
+%!           rep_count = int32(0);
+%!           do
+%!           ++rep_count;
 %!           info = mbdyn_solver_run(fname, options);
 %!           log_dat = mbdyn_post_load_log(fname);
 %!           nc = [false, true];
@@ -177,6 +181,9 @@
 %!           F = cell(size(nc));
 %!           for idxnc=1:numel(nc)
 %!             modal{idxnc} = mbdyn_post_load_output_eig(options.output_file, struct("use_netcdf", nc(idxnc)));
+%!             ## FIXME: Sometimes arpack does not converge.
+%!             ## FIXME: In such a case it can help just to rerun the simulation with a new random starting vector.
+%!             f_repeat = isempty(modal{idxnc}.f) && rep_count < 10;
 %!             excitation.node_label = columns(beam.Xn);
 %!             excitation.offset = [0; 0; 0];
 %!             excitation.direction = [0; 0; 1];
@@ -206,6 +213,7 @@
 %!               title("frequency response phase");
 %!             endif
 %!           endfor
+%!           until (~f_repeat);
 %! %unwind_protect_cleanup
 %!           if (fd ~= -1)
 %!             unlink(fname);

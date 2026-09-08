@@ -84,6 +84,9 @@
 %!                     #"two surfaces one line", ...
 %!                   };
 %!   load_type = {"traction", "pressure", "prestrain"};
+%!   ## The generated mesh depends only on the meshing mode and element type.
+%!   ## Reuse it across load, boundary-condition, and material cases.
+%!   mesh_cache = cell(numel(f_transfinite_mesh), numel(elem_types));
 %!   sigma = material.sigmayv * diag([1.5, 0.3, 0.9, 0.2, 0.2, 0.2]) * load_factor;
 %!   epsilon0 = [1; 2; 3; 0.4; 0.5; 0.6] * load_factor;
 %!   for idx_sigma=1:columns(sigma)
@@ -251,8 +254,9 @@
 %!                 otherwise
 %!                   error("unknown element type \"%s\"", elem_type);
 %!               endswitch
-%!               fd = -1;
-%!               unwind_protect
+%!               if (isempty(mesh_cache{idx_transfinite, idx_elem_type}))
+%!                 fd = -1;
+%!                 unwind_protect
 %!                 [fd, msg] = fopen(geo_file, "w");
 %!                 if (fd == -1)
 %!                   error("failed to open file \"%s.geo\"", geo_file);
@@ -333,18 +337,22 @@
 %!                 fputs(fd, "Physical Surface(\"load-z\",10) = {6};\n");
 %!                 fputs(fd, "Physical Surface(\"symmetry-xy\",4) = {6};\n");
 %!                 fputs(fd, "Physical Surface(\"symmetry-xz\",5) = {tmp[3]};\n");
-%!               unwind_protect_cleanup
-%!                 if (fd ~= -1)
-%!                   fclose(fd);
+%!                 unwind_protect_cleanup
+%!                   if (fd ~= -1)
+%!                     fclose(fd);
+%!                   endif
+%!                 end_unwind_protect
+%!                 pid = spawn("gmsh", {"-format", "msh2", "-3", geo_file});
+%!                 status = spawn_wait(pid);
+%!                 if (status ~= 0)
+%!                   error("gmsh failed with status %d", status);
 %!                 endif
-%!               end_unwind_protect
-%!               pid = spawn("gmsh", {"-format", "msh2", "-3", geo_file});
-%!               status = spawn_wait(pid);
-%!               if (status ~= 0)
-%!                 warning("gmsh failed with status %d", status);
+%!                 opt_msh.elem_type = {elem_type_solid{:}, elem_type_surf{:}};
+%!                 mesh = fem_pre_mesh_reorder(fem_pre_mesh_import(mesh_file, "gmsh", opt_msh));
+%!                 mesh_cache{idx_transfinite, idx_elem_type} = mesh;
+%!               else
+%!                 mesh = mesh_cache{idx_transfinite, idx_elem_type};
 %!               endif
-%!               opt_msh.elem_type = {elem_type_solid{:}, elem_type_surf{:}};
-%!               mesh = fem_pre_mesh_reorder(fem_pre_mesh_import(mesh_file, "gmsh", opt_msh));
 %!               opt_mbd_mesh = struct();
 %!               switch (model)
 %!                 case "dynamic"
@@ -357,7 +365,7 @@
 %!                 if (~isfield(mesh.groups, elem_type_solid{i}))
 %!                   continue;
 %!                 endif
-%!                 idx = find([getfield(mesh.groups, elem_type_solid{i}).id] == 1);
+%!                 idx = find([getfield(mesh.groups, elem_type_solid{i}).id] == 1, 1);
 %!                 if (isempty(idx))
 %!                   continue;
 %!                 endif
@@ -369,52 +377,35 @@
 %!                 if (~isfield(mesh.groups, elem_type_surf{i}))
 %!                   continue;
 %!                 endif
-%!                 idx = find([getfield(mesh.groups, elem_type_surf{i}).id] == 2);
-%!                 if (~isempty(idx))
-%!                   grp_idx_clamp(i) = idx;
-%!                 endif
-%!                 idx = find([getfield(mesh.groups, elem_type_surf{i}).id] == 3);
-%!                 if (~isempty(idx))
-%!                   grp_idx_load_px(i) = idx;
-%!                 endif
-%!                 idx = find([getfield(mesh.groups, elem_type_surf{i}).id] == 4);
-%!                 if (~isempty(idx))
-%!                   grp_idx_symmetry_xy(i) = idx;
-%!                 endif
-%!                 idx = find([getfield(mesh.groups, elem_type_surf{i}).id] == 5);
-%!                 if (~isempty(idx))
-%!                   grp_idx_symmetry_xz(i) = idx;
-%!                 endif
-%!                 idx = find([getfield(mesh.groups, elem_type_surf{i}).id] == 6);
-%!                 if (~isempty(idx))
-%!                   grp_idx_load_py(i) = idx;
-%!                 endif
-%!                 idx = find([getfield(mesh.groups, elem_type_surf{i}).id] == 7);
-%!                 if (~isempty(idx))
-%!                   grp_idx_load_pz(i) = idx;
-%!                 endif
-%!                 idx = find([getfield(mesh.groups, elem_type_surf{i}).id] == 8);
-%!                 if (~isempty(idx))
-%!                   grp_idx_load_mx(i) = idx;
-%!                 endif
-%!                 idx = find([getfield(mesh.groups, elem_type_surf{i}).id] == 9);
-%!                 if (~isempty(idx))
-%!                   grp_idx_load_my(i) = idx;
-%!                 endif
-%!                 idx = find([getfield(mesh.groups, elem_type_surf{i}).id] == 10);
-%!                 if (~isempty(idx))
-%!                   grp_idx_load_mz(i) = idx;
-%!                 endif
+%!                 groups = getfield(mesh.groups, elem_type_surf{i});
+%!                 for idx_group=1:numel(groups)
+%!                   switch (groups(idx_group).id)
+%!                     case 2
+%!                       grp_idx_clamp(i) = idx_group;
+%!                     case 3
+%!                       grp_idx_load_px(i) = idx_group;
+%!                     case 4
+%!                       grp_idx_symmetry_xy(i) = idx_group;
+%!                     case 5
+%!                       grp_idx_symmetry_xz(i) = idx_group;
+%!                     case 6
+%!                       grp_idx_load_py(i) = idx_group;
+%!                     case 7
+%!                       grp_idx_load_pz(i) = idx_group;
+%!                     case 8
+%!                       grp_idx_load_mx(i) = idx_group;
+%!                     case 9
+%!                       grp_idx_load_my(i) = idx_group;
+%!                     case 10
+%!                       grp_idx_load_mz(i) = idx_group;
+%!                   endswitch
+%!                 endfor
 %!               endfor
 %!               load_case_dof.locked_dof = false(rows(mesh.nodes), 6);
 %!               grp_idx_p1 = find((mesh.nodes(:, 1) == 0) & (mesh.nodes(:, 2) == -0.5 * geometry.w) & (mesh.nodes(:, 3) == -0.5 * geometry.h));
 %!               grp_idx_p2 = find((mesh.nodes(:, 1) == geometry.l) & (mesh.nodes(:, 2) == -0.5 * geometry.w) & (mesh.nodes(:, 3) == -0.5 * geometry.h));
-%!               grp_idx_p3 = find((mesh.nodes(:, 1) == geometry.l) & (mesh.nodes(:, 2) == 0.5 * geometry.w) & (mesh.nodes(:, 3) == -0.5 * geometry.h));
 %!               grp_idx_p4 = find((mesh.nodes(:, 1) == 0) & (mesh.nodes(:, 2) == 0.5 * geometry.w) & (mesh.nodes(:, 3) == -0.5 * geometry.h));
 %!               grp_idx_p5 = find((mesh.nodes(:, 1) == 0) & (mesh.nodes(:, 2) == -0.5 * geometry.w) & (mesh.nodes(:, 3) == 0.5 * geometry.h));
-%!               grp_idx_p6 = find((mesh.nodes(:, 1) == geometry.l) & (mesh.nodes(:, 2) == -0.5 * geometry.w) & (mesh.nodes(:, 3) == 0.5 * geometry.h));
-%!               grp_idx_p7 = find((mesh.nodes(:, 1) == geometry.l) & (mesh.nodes(:, 2) == 0.5 * geometry.w) & (mesh.nodes(:, 3) == 0.5 * geometry.h));
-%!               grp_idx_p8 = find((mesh.nodes(:, 1) == 0) & (mesh.nodes(:, 2) == 0.5 * geometry.w) & (mesh.nodes(:, 3) == 0.5 * geometry.h));
 %!               switch (boundary_cond{idx_boundary_cond})
 %!                 case "symmetry"
 %!                   for i=1:numel(elem_type_surf)
@@ -520,6 +511,12 @@
 %!                                   repmat(-sigma(1, idx_sigma), numel(elem_mx), columns(elem_nodes));
 %!                                   repmat(-sigma(2, idx_sigma), numel(elem_my), columns(elem_nodes));
 %!                                   repmat(-sigma(3, idx_sigma), numel(elem_mz), columns(elem_nodes))];
+%!                     active_load = any(elem_press ~= 0, 2);
+%!                     elem_nodes = elem_nodes(active_load, :);
+%!                     elem_press = elem_press(active_load, :);
+%!                     if (isempty(elem_nodes))
+%!                       continue;
+%!                     endif
 %!                     load_case.pressure = setfield(load_case.pressure, ...
 %!                                                   elem_type_surf{i}, ...
 %!                                                   struct("elements", elem_nodes, ...
@@ -554,6 +551,12 @@
 %!                     ioffset += numel(elem_mx); elem_trac(ioffset + (1:numel(elem_my)), :, 3) -= sigma(5, idx_sigma);
 %!                     ioffset += numel(elem_my); elem_trac(ioffset + (1:numel(elem_mz)), :, 2) -= sigma(5, idx_sigma);
 %!                     ioffset += numel(elem_mz);
+%!                     active_load = any(any(elem_trac ~= 0, 3), 2);
+%!                     elem_nodes = elem_nodes(active_load, :);
+%!                     elem_trac = elem_trac(active_load, :, :);
+%!                     if (isempty(elem_nodes))
+%!                       continue;
+%!                     endif
 %!                     load_case = setfield(load_case, ...
 %!                                          load_type{idx_load_type}, ...
 %!                                          setfield(getfield(load_case, load_type{idx_load_type}), ...
@@ -750,21 +753,20 @@
 %!               F13 = (sol.def(grp_idx_p5, 1, :)(:) - sol.def(grp_idx_p1, 1, :)(:)) ./ (mesh.nodes(grp_idx_p5, 3, :)(:) - mesh.nodes(grp_idx_p1, 3, end)(:));
 %!               F23 = (sol.def(grp_idx_p5, 2, :)(:) - sol.def(grp_idx_p1, 2, :)(:)) ./ (mesh.nodes(grp_idx_p5, 3, :)(:) - mesh.nodes(grp_idx_p1, 3, end)(:));
 %!               F = zeros(3, 3, numel(sol.t));
-%!               for i=1:numel(sol.t)
-%!                 F(1, 1, :) = F11;
-%!                 F(1, 2, :) = F12;
-%!                 F(1, 3, :) = F13;
-%!                 F(2, 1, :) = F21;
-%!                 F(2, 2, :) = F22;
-%!                 F(2, 3, :) = F23;
-%!                 F(3, 1, :) = F31;
-%!                 F(3, 2, :) = F32;
-%!                 F(3, 3, :) = F33;
-%!               endfor
+%!               F(1, 1, :) = F11;
+%!               F(1, 2, :) = F12;
+%!               F(1, 3, :) = F13;
+%!               F(2, 1, :) = F21;
+%!               F(2, 2, :) = F22;
+%!               F(2, 3, :) = F23;
+%!               F(3, 1, :) = F31;
+%!               F(3, 2, :) = F32;
+%!               F(3, 3, :) = F33;
 %!               G = C = zeros(size(F));
+%!               eye3 = eye(3);
 %!               for i=1:numel(sol.t)
-%!                 G(:, :, i) = 0.5 * (F(:, :, i).' * F(:, :, i) - eye(3));
 %!                 C(:, :, i) = F(:, :, i).' * F(:, :, i);
+%!                 G(:, :, i) = 0.5 * (C(:, :, i) - eye3);
 %!               endfor
 %!               Epsilon = epsilon = zeros(6, size(G, 3));
 %!               for i=1:3
@@ -805,13 +807,14 @@
 %!                   epsilon_res = getfield(sol.strain.epsilon, elem_type_solid{j});
 %!                   sigma_res = getfield(sol.stress.tau, elem_type_solid{j});
 %!                   assert_simple(max(max(max(max(abs(sigma_res))))) < tol_sigma * material.E);
-%!                   for i=1:numel(sol.t)
-%!                     for k=1:size(epsilon_res, 1)
-%!                       for l=1:size(epsilon_res, 2)
-%!                         assert_simple(epsilon_res(k, l, :, i)(:), epsilon0(:, idx_sigma), tol_epsilon * norm(epsilon0(:, idx_sigma)));
-%!                       endfor
-%!                     endfor
-%!                   endfor
+%!                   epsilon_error = bsxfun(@minus, epsilon_res, reshape(epsilon0(:, idx_sigma), 1, 1, 6, 1));
+%!                   assert_simple(max(abs(epsilon_error(:))), 0, tol_epsilon * norm(epsilon0(:, idx_sigma)));
+%!                 endfor
+%!                 fn_case = dir([file_prefix, "*"]);
+%!                 for idx_file=1:numel(fn_case)
+%!                   if (0 ~= unlink(fullfile(fn_case(idx_file).folder, fn_case(idx_file).name)))
+%!                     warning("failed to remove file \"%s\"", fn_case(idx_file).name);
+%!                   endif
 %!                 endfor
 %!                 continue;
 %!               endswitch
@@ -824,11 +827,8 @@
 %!                   continue;
 %!                 endif
 %!                 tau_res = getfield(sol.stress.tau, elem_type_solid{i});
-%!                 for j=1:size(tau_res, 1)
-%!                   for k=1:size(tau_res, 2)
-%!                     assert_simple(tau_res(j, k, :, end)(:), tau_ref, tol * norm(tau_ref));
-%!                   endfor
-%!                 endfor
+%!                 tau_error = bsxfun(@minus, tau_res(:, :, :, end), reshape(tau_ref, 1, 1, 6));
+%!                 assert_simple(max(abs(tau_error(:))), 0, tol * norm(tau_ref));
 %!               endfor
 %!               Fref = max(abs([geometry.w * geometry.h * tau_ref(1), ...
 %!                               geometry.l * geometry.h * tau_ref(2), ...
@@ -842,13 +842,8 @@
 %!                   continue;
 %!                 endif
 %!                 epsilon_res = getfield(sol.strain.epsilon, elem_type_solid{j});
-%!                 for i=1:numel(sol.t)
-%!                   for k=1:size(epsilon_res, 1)
-%!                     for l=1:size(epsilon_res, 2)
-%!                       assert_simple(epsilon_res(k, l, :, i)(:), epsilon(:, i), tol_epsilon);
-%!                     endfor
-%!                   endfor
-%!                 endfor
+%!                 epsilon_error = bsxfun(@minus, epsilon_res, reshape(epsilon, 1, 1, 6, numel(sol.t)));
+%!                 assert_simple(max(abs(epsilon_error(:))), 0, tol_epsilon);
 %!               endfor
 %!               S_res = zeros(3, 3, numel(sol.t));
 %!               switch (mesh.material_data.type)
@@ -856,6 +851,12 @@
 %!                   switch (mesh.material_data.type)
 %!                     case {"bilinear isotropic hardening"}
 %!                       if (sigmav > mesh.material_data.sigmayv)
+%!                         fn_case = dir([file_prefix, "*"]);
+%!                         for idx_file=1:numel(fn_case)
+%!                           if (0 ~= unlink(fullfile(fn_case(idx_file).folder, fn_case(idx_file).name)))
+%!                             warning("failed to remove file \"%s\"", fn_case(idx_file).name);
+%!                           endif
+%!                         endfor
 %!                         continue;
 %!                       endif
 %!                   endswitch
@@ -870,20 +871,23 @@
 %!                 case {"neo hookean elastic", "mooney rivlin elastic"}
 %!                   mu = mesh.material_data.E / (2 * (1 + mesh.material_data.nu));
 %!                   lambda = mesh.material_data.E * mesh.material_data.nu / ((1 + mesh.material_data.nu ) * (1 - 2 * mesh.material_data.nu));
+%!                   C1 = mesh.material_data.G / (2 * (1 + mesh.material_data.delta));
+%!                   C2 = mesh.material_data.delta * C1;
 %!                   for i=1:numel(sol.t)
 %!                     IC = trace(C(:, :, i));
-%!                     IIC = 1/2 * (trace(C(:, :, i))^2 - trace(C(:, :, i)^2));
+%!                     IIC = 1/2 * (IC^2 - trace(C(:, :, i)^2));
 %!                     IIIC = det(C(:, :, i));
+%!                     sqrt_IIIC = sqrt(IIIC);
+%!                     IIIC_m1_3 = IIIC^(-1/3);
+%!                     IIIC_m2_3 = IIIC^(-2/3);
 %!                     invC = inv(C(:, :, i));
 %!                     for k=1:3
 %!                       for l=1:3
 %!                         switch (mesh.material_data.type)
 %!                         case "neo hookean elastic"
-%!                           S_res(k, l, i) = mu * (k == l) + (lambda * (IIIC - sqrt(IIIC)) - mu) * invC(k, l);
+%!                           S_res(k, l, i) = mu * (k == l) + (lambda * (IIIC - sqrt_IIIC) - mu) * invC(k, l);
 %!                         case {"mooney rivlin elastic"}
-%!                           C1 = mesh.material_data.G / (2 * (1 + mesh.material_data.delta));
-%!                           C2 = mesh.material_data.delta * C1;
-%!                           S_res(k, l, i) = 2 * (C1 * IIIC^(-1/3) * (k == l) + C2 * IIIC^(-2/3) * (IC * (k == l) - C(k, l, i)) + (1/2 * mesh.material_data.kappa * (IIIC - sqrt(IIIC)) - 1/3 * C1 * IC * IIIC^(-1/3) - 2/3 * C2 * IIC * IIIC^(-2/3)) * invC(k, l));
+%!                           S_res(k, l, i) = 2 * (C1 * IIIC_m1_3 * (k == l) + C2 * IIIC_m2_3 * (IC * (k == l) - C(k, l, i)) + (1/2 * mesh.material_data.kappa * (IIIC - sqrt_IIIC) - 1/3 * C1 * IC * IIIC_m1_3 - 2/3 * C2 * IIC * IIIC_m2_3) * invC(k, l));
 %!                         endswitch
 %!                       endfor
 %!                     endfor
@@ -906,6 +910,12 @@
 %!                 Tau_res(6, :) = tau_res(3, 1, :);
 %!                 assert_simple(Tau_res(:, end), tau_ref, tol * norm(tau_ref));
 %!               endswitch
+%!               fn_case = dir([file_prefix, "*"]);
+%!               for idx_file=1:numel(fn_case)
+%!                 if (0 ~= unlink(fullfile(fn_case(idx_file).folder, fn_case(idx_file).name)))
+%!                   warning("failed to remove file \"%s\"", fn_case(idx_file).name);
+%!                 endif
+%!               endfor
 %!             endfor
 %!           endfor
 %!         endfor

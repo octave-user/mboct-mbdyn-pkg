@@ -441,16 +441,20 @@
 %!         if(~isempty(grp_id_stress))
 %!           elem_id_stress = getfield(mesh.groups, param.elem_type_surf{k})(grp_id_stress).elements;
 %!           elno_id_stress = getfield(mesh.elements, param.elem_type_surf{k})(elem_id_stress, :);
-%!           taum = zeros(6, numel(elno_id_stress));
-%!           taum_n = zeros(1, numel(elno_id_stress));
-%!           for i=1:numel(elno_id_stress)
-%!             [ridx, cidx] = find(getfield(mesh.elements, param.elem_type) == elno_id_stress(i));
-%!             for j=1:numel(ridx)
-%!               taum(:, i) += reshape(getfield(sol_stat.stress.taum, param.elem_type)(ridx(j), cidx(j), :, end), 6, 1);
-%!               ++taum_n(i);
-%!             endfor
+%!           surface_node_id = unique(elno_id_stress(:));
+%!           volume_elements = getfield(mesh.elements, param.elem_type);
+%!           volume_node_id = volume_elements(:);
+%!           tau_data = getfield(sol_stat.stress.taum, param.elem_type);
+%!           tau_occurrence = reshape(tau_data(:, :, :, end), [], 6);
+%!           [is_surface, surface_idx] = ismember(volume_node_id, surface_node_id);
+%!           surface_idx = surface_idx(is_surface);
+%!           tau_occurrence = tau_occurrence(is_surface, :);
+%!           taum = zeros(6, numel(surface_node_id));
+%!           for i=1:6
+%!             taum(i, :) = accumarray(surface_idx, tau_occurrence(:, i), [numel(surface_node_id), 1]).';
 %!           endfor
-%!           taum *= diag(1 ./ taum_n);
+%!           taum_n = accumarray(surface_idx, 1, [numel(surface_node_id), 1]).';
+%!           taum ./= taum_n;
 %!           for i=1:columns(taum)
 %!             TAU = [taum(1, i), taum(4, i), taum(6, i);
 %!                    taum(4, i), taum(2, i), taum(5, i);

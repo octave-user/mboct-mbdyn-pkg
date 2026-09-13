@@ -110,8 +110,6 @@
 %!   cms_opt.use_binary = true;
 %!   cms_opt.update_binary = true;
 %!   cms_opt.invariants = true;
-%!   #cms_opt.enable_KTAU0WP = [true; false(2, 1)];
-%!   #cms_opt.enable_KTAU0VP = [true; false(2, 1)];
 %!   load_case_dof.locked_dof = false(size(mesh.nodes));
 %!   load_case_dof.locked_dof(cms_opt.nodes.modal.number, :) = true;
 %!   load_case_dof.locked_dof(mesh.groups.quad8(grp_idx_clamp).nodes, :) = true;
@@ -830,7 +828,7 @@
 %!     MACR{i, j} = MACL{i, j} = zeros(rows(f_fem), rows(f_fem));
 %!     for k=1:rows(f_fem)
 %!       for l=1:rows(f_fem)
-%!         MACR{i, j}(k, l) = (PhiR(:, k, 1)' * PhiR(:, k, 2)) * conj(PhiR(:, k, 1)' * PhiR(:, k, 2)) / ((PhiR(:, k, 1)' * PhiR(:, k, 1)) * (PhiR(:, k, 2)' * PhiR(:, k, 2)));
+%!         MACR{i, j}(k, l) = (PhiR(:, k, 1)' * PhiR(:, l, 2)) * conj(PhiR(:, k, 1)' * PhiR(:, l, 2)) / ((PhiR(:, k, 1)' * PhiR(:, k, 1)) * (PhiR(:, l, 2)' * PhiR(:, l, 2)));
 %!       endfor
 %!     endfor
 %!     printf("%d:%d\n", i, j);

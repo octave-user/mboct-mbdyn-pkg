@@ -887,7 +887,7 @@
 %!       MACR{i, j} = MACL{i, j} = zeros(rows(f_fem), rows(f_fem));
 %!       for k=1:rows(f_fem)
 %!         for l=1:rows(f_fem)
-%!           MACR{i, j}(k, l) = (PhiR(:, k, 1)' * PhiR(:, k, 2)) * conj(PhiR(:, k, 1)' * PhiR(:, k, 2)) / ((PhiR(:, k, 1)' * PhiR(:, k, 1)) * (PhiR(:, k, 2)' * PhiR(:, k, 2)));
+%!           MACR{i, j}(k, l) = (PhiR(:, k, 1)' * PhiR(:, l, 2)) * conj(PhiR(:, k, 1)' * PhiR(:, l, 2)) / ((PhiR(:, k, 1)' * PhiR(:, k, 1)) * (PhiR(:, l, 2)' * PhiR(:, l, 2)));
 %!         endfor
 %!       endfor
 %!       printf("%d:%d\n", i, j);

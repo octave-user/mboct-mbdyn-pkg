@@ -524,13 +524,15 @@
 %!       load_case_post(i).loads(i) = 1;
 %!     endfor
 %!     load_case_post_dof.locked_dof = false(size(mesh_post.nodes));
-%!     x1 = mesh.nodes(:, 1)(mesh.elements.tria6(mesh.groups.tria6(grp_idx_p1).elements, :)) - bearing_surf(1).X0(1);
-%!     y1 = mesh.nodes(:, 2)(mesh.elements.tria6(mesh.groups.tria6(grp_idx_p1).elements, :)) - bearing_surf(1).X0(2);
-%!     z1 = mesh.nodes(:, 3)(mesh.elements.tria6(mesh.groups.tria6(grp_idx_p1).elements, :)) - bearing_surf(1).X0(3);
+%!     Xn1 = bearing_surf(1).R.' * (mesh.nodes(:, 1:3).' - bearing_surf(1).X0);
+%!     x1 = Xn1(1, :)(mesh.elements.tria6(mesh.groups.tria6(grp_idx_p1).elements, :));
+%!     y1 = Xn1(2, :)(mesh.elements.tria6(mesh.groups.tria6(grp_idx_p1).elements, :));
+%!     z1 = Xn1(3, :)(mesh.elements.tria6(mesh.groups.tria6(grp_idx_p1).elements, :));
 %!     Phi1 = atan2(y1, x1);
-%!     x2 = mesh.nodes(:, 1)(mesh.elements.tria6(mesh.groups.tria6(grp_idx_p2).elements, :)) - bearing_surf(2).X0(1);
-%!     y2 = mesh.nodes(:, 2)(mesh.elements.tria6(mesh.groups.tria6(grp_idx_p2).elements, :)) - bearing_surf(2).X0(2);
-%!     z2 = mesh.nodes(:, 3)(mesh.elements.tria6(mesh.groups.tria6(grp_idx_p2).elements, :)) - bearing_surf(2).X0(3);
+%!     Xn2 = bearing_surf(2).R.' * (mesh.nodes(:, 1:3).' - bearing_surf(2).X0);
+%!     x2 = Xn2(1, :)(mesh.elements.tria6(mesh.groups.tria6(grp_idx_p2).elements, :));
+%!     y2 = Xn2(2, :)(mesh.elements.tria6(mesh.groups.tria6(grp_idx_p2).elements, :));
+%!     z2 = Xn2(3, :)(mesh.elements.tria6(mesh.groups.tria6(grp_idx_p2).elements, :));
 %!     Phi2 = atan2(y2, x2);
 %!     load_case_post(7).pressure.tria6.elements = mesh_post.elements.tria6(mesh_post.groups.tria6(grp_idx_p1).elements, :);
 %!     load_case_post(7).pressure.tria6.p = repmat(p1 * bearing_surf(1).options.reference_pressure, numel(mesh_post.groups.tria6(grp_idx_p1).elements), 6);

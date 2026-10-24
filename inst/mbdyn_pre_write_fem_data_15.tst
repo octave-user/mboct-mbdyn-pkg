@@ -1065,7 +1065,6 @@
 %! param.n = 1;
 %! options.number_of_modes = int32(10);
 %! options.scale_def = 10e-3;
-%! options.geo_tol = sqrt(eps);
 %! options.code.use_package = false;
 %! options.f_run_mbdyn = [true, true];
 %! options.verbose = false;

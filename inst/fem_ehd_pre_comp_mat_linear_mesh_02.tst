@@ -185,13 +185,13 @@
 %!     n2 = zeros(3, rows(bearing_surf(2).nodes), columns(bearing_surf(2).nodes));
 %!     for i=1:size(n1, 2)
 %!       for j=1:size(n1, 3)
-%!         n1(1:2, i, j) = mesh.nodes(bearing_surf(1).nodes(i, j), 1:2).' - bearing_surf(1).X0(1:2);
+%!         n1(1:2, i, j) = bearing_surf(1).R(:, 1:2).' * (mesh.nodes(bearing_surf(1).nodes(i, j), 1:3).' - bearing_surf(1).X0);
 %!         n1(:, i, j) /= norm(n1(:, i, j));
 %!       endfor
 %!     endfor
 %!     for i=1:size(n2, 2)
 %!       for j=1:size(n2, 3)
-%!         n2(1:2, i, j) = mesh.nodes(bearing_surf(2).nodes(i, j), 1:2).' - bearing_surf(2).X0(1:2);
+%!         n2(1:2, i, j) = bearing_surf(2).R(:, 1:2).' * (mesh.nodes(bearing_surf(2).nodes(i, j), 1:3).' - bearing_surf(2).X0);
 %!         n2(:, i, j) /= norm(n2(:, i, j));
 %!       endfor
 %!     endfor

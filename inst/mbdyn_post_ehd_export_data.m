@@ -109,14 +109,14 @@ function filenames = mbdyn_post_ehd_export_data(mesh, res, outputfile, idx_t, op
         Phi = mesh.bearings(i).Phi;
 
         if (isfield(res.bearings(i).columns, "w1_n"))
-          w1 = options.deformation_scale * res.bearings(i).columns.w1_n(idx_t(k), :);
+          w1 = res.bearings(i).columns.w1_n(idx_t(k), :);
           w1 -= (mesh.bearings(i).A * (mesh.bearings(i).A \ w1(:))).';
         else
           w1 = zeros(1, numel(mesh.bearings(i).nodeidx));
         endif
 
         if (isfield(res.bearings(i).columns, "w2_n"))
-          w2 = options.deformation_scale * res.bearings(i).columns.w2_n(idx_t(k), :);
+          w2 = res.bearings(i).columns.w2_n(idx_t(k), :);
           w2 -= (mesh.bearings(i).A * (mesh.bearings(i).A \ w2(:))).';
         else
           w2 = zeros(1, numel(mesh.bearings(i).nodeidx));
@@ -125,11 +125,11 @@ function filenames = mbdyn_post_ehd_export_data(mesh, res, outputfile, idx_t, op
         R_rb = rotfunc(Phi_rb);
         Rb = mesh.bearings(i).cylindrical.nodes(imnode).Rb;
         ob = mesh.bearings(i).cylindrical.nodes(imnode).o;
-        Xw1 = [(0.5 * dm - w1) .* cos(Phi);
-               (0.5 * dm - w1) .* sin(Phi);
+        Xw1 = [(0.5 * dm - options.deformation_scale * w1) .* cos(Phi);
+               (0.5 * dm - options.deformation_scale * w1) .* sin(Phi);
                z];
-        Xw2 = [(0.5 * dm + w2) .* cos(Phi);
-               (0.5 * dm + w2) .* sin(Phi);
+        Xw2 = [(0.5 * dm + options.deformation_scale * w2) .* cos(Phi);
+               (0.5 * dm + options.deformation_scale * w2) .* sin(Phi);
                z];
         Xn = mesh.bearings(i).Xn;
         X0 = mesh.nodes(mesh.noffset(i) + (1:columns(Xn)), :).';
@@ -198,14 +198,19 @@ function filenames = mbdyn_post_ehd_export_data(mesh, res, outputfile, idx_t, op
             if (valid_data(i))
               idxnode = int32([1:4]);
 
-              val = getfield(res.bearings(i).columns, field_name{l});
+              val = getfield(res.bearings(i).columns, field_name{l})(idx_t(k), :)(:);
 
               valout = zeros(2 + numel(idxnode), numel(mesh.bearings(i).elements));
               valout(1, :) = mesh.bearings(i).elements;
               valout(2, :) = numel(idxnode);
 
+              switch (field_name{l})
+                case {"w1_n", "w2_n"}
+                  val -= (mesh.bearings(i).A * (mesh.bearings(i).A \ val));
+              endswitch
+
               for m=1:numel(idxnode)
-                valout(2 + m, :) = val(idx_t(k), mesh.elements.quad4(mesh.bearings(i).elements, idxnode(m)) - mesh.noffset(i));
+                valout(2 + m, :) = val(mesh.elements.quad4(mesh.bearings(i).elements, idxnode(m)) - mesh.noffset(i));
               endfor
 
               format = ["%d %d", repmat(" %e", 1, numel(idxnode)), "\n"];

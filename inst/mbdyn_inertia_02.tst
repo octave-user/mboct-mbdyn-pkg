@@ -18,12 +18,15 @@
 %!   b = 20e-3 / SI_unit_meter;
 %!   c = 10e-3 / SI_unit_meter;
 %!   d = 0e-3 / SI_unit_meter;
+%!   h = c;
 %!   rho = 2700 / (SI_unit_kilogram / SI_unit_meter^3);
 %!   m = rho * a * b * c;
 %!   J = diag(m * [b^2 + c^2, a^2 + c^2, a^2 + b^2] / 12);
 %!   V0 = [1; 2; 3];
 %!   W0 = [pi/2; pi/4; pi];
-%!   h = c;
+%!   beta0 = m * V0;
+%!   gamma0 = J * W0;
+%!   tol = 1e-3;
 %!   options.interactive = false;
 %!   options.plot = false;
 %!   options.verbose = false;
@@ -117,8 +120,9 @@
 %!   load_case_dof.locked_dof(mesh.groups.quad8(grp_idx_clamp).nodes, :) = true;
 %!   [cms_data.mesh, cms_data.mat_ass, cms_data.dof_map, cms_data.sol_eig, cms_data.cms_opt, cms_data.sol_tau] = fem_cms_create2(mesh, load_case_dof, cms_opt);
 %!   fem_cms_export(filename, cms_data.mesh, cms_data.dof_map, cms_data.mat_ass, cms_data.cms_opt);
+%!   for j=1:2
 %!   unwind_protect
-%!     filename_mbdyn = sprintf("%s.mbdyn", filename);
+%!     filename_mbdyn = sprintf("%s_%d.mbdyn", filename, j);
 %!     [fd, msg] = fopen(filename_mbdyn, "w");
 %!     if (fd == -1)
 %!       error("failed to open file \"%s\": %s", filename_mbdyn, msg);
@@ -127,6 +131,13 @@
 %!     fprintf(fd, "set: real b = %.16e;\n", b);
 %!     fprintf(fd, "set: real c = %.16e;\n", c);
 %!     fprintf(fd, "set: real d = %.16e;\n", d);
+%!     switch (j)
+%!     case 2
+%!     fprintf(fd, "set: real m = %.16e;\n", m);
+%!     for i=1:3
+%!     fprintf(fd, "set: real J%s = %.16e;\n", {"xx","yy","zz"}{i}, J(i, i));
+%!     endfor
+%!     endswitch
 %!     for i=1:3
 %!       fprintf(fd, "set: real V0%s = %.16e;\n", {"x", "y", "z"}{i}, V0(i));
 %!     endfor
@@ -184,13 +195,13 @@
 %!     fputs(fd, "       default orientation: euler123;\n");
 %!     fputs(fd, "       output precision: 16;\n");
 %!     fputs(fd, "       max iterations: 0;\n");
-%!     fputs(fd, "        structural nodes:\n");
-%!     fputs(fd, "                +1		# modal\n");
-%!     fputs(fd, "                +1		# interface 1\n");
-%!     fputs(fd, "        ;\n");
-%!     fputs(fd, "        joints:\n");
-%!     fputs(fd, "                +1		# modal\n");
-%!     fputs(fd, "        ;\n");
+%!     fputs(fd, "        structural nodes: 2;\n");
+%!     switch (j)
+%!     case 1
+%!     fputs(fd, "        joints: 1;\n");
+%!     case 2
+%!     fputs(fd, "        rigid bodies: 1;\n");
+%!     endswitch
 %!     fputs(fd, "        inertia: 1;\n");
 %!     fputs(fd, "end: control data;\n");
 %!     fputs(fd, "reference: ref_id_ground,\n");
@@ -209,23 +220,45 @@
 %!     fputs(fd, "        reference, ref_id_modal, null,\n");
 %!     fputs(fd, "        reference, ref_id_modal, null;\n");
 %!     fputs(fd, "begin: nodes;\n");
+%!     switch (j)
+%!     case 1
 %!     fputs(fd, "        structural: node_id_modal, modal,\n");
+%!     case 2
+%!     fputs(fd, "        structural: node_id_modal, dynamic,\n");
+%!     endswitch
 %!     fputs(fd, "                reference, ref_id_modal, null,\n");
 %!     fputs(fd, "                reference, ref_id_modal, eye,\n");
 %!     fputs(fd, "                reference, ref_id_modal, null,\n");
 %!     fputs(fd, "                reference, ref_id_modal, null, accelerations, yes;\n");
+%!     switch (j)
+%!     case 1
 %!     fputs(fd, "        structural: node_id_interface1, static,\n");
 %!     fputs(fd, "                reference, ref_id_interface1, null,\n");
 %!     fputs(fd, "                reference, ref_id_interface1, eye,\n");
 %!     fputs(fd, "                reference, ref_id_interface1, null,\n");
 %!     fputs(fd, "                reference, ref_id_interface1, null;\n");
+%!     case 2
+%!     fputs(fd, "        structural: node_id_interface1, dummy, node_id_modal, offset,\n");
+%!     fputs(fd, "                reference, ref_id_interface1, null,\n");
+%!     fputs(fd, "                reference, ref_id_interface1, eye;\n");
+%!     endswitch
 %!     fputs(fd, "end: nodes;\n");
 %!     fputs(fd, "begin: elements;\n");
+%!     switch (j)
+%!     case 1
 %!     fprintf(fd, "        include: \"%s.elm\";\n", filename);
+%!     case 2
+%!     fputs(fd, "         body: elem_id_modal, node_id_modal, m, reference, ref_id_modal, null, diag, Jxx, Jyy, Jzz, orientation, reference, ref_id_modal, eye;\n");
+%!     endswitch
 %!     fputs(fd, "        inertia: elem_id_inertia,\n");
 %!     fputs(fd, "                 position, reference, ref_id_ground, null,\n");
 %!     fputs(fd, "                 orientation, reference, ref_id_ground, eye,\n");
+%!     switch (j)
+%!     case 1
 %!     fputs(fd, "                 joint, all,\n");
+%!     case 2
+%!     fputs(fd, "                 body, all,\n");
+%!     endswitch
 %!     fputs(fd, "                 output, always;\n");
 %!     fputs(fd, "        drive caller: drive_id_beta + 1, element, elem_id_inertia, inertia, string, \"beta[1]\", direct, output, yes;\n");
 %!     fputs(fd, "        drive caller: drive_id_beta + 2, element, elem_id_inertia, inertia, string, \"beta[2]\", direct, output, yes;\n");
@@ -240,35 +273,36 @@
 %!     endif
 %!     fd = -1;
 %!   end_unwind_protect
-%!   options_mbd.output_file = sprintf("%s_mbd", filename);
+%!   options_mbd.output_file = sprintf("%s_%d_mbd", filename, j);
 %!   if (options.verbose)
 %!     shell(sprintf("cat %s | nl", filename_mbdyn));
 %!   endif
-%!   res.info = mbdyn_solver_run(filename_mbdyn, options_mbd);
-%!   [res.t, ...
-%!    res.trajectory, ...
-%!    res.deformation, ...
-%!    res.velocity, ...
-%!    res.acceleration, ...
-%!    res.node_id] = mbdyn_post_load_output_struct(options_mbd.output_file);
-%!   res.log_dat = mbdyn_post_load_log(options_mbd.output_file);
-%!   sol_dyn = fem_post_cms_sol_import(options_mbd.output_file, cms_data);
-%!   options_cms.scale_type = "least square";
-%!   sol_tot = fem_post_cms_expand(sol_dyn, cms_data, 1:numel(res.t), options_cms);
-%!   [res.drive_id, res.drive_data] = mbdyn_post_load_output_drv(options_mbd.output_file);
-%!   beta = zeros(3, numel(res.t));
+%!   res(j).info = mbdyn_solver_run(filename_mbdyn, options_mbd);
+%!   [res(j).t, ...
+%!    res(j).trajectory, ...
+%!    res(j).deformation, ...
+%!    res(j).velocity, ...
+%!    res(j).acceleration, ...
+%!    res(j).node_id] = mbdyn_post_load_output_struct(options_mbd.output_file);
+%!   res(j).log_dat = mbdyn_post_load_log(options_mbd.output_file);
+%!   switch (j)
+%!   case 1
+%!     res(j).sol_dyn = fem_post_cms_sol_import(options_mbd.output_file, cms_data);
+%!     options_cms.scale_type = "least square";
+%!     res(j).sol_tot = fem_post_cms_expand(res(j).sol_dyn, cms_data, 1:numel(res(j).t), options_cms);
+%!   endswitch
+%!   [res(j).drive_id, res(j).drive_data] = mbdyn_post_load_output_drv(options_mbd.output_file);
+%!   res(j).beta = zeros(3, numel(res(j).t));
 %!   for i=1:3
-%!     beta(i, :) = res.drive_data{res.drive_id == res.log_dat.vars.drive_id_beta + i};
+%!     res(j).beta(i, :) = res(j).drive_data{res(j).drive_id == res(j).log_dat.vars.drive_id_beta + i};
 %!   endfor
-%!   gamma = zeros(3, numel(res.t));
+%!   res(j).gamma = zeros(3, numel(res(j).t));
 %!   for i=1:3
-%!     gamma(i, :) = res.drive_data{res.drive_id == res.log_dat.vars.drive_id_gamma + i};
+%!     res(j).gamma(i, :) = res(j).drive_data{res(j).drive_id == res(j).log_dat.vars.drive_id_gamma + i};
 %!   endfor
-%!   beta0 = m * V0;
-%!   gamma0 = J * W0;
-%!   tol = 1e-3;
-%!   assert(max(norm(beta - beta0, "cols")) / norm(beta0) < tol);
-%!   assert(max(norm(gamma - gamma0, "cols")) / norm(gamma0) < tol);
+%!   assert(max(norm(res(j).beta - beta0, "cols")) / norm(beta0) < tol);
+%!   assert(max(norm(res(j).gamma - gamma0, "cols")) / norm(gamma0) < tol);
+%!   endfor
 %!                                 %unwind_protect_cleanup
 %!   if (~isempty(filename))
 %!     fn = dir([filename, "*"]);

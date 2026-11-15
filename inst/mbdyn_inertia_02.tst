@@ -1,0 +1,286 @@
+%!test
+%! try
+%!   pkg load mbdyn_util_oct;
+%!   pkg load mboct-fem-pkg;
+%!   filename = "";
+%!                                 %unwind_protect
+%!   filename = tempname();
+%!   if (ispc())
+%!     filename(filename == "\\") = "/";
+%!   endif
+%!   SI_unit_meter = 1e-3;
+%!   SI_unit_second = 1e-3;
+%!   SI_unit_kilogram = 1e-3;
+%!   SI_unit_newton = SI_unit_kilogram * SI_unit_meter / SI_unit_second^2;
+%!   SI_unit_pascal = SI_unit_newton / SI_unit_meter^2;
+%!   SI_unit_rad = 1;
+%!   a = 30e-3 / SI_unit_meter;
+%!   b = 20e-3 / SI_unit_meter;
+%!   c = 10e-3 / SI_unit_meter;
+%!   d = 0e-3 / SI_unit_meter;
+%!   rho = 2700 / (SI_unit_kilogram / SI_unit_meter^3);
+%!   m = rho * a * b * c;
+%!   J = diag(m * [b^2 + c^2, a^2 + c^2, a^2 + b^2] / 12);
+%!   V0 = [1; 2; 3];
+%!   W0 = [pi/2; pi/4; pi];
+%!   h = c;
+%!   options.interactive = false;
+%!   options.plot = false;
+%!   options.verbose = false;
+%!   options.number_of_threads = mbdyn_solver_num_threads_default();
+%!   if (options.plot)
+%!     close all;
+%!   endif
+%!   fd = -1;
+%!   filename_geo = [filename, "_gmsh.geo"];
+%!   unwind_protect
+%!     [fd, msg] = fopen(filename_geo, "w");
+%!     if (fd == -1)
+%!       error("failed to open file \"%s\"", filename_geo);
+%!     endif
+%!     fprintf(fd, "a = %.16e;\n", a);
+%!     fprintf(fd, "b = %.16e;\n", b);
+%!     fprintf(fd, "c = %.16e;\n", c);
+%!     fprintf(fd, "h = %.16e;\n", h);
+%!     fputs(fd, "SetFactory(\"OpenCASCADE\");\n");
+%!     fputs(fd, "Point(1) = {-0.5 * a, -0.5 * b, -0.5 * c};\n");
+%!     fputs(fd, "Point(2) = {-0.5 * a,  0.5 * b, -0.5 * c};\n");
+%!     fputs(fd, "Point(3) = { 0.5 * a,  0.5 * b, -0.5 * c};\n");
+%!     fputs(fd, "Point(4) = { 0.5 * a, -0.5 * b, -0.5 * c};\n");
+%!     fputs(fd, "Line(1) = {1, 2};\n");
+%!     fputs(fd, "Line(2) = {2, 3};\n");
+%!     fputs(fd, "Line(3) = {3, 4};\n");
+%!     fputs(fd, "Line(4) = {4, 1};\n");
+%!     fputs(fd, "Line Loop(1) = {1, 2, 3, 4};\n");
+%!     fputs(fd, "Plane Surface(1) = {1};\n");
+%!     fputs(fd, "Transfinite Curve(1) = Max(1, Round(b / h)) + 1;\n");
+%!     fputs(fd, "Transfinite Curve(2) = Max(1, Round(a / h)) + 1;\n");
+%!     fputs(fd, "Transfinite Curve(3) = Max(1, Round(b / h)) + 1;\n");
+%!     fputs(fd, "Transfinite Curve(4) = Max(1, Round(a / h)) + 1;\n");
+%!     fputs(fd, "v1 = Extrude{0,0,c}{Surface{1}; Layers{Max(1, Round(c / h))}; Recombine;};\n");
+%!     fputs(fd, "Recombine Surface{1,v1[0]};\n");
+%!     fputs(fd, "Transfinite Surface(1) = {};\n");
+%!     fputs(fd, "Physical Volume(1) = {v1[1]};\n");
+%!     fputs(fd, "Physical Surface(1) = {v1[2]};\n");
+%!     fputs(fd, "Physical Surface(2) = {v1[4]};\n");
+%!     fputs(fd, "Mesh.SecondOrderIncomplete = 1;\n");
+%!     fputs(fd, "Mesh.ElementOrder = 2;\n");
+%!   unwind_protect_cleanup
+%!     if (fd ~= -1)
+%!       fclose(fd);
+%!     endif
+%!     fd = -1;
+%!   end_unwind_protect
+%!   if (options.interactive)
+%!     pid = spawn("gmsh", {filename_geo});
+%!     status = spawn_wait(pid);
+%!   endif
+%!   pid = spawn("gmsh", {"-format", "msh2", ...
+%!                        "-3", ...
+%!                        filename_geo, ...
+%!                        "-o", [filename, ".msh"]});
+%!   status = spawn_wait(pid);
+%!   if (status ~= 0)
+%!     warning("gmsh failed with status %d", status);
+%!   endif
+%!   mesh = fem_pre_mesh_reorder(fem_pre_mesh_import([filename, ".msh"], "gmsh"));
+%!   mesh.material_data.E = 10000*70000e6 / SI_unit_pascal;
+%!   mesh.material_data.nu = 0.3;
+%!   mesh.material_data.rho = rho;
+%!   mesh.material_data.alpha = 0 / (1 / SI_unit_second);
+%!   mesh.material_data.beta = 0 / (SI_unit_second);
+%!   mesh.materials.iso20 = zeros(rows(mesh.elements.iso20), 1, "int32");
+%!   grp_idx_beam = find([[mesh.groups.iso20].id] == 1);
+%!   grp_idx_clamp = find([[mesh.groups.quad8].id] == 1);
+%!   mesh.materials.iso20(mesh.groups.iso20(grp_idx_beam).elements) = 1;
+%!   cms_opt.number_of_threads = options.number_of_threads;
+%!   cms_opt.algorithm = "shift-invert";
+%!   cms_opt.nodes.modal.number = rows(mesh.nodes) + 2;
+%!   cms_opt.nodes.modal.name = "node_id_modal";
+%!   cms_opt.nodes.interfaces.number = rows(mesh.nodes) + 1;
+%!   cms_opt.nodes.interfaces.name = "node_id_interface1";
+%!   mesh.nodes(cms_opt.nodes.modal.number, 1:3) = [0, 0, 0];
+%!   mesh.nodes(cms_opt.nodes.interfaces.number, 1:3) = [a + d, 0, 0];
+%!   mesh.elements.rbe3 = fem_pre_mesh_rbe3_from_surf(mesh, 2, cms_opt.nodes.interfaces.number, "quad8");
+%!   cms_opt.refine_max_iter = 30;
+%!   cms_opt.pre_scaling = false;
+%!   cms_opt.solver = "pardiso";
+%!   cms_opt.modes.number = 2;
+%!   cms_opt.tolerance_tau = -1;
+%!   cms_opt.element.name = "elem_id_modal";
+%!   cms_opt.create_binary = true;
+%!   cms_opt.use_binary = true;
+%!   cms_opt.update_binary = true;
+%!   cms_opt.invariants = true;
+%!   load_case_dof.locked_dof = false(size(mesh.nodes));
+%!   load_case_dof.locked_dof(cms_opt.nodes.modal.number, :) = true;
+%!   load_case_dof.locked_dof(mesh.groups.quad8(grp_idx_clamp).nodes, :) = true;
+%!   [cms_data.mesh, cms_data.mat_ass, cms_data.dof_map, cms_data.sol_eig, cms_data.cms_opt, cms_data.sol_tau] = fem_cms_create2(mesh, load_case_dof, cms_opt);
+%!   fem_cms_export(filename, cms_data.mesh, cms_data.dof_map, cms_data.mat_ass, cms_data.cms_opt);
+%!   unwind_protect
+%!     filename_mbdyn = sprintf("%s.mbdyn", filename);
+%!     [fd, msg] = fopen(filename_mbdyn, "w");
+%!     if (fd == -1)
+%!       error("failed to open file \"%s\": %s", filename_mbdyn, msg);
+%!     endif
+%!     fprintf(fd, "set: real a = %.16e;\n", a);
+%!     fprintf(fd, "set: real b = %.16e;\n", b);
+%!     fprintf(fd, "set: real c = %.16e;\n", c);
+%!     fprintf(fd, "set: real d = %.16e;\n", d);
+%!     for i=1:3
+%!       fprintf(fd, "set: real V0%s = %.16e;\n", {"x", "y", "z"}{i}, V0(i));
+%!     endfor
+%!     for i=1:3
+%!       fprintf(fd, "set: real W0%s = %.16e;\n", {"x", "y", "z"}{i}, W0(i));
+%!     endfor
+%!     fputs(fd, "set: integer ref_id_ground = 1001;\n");
+%!     fputs(fd, "set: integer ref_id_modal = 1002;\n");
+%!     fputs(fd, "set: integer ref_id_interface1 = 1003;\n");
+%!     fputs(fd, "set: integer node_id_modal = 2001;\n");
+%!     fputs(fd, "set: integer node_id_interface1 = 2002;\n");
+%!     fputs(fd, "set: integer elem_id_modal = 3001;\n");
+%!     fputs(fd, "set: integer elem_id_inertia = 3002;\n");
+%!     fputs(fd, "set: integer drive_id_beta = 4000;\n");
+%!     fputs(fd, "set: integer drive_id_gamma = 5000;\n");
+%!     fputs(fd, "begin: data;\n");
+%!     fputs(fd, "        problem: initial value;\n");
+%!     fputs(fd, "end: data;\n");
+%!     fputs(fd, "begin: initial value;\n");
+%!     fputs(fd, "        initial time: 0;\n");
+%!     fputs(fd, "        final time: 1;\n");
+%!     fputs(fd, "        time step: 1e-4;\n");
+%!     fputs(fd, "        method: ms, 0.6;\n");
+%!     fputs(fd, "        tolerance: 1e-6, test, norm, 1e-6, test, norm;\n");
+%!     fputs(fd, "        max iterations: 1000;\n");
+%!     fputs(fd, "        derivatives max iterations: 50;\n");
+%!     fputs(fd, "        derivatives coefficient: 1e-8;\n");
+%!     fputs(fd, "        derivatives tolerance: 1e-6, 1e-6;\n");
+%!     fputs(fd, "        output: iterations, solver condition number, stat, yes;\n");
+%!     fputs(fd, "        linear solver: umfpack, grad, scale, iterative, always, max iterations, 100;\n");
+%!     fputs(fd, "        nonlinear solver: nox, modified, 100,\n");
+%!     fputs(fd, "             keep jacobian matrix,\n");
+%!     fputs(fd, "             inner iterations before assembly, 6,\n");
+%!     fputs(fd, "             jacobian operator, newton krylov,\n");
+%!     fputs(fd, "             solver, line search based,\n");
+%!     fputs(fd, "             line search method, backtrack,\n");
+%!     fputs(fd, "             recovery step type, constant,\n");
+%!     fputs(fd, "             recovery step, 1e-6,\n");
+%!     fputs(fd, "             verbose, yes,\n");
+%!     fputs(fd, "             forcing term, type 2,\n");
+%!     fputs(fd, "             direction, newton,\n");
+%!     fputs(fd, "             weighted rms absolute tolerance, 0*1e-3,\n");
+%!     fputs(fd, "             weighted rms relative tolerance, 0*1e-3,\n");
+%!     fputs(fd, "             linear solver, gmres,\n");
+%!     fputs(fd, "             linear solver max iterations, 300,\n");
+%!     fputs(fd, "             minimum step, 1e-12,\n");
+%!     fputs(fd, "             krylov subspace size, 300;\n");
+%!     fputs(fd, "        enforce constraint equations: constraint violations;\n");
+%!     fputs(fd, "        threads: disable;\n");
+%!     fputs(fd, "end: initial value;\n");
+%!     fputs(fd, "begin: control data;\n");
+%!     fputs(fd, "        output meter: closest next, 0., forever, 1e-2;\n");
+%!     fputs(fd, "       default orientation: euler123;\n");
+%!     fputs(fd, "       use automatic differentiation;\n");
+%!     fputs(fd, "       default orientation: euler123;\n");
+%!     fputs(fd, "       output precision: 16;\n");
+%!     fputs(fd, "       max iterations: 0;\n");
+%!     fputs(fd, "        structural nodes:\n");
+%!     fputs(fd, "                +1		# modal\n");
+%!     fputs(fd, "                +1		# interface 1\n");
+%!     fputs(fd, "        ;\n");
+%!     fputs(fd, "        joints:\n");
+%!     fputs(fd, "                +1		# modal\n");
+%!     fputs(fd, "        ;\n");
+%!     fputs(fd, "        inertia: 1;\n");
+%!     fputs(fd, "end: control data;\n");
+%!     fputs(fd, "reference: ref_id_ground,\n");
+%!     fputs(fd, "        reference, global, null,\n");
+%!     fputs(fd, "        reference, global, eye,\n");
+%!     fputs(fd, "        reference, global, null,\n");
+%!     fputs(fd, "        reference, global, null;\n");
+%!     fputs(fd, "reference: ref_id_modal,\n");
+%!     fputs(fd, "        reference, ref_id_ground, null,\n");
+%!     fputs(fd, "        reference, ref_id_ground, eye,\n");
+%!     fputs(fd, "        reference, ref_id_ground, V0x, V0y, V0z,\n");
+%!     fputs(fd, "        reference, ref_id_ground, W0x, W0y, W0z;\n");
+%!     fputs(fd, "reference: ref_id_interface1,\n");
+%!     fputs(fd, "        reference, ref_id_modal, a + d,  0., 0.,\n");
+%!     fputs(fd, "        reference, ref_id_modal, eye,\n");
+%!     fputs(fd, "        reference, ref_id_modal, null,\n");
+%!     fputs(fd, "        reference, ref_id_modal, null;\n");
+%!     fputs(fd, "begin: nodes;\n");
+%!     fputs(fd, "        structural: node_id_modal, modal,\n");
+%!     fputs(fd, "                reference, ref_id_modal, null,\n");
+%!     fputs(fd, "                reference, ref_id_modal, eye,\n");
+%!     fputs(fd, "                reference, ref_id_modal, null,\n");
+%!     fputs(fd, "                reference, ref_id_modal, null, accelerations, yes;\n");
+%!     fputs(fd, "        structural: node_id_interface1, static,\n");
+%!     fputs(fd, "                reference, ref_id_interface1, null,\n");
+%!     fputs(fd, "                reference, ref_id_interface1, eye,\n");
+%!     fputs(fd, "                reference, ref_id_interface1, null,\n");
+%!     fputs(fd, "                reference, ref_id_interface1, null;\n");
+%!     fputs(fd, "end: nodes;\n");
+%!     fputs(fd, "begin: elements;\n");
+%!     fprintf(fd, "        include: \"%s.elm\";\n", filename);
+%!     fputs(fd, "        inertia: elem_id_inertia,\n");
+%!     fputs(fd, "                 position, reference, ref_id_ground, null,\n");
+%!     fputs(fd, "                 orientation, reference, ref_id_ground, eye,\n");
+%!     fputs(fd, "                 joint, all,\n");
+%!     fputs(fd, "                 output, always;\n");
+%!     fputs(fd, "        drive caller: drive_id_beta + 1, element, elem_id_inertia, inertia, string, \"beta[1]\", direct, output, yes;\n");
+%!     fputs(fd, "        drive caller: drive_id_beta + 2, element, elem_id_inertia, inertia, string, \"beta[2]\", direct, output, yes;\n");
+%!     fputs(fd, "        drive caller: drive_id_beta + 3, element, elem_id_inertia, inertia, string, \"beta[3]\", direct, output, yes;\n");
+%!     fputs(fd, "        drive caller: drive_id_gamma + 1, element, elem_id_inertia, inertia, string, \"gamma[1]\", direct, output, yes;\n");
+%!     fputs(fd, "        drive caller: drive_id_gamma + 2, element, elem_id_inertia, inertia, string, \"gamma[2]\", direct, output, yes;\n");
+%!     fputs(fd, "        drive caller: drive_id_gamma + 3, element, elem_id_inertia, inertia, string, \"gamma[3]\", direct, output, yes;\n");
+%!     fputs(fd, "end: elements;\n");
+%!   unwind_protect_cleanup
+%!     if (fd ~= -1)
+%!       fclose(fd);
+%!     endif
+%!     fd = -1;
+%!   end_unwind_protect
+%!   options_mbd.output_file = sprintf("%s_mbd", filename);
+%!   if (options.verbose)
+%!     shell(sprintf("cat %s | nl", filename_mbdyn));
+%!   endif
+%!   res.info = mbdyn_solver_run(filename_mbdyn, options_mbd);
+%!   [res.t, ...
+%!    res.trajectory, ...
+%!    res.deformation, ...
+%!    res.velocity, ...
+%!    res.acceleration, ...
+%!    res.node_id] = mbdyn_post_load_output_struct(options_mbd.output_file);
+%!   res.log_dat = mbdyn_post_load_log(options_mbd.output_file);
+%!   sol_dyn = fem_post_cms_sol_import(options_mbd.output_file, cms_data);
+%!   options_cms.scale_type = "least square";
+%!   sol_tot = fem_post_cms_expand(sol_dyn, cms_data, 1:numel(res.t), options_cms);
+%!   [res.drive_id, res.drive_data] = mbdyn_post_load_output_drv(options_mbd.output_file);
+%!   beta = zeros(3, numel(res.t));
+%!   for i=1:3
+%!     beta(i, :) = res.drive_data{res.drive_id == res.log_dat.vars.drive_id_beta + i};
+%!   endfor
+%!   gamma = zeros(3, numel(res.t));
+%!   for i=1:3
+%!     gamma(i, :) = res.drive_data{res.drive_id == res.log_dat.vars.drive_id_gamma + i};
+%!   endfor
+%!   beta0 = m * V0;
+%!   gamma0 = J * W0;
+%!   tol = 1e-3;
+%!   assert(max(norm(beta - beta0, "cols")) / norm(beta0) < tol);
+%!   assert(max(norm(gamma - gamma0, "cols")) / norm(gamma0) < tol);
+%!                                 %unwind_protect_cleanup
+%!   if (~isempty(filename))
+%!     fn = dir([filename, "*"]);
+%!     for i=1:numel(fn)
+%!       if (0 ~= unlink(fullfile(fn(i).folder, fn(i).name)))
+%!         warning("failed to remove file \"%s\"", fn(i).name);
+%!       endif
+%!     endfor
+%!   endif
+%!                                 %end_unwind_protect
+%! catch
+%!   gtest_error = lasterror();
+%!   gtest_fail(gtest_error, evalin("caller", "__file"));
+%!   rethrow(gtest_error);
+%! end_try_catch

@@ -28,9 +28,9 @@
 %!   m = rho * a * b * c;
 %!   Jcg = diag(m * [b^2 + c^2, a^2 + c^2, a^2 + b^2] / 12);
 %!   X0 = [3e-3; 7e-3; 5e-3] / SI_unit_meter;
-%!   t1 = 1 / SI_unit_second;
-%!   V0 = [1; 2; 3] / (SI_unit_meter / SI_unit_second);
-%!   W0 = [pi/2; pi/4; pi] / SI_unit_second^-1;
+%!   t1 = 1e-3 / SI_unit_second;
+%!   V0 = [1e-3; 2e-3; 3e-3] / SI_unit_meter / t1;
+%!   W0 = [pi/2; pi/4; pi] / t1;
 %!   cg = [cgx; cgy; cgz];
 %!   alpha = [pi / 4; pi / 2; pi / 3];
 %!   R0 = euler123_to_rotation_matrix(alpha);
@@ -417,7 +417,7 @@
 %!     assert(res(j).bodies.J, J, tolm * norm(J));
 %!     assert(res(j).bodies.Xgc, cg, tolm * norm(cg));
 %!   endfor
-%!   idx_t = find(res(1).t > 0.2 / SI_unit_second);
+%!   idx_t = find(res(1).t > 0.3 * t1);
 %!   for j=1:3
 %!     assert(max(norm(res(1).trajectory{j}(idx_t, :) - res(2).trajectory{j}(idx_t, :), "rows")) < tol * max(norm(res(2).trajectory{j}(idx_t, :), "rows")));
 %!     assert(max(norm(res(1).velocity{j}(idx_t, :) - res(2).velocity{j}(idx_t, :), "rows")) < tol * max(norm(res(2).velocity{j}(idx_t, :), "rows")));

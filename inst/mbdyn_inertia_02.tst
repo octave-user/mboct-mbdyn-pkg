@@ -25,13 +25,17 @@
 %!   rho = 2700 / (SI_unit_kilogram / SI_unit_meter^3);
 %!   m = rho * a * b * c;
 %!   Jcg = diag(m * [b^2 + c^2, a^2 + c^2, a^2 + b^2] / 12);
+%!   X0 = [3e-3; 7e-3; 5e-3] / SI_unit_meter;
 %!   V0 = [1; 2; 3];
 %!   W0 = [pi/2; pi/4; pi];
 %!   cg = [cgx; cgy; cgz];
+%!   alpha = [pi / 4; pi / 2; pi / 3];
+%!   R0 = euler123_to_rotation_matrix(alpha);
+%!   V0cg = cross(W0, R0 * cg) + V0;
 %!   S = m * cg;
 %!   J = Jcg - skew(cg) * skew(cg) * m;
-%!   beta0 = m * V0 + cross(W0, S);
-%!   gamma0 = Jcg * W0;
+%!   beta0 = m * V0 + cross(W0, R0 * S);
+%!   gamma0 = R0 * Jcg * R0.' * W0;
 %!   tol = 1e-3;
 %!   tolm = 1e-12;
 %!   options.interactive = false;
@@ -97,7 +101,7 @@
 %!     warning("gmsh failed with status %d", status);
 %!   endif
 %!   mesh = fem_pre_mesh_reorder(fem_pre_mesh_import([filename, ".msh"], "gmsh"));
-%!   mesh.material_data.E = 10000*70000e6 / SI_unit_pascal;
+%!   mesh.material_data.E = 10000 * 70000e6 / SI_unit_pascal;
 %!   mesh.material_data.nu = 0.3;
 %!   mesh.material_data.rho = rho;
 %!   mesh.material_data.alpha = 0 / (1 / SI_unit_second);
@@ -144,16 +148,19 @@
 %!     fprintf(fd, "set: real b = %.16e;\n", b);
 %!     fprintf(fd, "set: real c = %.16e;\n", c);
 %!     fprintf(fd, "set: real d = %.16e;\n", d);
-%!     switch (j)
-%!     case 2
+%!     for i=1:3
+%!       fprintf(fd, "set: real alpha%d = %.16e;\n", i, alpha(i));
+%!     endfor
+%!     for i=1:3
+%!       fprintf(fd, "set: real X0%d = %.16e;\n", i, X0(i));
+%!     endfor
 %!     fprintf(fd, "set: real m = %.16e;\n", m);
 %!     for i=1:3
 %!       fprintf(fd, "set: real cg%s = %.16e;\n", {"x","y","z"}{i}, cg(i));
 %!     endfor
 %!     for i=1:3
-%!     fprintf(fd, "set: real J%s = %.16e;\n", {"xx","yy","zz"}{i}, Jcg(i, i));
+%!       fprintf(fd, "set: real J%s = %.16e;\n", {"xx","yy","zz"}{i}, Jcg(i, i));
 %!     endfor
-%!     endswitch
 %!     for i=1:3
 %!       fprintf(fd, "set: real V0%s = %.16e;\n", {"x", "y", "z"}{i}, V0(i));
 %!     endfor
@@ -165,6 +172,7 @@
 %!     fputs(fd, "set: integer ref_id_interface1 = 1003;\n");
 %!     fputs(fd, "set: integer node_id_modal = 2001;\n");
 %!     fputs(fd, "set: integer node_id_interface1 = 2002;\n");
+%!     fputs(fd, "set: integer node_id_cg = 2003;\n");
 %!     fputs(fd, "set: integer elem_id_modal = 3001;\n");
 %!     fputs(fd, "set: integer elem_id_inertia = 3002;\n");
 %!     fputs(fd, "set: integer drive_id_beta = 4000;\n");
@@ -211,7 +219,7 @@
 %!     fputs(fd, "       default orientation: euler123;\n");
 %!     fputs(fd, "       output precision: 16;\n");
 %!     fputs(fd, "       max iterations: 0;\n");
-%!     fputs(fd, "        structural nodes: 2;\n");
+%!     fputs(fd, "        structural nodes: 3;\n");
 %!     switch (j)
 %!     case 1
 %!     fputs(fd, "        joints: 1;\n");
@@ -226,8 +234,8 @@
 %!     fputs(fd, "        reference, global, null,\n");
 %!     fputs(fd, "        reference, global, null;\n");
 %!     fputs(fd, "reference: ref_id_modal,\n");
-%!     fputs(fd, "        reference, ref_id_ground, null,\n");
-%!     fputs(fd, "        reference, ref_id_ground, eye,\n");
+%!     fputs(fd, "        reference, ref_id_ground, X01, X02, X03,\n");
+%!     fputs(fd, "        reference, ref_id_ground, euler123, alpha1, alpha2, alpha3,\n");
 %!     fputs(fd, "        reference, ref_id_ground, V0x, V0y, V0z,\n");
 %!     fputs(fd, "        reference, ref_id_ground, W0x, W0y, W0z;\n");
 %!     fputs(fd, "reference: ref_id_interface1,\n");
@@ -246,6 +254,9 @@
 %!     fputs(fd, "                reference, ref_id_modal, eye,\n");
 %!     fputs(fd, "                reference, ref_id_modal, null,\n");
 %!     fputs(fd, "                reference, ref_id_modal, null, accelerations, yes;\n");
+%!     fputs(fd, "        structural: node_id_cg, dummy, node_id_modal, offset,\n");
+%!     fputs(fd, "                reference, ref_id_modal, cgx, cgy, cgz,\n");
+%!     fputs(fd, "                reference, ref_id_modal, eye;\n");
 %!     switch (j)
 %!     case 1
 %!     fputs(fd, "        structural: node_id_interface1, static,\n");
@@ -323,13 +334,17 @@
 %!   assert(max(norm(res(j).beta - beta0, "cols")) / norm(beta0) < tol);
 %!   assert(max(norm(res(j).gamma - gamma0, "cols")) / norm(gamma0) < tol);
 %!   endfor
-%!   for j=1:2
+%!   for j=1:3
 %!     assert(max(norm(res(1).trajectory{j} - res(2).trajectory{j}, "rows")) < tol * max(norm(res(2).trajectory{j}, "rows")));
 %!     assert(max(norm(res(1).velocity{j} - res(2).velocity{j}, "rows")) < tol * max(norm(res(2).velocity{j}, "rows")));
 %!     switch (j)
 %!     case 1
 %!     assert(max(norm(res(1).acceleration{j}(10:end,:) - res(2).acceleration{j}(10:end,:), "rows")) < tol * max(norm(res(2).acceleration{j}, "rows")));
 %!     endswitch
+%!   endfor
+%!   for j=1:2
+%!     assert(max(norm(res(j).deformation{3}(:, 1:3) - res(j).t * V0cg.', "rows")) < tol * norm(cg));
+%!     assert(max(norm(res(j).velocity{3}(:, 1:3) - V0cg.', "rows")) < tol * norm(V0));
 %!   endfor
 %!                                 %unwind_protect_cleanup
 %!   if (~isempty(filename))

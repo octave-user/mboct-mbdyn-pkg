@@ -19,8 +19,8 @@
 %!   c = 10e-3 / SI_unit_meter;
 %!   d = 0e-3 / SI_unit_meter;
 %!   cgx = 5e-3 / SI_unit_meter;
-%!   cgy = 0e-3 / SI_unit_meter;
-%!   cgz = 0e-3 / SI_unit_meter;
+%!   cgy = 2e-3 / SI_unit_meter;
+%!   cgz = 3e-3 / SI_unit_meter;
 %!   h = c;
 %!   rho = 2700 / (SI_unit_kilogram / SI_unit_meter^3);
 %!   m = rho * a * b * c;

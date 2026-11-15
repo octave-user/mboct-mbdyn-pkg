@@ -18,15 +18,22 @@
 %!   b = 20e-3 / SI_unit_meter;
 %!   c = 10e-3 / SI_unit_meter;
 %!   d = 0e-3 / SI_unit_meter;
+%!   cgx = 5e-3 / SI_unit_meter;
+%!   cgy = 0e-3 / SI_unit_meter;
+%!   cgz = 0e-3 / SI_unit_meter;
 %!   h = c;
 %!   rho = 2700 / (SI_unit_kilogram / SI_unit_meter^3);
 %!   m = rho * a * b * c;
-%!   J = diag(m * [b^2 + c^2, a^2 + c^2, a^2 + b^2] / 12);
+%!   Jcg = diag(m * [b^2 + c^2, a^2 + c^2, a^2 + b^2] / 12);
 %!   V0 = [1; 2; 3];
 %!   W0 = [pi/2; pi/4; pi];
-%!   beta0 = m * V0;
-%!   gamma0 = J * W0;
+%!   cg = [cgx; cgy; cgz];
+%!   S = m * cg;
+%!   J = Jcg - skew(cg) * skew(cg) * m;
+%!   beta0 = m * V0 + cross(W0, S);
+%!   gamma0 = Jcg * W0;
 %!   tol = 1e-3;
+%!   tolm = 1e-12;
 %!   options.interactive = false;
 %!   options.plot = false;
 %!   options.verbose = false;
@@ -45,11 +52,14 @@
 %!     fprintf(fd, "b = %.16e;\n", b);
 %!     fprintf(fd, "c = %.16e;\n", c);
 %!     fprintf(fd, "h = %.16e;\n", h);
+%!     fprintf(fd, "cgx = %.16e;\n", cgx);
+%!     fprintf(fd, "cgy = %.16e;\n", cgy);
+%!     fprintf(fd, "cgz = %.16e;\n", cgz);
 %!     fputs(fd, "SetFactory(\"OpenCASCADE\");\n");
-%!     fputs(fd, "Point(1) = {-0.5 * a, -0.5 * b, -0.5 * c};\n");
-%!     fputs(fd, "Point(2) = {-0.5 * a,  0.5 * b, -0.5 * c};\n");
-%!     fputs(fd, "Point(3) = { 0.5 * a,  0.5 * b, -0.5 * c};\n");
-%!     fputs(fd, "Point(4) = { 0.5 * a, -0.5 * b, -0.5 * c};\n");
+%!     fputs(fd, "Point(1) = {cgx - 0.5 * a, cgy - 0.5 * b, cgz - 0.5 * c};\n");
+%!     fputs(fd, "Point(2) = {cgx - 0.5 * a, cgy + 0.5 * b, cgz - 0.5 * c};\n");
+%!     fputs(fd, "Point(3) = {cgx + 0.5 * a, cgy + 0.5 * b, cgz - 0.5 * c};\n");
+%!     fputs(fd, "Point(4) = {cgx + 0.5 * a, cgy - 0.5 * b, cgz - 0.5 * c};\n");
 %!     fputs(fd, "Line(1) = {1, 2};\n");
 %!     fputs(fd, "Line(2) = {2, 3};\n");
 %!     fputs(fd, "Line(3) = {3, 4};\n");
@@ -119,6 +129,9 @@
 %!   load_case_dof.locked_dof(cms_opt.nodes.modal.number, :) = true;
 %!   load_case_dof.locked_dof(mesh.groups.quad8(grp_idx_clamp).nodes, :) = true;
 %!   [cms_data.mesh, cms_data.mat_ass, cms_data.dof_map, cms_data.sol_eig, cms_data.cms_opt, cms_data.sol_tau] = fem_cms_create2(mesh, load_case_dof, cms_opt);
+%!   assert(cms_data.mat_ass.dm, m, m * tolm);
+%!   assert(cms_data.mat_ass.J, J, norm(J) * tolm);
+%!   assert(cms_data.mat_ass.S, S, norm(S) * tolm);
 %!   fem_cms_export(filename, cms_data.mesh, cms_data.dof_map, cms_data.mat_ass, cms_data.cms_opt);
 %!   for j=1:2
 %!   unwind_protect
@@ -135,7 +148,10 @@
 %!     case 2
 %!     fprintf(fd, "set: real m = %.16e;\n", m);
 %!     for i=1:3
-%!     fprintf(fd, "set: real J%s = %.16e;\n", {"xx","yy","zz"}{i}, J(i, i));
+%!       fprintf(fd, "set: real cg%s = %.16e;\n", {"x","y","z"}{i}, cg(i));
+%!     endfor
+%!     for i=1:3
+%!     fprintf(fd, "set: real J%s = %.16e;\n", {"xx","yy","zz"}{i}, Jcg(i, i));
 %!     endfor
 %!     endswitch
 %!     for i=1:3
@@ -248,7 +264,7 @@
 %!     case 1
 %!     fprintf(fd, "        include: \"%s.elm\";\n", filename);
 %!     case 2
-%!     fputs(fd, "         body: elem_id_modal, node_id_modal, m, reference, ref_id_modal, null, diag, Jxx, Jyy, Jzz, orientation, reference, ref_id_modal, eye;\n");
+%!     fputs(fd, "         body: elem_id_modal, node_id_modal, m, reference, ref_id_modal, cgx, cgy, cgz, diag, Jxx, Jyy, Jzz, orientation, reference, ref_id_modal, eye;\n");
 %!     endswitch
 %!     fputs(fd, "        inertia: elem_id_inertia,\n");
 %!     fputs(fd, "                 position, reference, ref_id_ground, null,\n");
@@ -285,6 +301,7 @@
 %!    res(j).acceleration, ...
 %!    res(j).node_id] = mbdyn_post_load_output_struct(options_mbd.output_file);
 %!   res(j).log_dat = mbdyn_post_load_log(options_mbd.output_file);
+%!   res(j).bodies = mbdyn_post_load_log_body(options_mbd.output_file);
 %!   switch (j)
 %!   case 1
 %!     res(j).sol_dyn = fem_post_cms_sol_import(options_mbd.output_file, cms_data);
@@ -300,6 +317,9 @@
 %!   for i=1:3
 %!     res(j).gamma(i, :) = res(j).drive_data{res(j).drive_id == res(j).log_dat.vars.drive_id_gamma + i};
 %!   endfor
+%!   assert(res(j).bodies.dm, m, tolm * m);
+%!   assert(res(j).bodies.J, J, tolm * norm(J));
+%!   assert(res(j).bodies.Xgc, cg, tolm * norm(cg));
 %!   assert(max(norm(res(j).beta - beta0, "cols")) / norm(beta0) < tol);
 %!   assert(max(norm(res(j).gamma - gamma0, "cols")) / norm(gamma0) < tol);
 %!   endfor

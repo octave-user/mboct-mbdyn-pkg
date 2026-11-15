@@ -303,6 +303,14 @@
 %!   assert(max(norm(res(j).beta - beta0, "cols")) / norm(beta0) < tol);
 %!   assert(max(norm(res(j).gamma - gamma0, "cols")) / norm(gamma0) < tol);
 %!   endfor
+%!   for j=1:2
+%!     assert(max(norm(res(1).trajectory{j} - res(2).trajectory{j}, "rows")) < tol * max(norm(res(2).trajectory{j}, "rows")));
+%!     assert(max(norm(res(1).velocity{j} - res(2).velocity{j}, "rows")) < tol * max(norm(res(2).velocity{j}, "rows")));
+%!     switch (j)
+%!     case 1
+%!     assert(max(norm(res(1).acceleration{j}(10:end,:) - res(2).acceleration{j}(10:end,:), "rows")) < tol * max(norm(res(2).acceleration{j}, "rows")));
+%!     endswitch
+%!   endfor
 %!                                 %unwind_protect_cleanup
 %!   if (~isempty(filename))
 %!     fn = dir([filename, "*"]);

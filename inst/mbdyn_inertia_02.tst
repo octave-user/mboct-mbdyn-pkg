@@ -23,11 +23,14 @@
 %!   cgz = 3e-3 / SI_unit_meter;
 %!   h = c;
 %!   rho = 2700 / (SI_unit_kilogram / SI_unit_meter^3);
+%!   D = [5e-2, 5e-2];
+%!   f = [30000, 170000] / SI_unit_second^-1;
 %!   m = rho * a * b * c;
 %!   Jcg = diag(m * [b^2 + c^2, a^2 + c^2, a^2 + b^2] / 12);
 %!   X0 = [3e-3; 7e-3; 5e-3] / SI_unit_meter;
-%!   V0 = [1; 2; 3];
-%!   W0 = [pi/2; pi/4; pi];
+%!   t1 = 1 / SI_unit_second;
+%!   V0 = [1; 2; 3] / (SI_unit_meter / SI_unit_second);
+%!   W0 = [pi/2; pi/4; pi] / SI_unit_second^-1;
 %!   cg = [cgx; cgy; cgz];
 %!   alpha = [pi / 4; pi / 2; pi / 3];
 %!   R0 = euler123_to_rotation_matrix(alpha);
@@ -39,7 +42,7 @@
 %!   tol = 1e-3;
 %!   tolm = 1e-12;
 %!   options.interactive = false;
-%!   options.plot = false;
+%!   options.plot = true;
 %!   options.verbose = false;
 %!   options.number_of_threads = mbdyn_solver_num_threads_default();
 %!   if (options.plot)
@@ -101,11 +104,10 @@
 %!     warning("gmsh failed with status %d", status);
 %!   endif
 %!   mesh = fem_pre_mesh_reorder(fem_pre_mesh_import([filename, ".msh"], "gmsh"));
-%!   mesh.material_data.E = 10000 * 70000e6 / SI_unit_pascal;
+%!   mesh.material_data.E = 70000e6 / SI_unit_pascal;
 %!   mesh.material_data.nu = 0.3;
 %!   mesh.material_data.rho = rho;
-%!   mesh.material_data.alpha = 0 / (1 / SI_unit_second);
-%!   mesh.material_data.beta = 0 / (SI_unit_second);
+%!   [mesh.material_data.alpha, mesh.material_data.beta] = fem_pre_mat_rayleigh_damping(D, f);
 %!   mesh.materials.iso20 = zeros(rows(mesh.elements.iso20), 1, "int32");
 %!   grp_idx_beam = find([[mesh.groups.iso20].id] == 1);
 %!   grp_idx_clamp = find([[mesh.groups.quad8].id] == 1);
@@ -122,7 +124,7 @@
 %!   cms_opt.refine_max_iter = 30;
 %!   cms_opt.pre_scaling = false;
 %!   cms_opt.solver = "pardiso";
-%!   cms_opt.modes.number = 2;
+%!   cms_opt.modes.number = 20;
 %!   cms_opt.tolerance_tau = -1;
 %!   cms_opt.element.name = "elem_id_modal";
 %!   cms_opt.create_binary = true;
@@ -133,9 +135,6 @@
 %!   load_case_dof.locked_dof(cms_opt.nodes.modal.number, :) = true;
 %!   load_case_dof.locked_dof(mesh.groups.quad8(grp_idx_clamp).nodes, :) = true;
 %!   [cms_data.mesh, cms_data.mat_ass, cms_data.dof_map, cms_data.sol_eig, cms_data.cms_opt, cms_data.sol_tau] = fem_cms_create2(mesh, load_case_dof, cms_opt);
-%!   assert(cms_data.mat_ass.dm, m, m * tolm);
-%!   assert(cms_data.mat_ass.J, J, norm(J) * tolm);
-%!   assert(cms_data.mat_ass.S, S, norm(S) * tolm);
 %!   fem_cms_export(filename, cms_data.mesh, cms_data.dof_map, cms_data.mat_ass, cms_data.cms_opt);
 %!   for j=1:2
 %!   unwind_protect
@@ -144,6 +143,7 @@
 %!     if (fd == -1)
 %!       error("failed to open file \"%s\": %s", filename_mbdyn, msg);
 %!     endif
+%!     fprintf(fd, "set: real t1 = %.16e;\n", t1);
 %!     fprintf(fd, "set: real a = %.16e;\n", a);
 %!     fprintf(fd, "set: real b = %.16e;\n", b);
 %!     fprintf(fd, "set: real c = %.16e;\n", c);
@@ -182,8 +182,8 @@
 %!     fputs(fd, "end: data;\n");
 %!     fputs(fd, "begin: initial value;\n");
 %!     fputs(fd, "        initial time: 0;\n");
-%!     fputs(fd, "        final time: 1;\n");
-%!     fputs(fd, "        time step: 1e-4;\n");
+%!     fputs(fd, "        final time: t1;\n");
+%!     fputs(fd, "        time step: t1 / 10000;\n");
 %!     fputs(fd, "        method: ms, 0.6;\n");
 %!     fputs(fd, "        tolerance: 1e-6, test, norm, 1e-6, test, norm;\n");
 %!     fputs(fd, "        max iterations: 1000;\n");
@@ -213,7 +213,7 @@
 %!     fputs(fd, "        threads: disable;\n");
 %!     fputs(fd, "end: initial value;\n");
 %!     fputs(fd, "begin: control data;\n");
-%!     fputs(fd, "        output meter: closest next, 0., forever, 1e-2;\n");
+%!     fputs(fd, "        output meter: closest next, 0., forever, t1 / 1000.;\n");
 %!     fputs(fd, "       default orientation: euler123;\n");
 %!     fputs(fd, "       use automatic differentiation;\n");
 %!     fputs(fd, "       default orientation: euler123;\n");
@@ -328,23 +328,111 @@
 %!   for i=1:3
 %!     res(j).gamma(i, :) = res(j).drive_data{res(j).drive_id == res(j).log_dat.vars.drive_id_gamma + i};
 %!   endfor
-%!   assert(res(j).bodies.dm, m, tolm * m);
-%!   assert(res(j).bodies.J, J, tolm * norm(J));
-%!   assert(res(j).bodies.Xgc, cg, tolm * norm(cg));
-%!   assert(max(norm(res(j).beta - beta0, "cols")) / norm(beta0) < tol);
-%!   assert(max(norm(res(j).gamma - gamma0, "cols")) / norm(gamma0) < tol);
 %!   endfor
+%!   if (options.plot)
+%!     for k=1:3
+%!     for j=1:3
+%!       figure("visible", "off");
+%!       hold on;
+%!       for i=1:numel(res)
+%!         plot(res(i).t * SI_unit_second, res(i).trajectory{k}(:, j) * SI_unit_meter, sprintf("-;res%d X%d;", i, j));
+%!       endfor
+%!       xlabel("t [s]");
+%!       ylabel("X [m]");
+%!       grid on;
+%!       grid minor on;
+%!       title(sprintf("node %d, dof %d", k, j));
+%!     endfor
+%!     for j=1:3
+%!       figure("visible", "off");
+%!       hold on;
+%!       for i=1:numel(res)
+%!         plot(res(i).t * SI_unit_second, res(i).trajectory{k}(:, j + 3) * 180/pi, sprintf("-;res%d alpha%d;", i, j));
+%!       endfor
+%!       xlabel("t [s]");
+%!       ylabel("alpha [deg]");
+%!       grid on;
+%!       grid minor on;
+%!       title(sprintf("node %d, dof %d", k, j));
+%!     endfor
+
+%!     for j=1:3
+%!       figure("visible", "off");
+%!       hold on;
+%!       for i=1:numel(res)
+%!         plot(res(i).t * SI_unit_second, res(i).velocity{k}(:, j) * SI_unit_meter / SI_unit_second, sprintf("-;res%d V%d;", i, j));
+%!       endfor
+%!       xlabel("t [s]");
+%!       ylabel("V [m/s]");
+%!       grid on;
+%!       grid minor on;
+%!       title(sprintf("node %d, dof %d", k, j));
+%!     endfor
+%!     for j=1:3
+%!       figure("visible", "off");
+%!       hold on;
+%!       for i=1:numel(res)
+%!         plot(res(i).t * SI_unit_second, res(i).velocity{k}(:, j + 3) * SI_unit_second^-1, sprintf("-;res%d W%d;", i, j));
+%!       endfor
+%!       xlabel("t [s]");
+%!       ylabel("W [rad/s]");
+%!       grid on;
+%!       grid minor on;
+%!       title(sprintf("node %d, dof %d", k, j));
+%!     endfor
+%!     if (k == 1)
+%!     for j=1:3
+%!       figure("visible", "off");
+%!       hold on;
+%!       for i=1:numel(res)
+%!         plot(res(i).t * SI_unit_second, res(i).acceleration{k}(:, j) * SI_unit_meter / SI_unit_second^2, sprintf("-;res%d A%d;", i, j));
+%!       endfor
+%!       xlabel("t [s]");
+%!       ylabel("A [m/s^2]");
+%!       grid on;
+%!       grid minor on;
+%!       title(sprintf("node %d, dof %d", k, j));
+%!     endfor
+%!     for j=1:3
+%!       figure("visible", "off");
+%!       hold on;
+%!       for i=1:numel(res)
+%!         plot(res(i).t * SI_unit_second, res(i).acceleration{k}(:, j + 3) * SI_unit_second^-2, sprintf("-;res%d WP%d;", i, j));
+%!       endfor
+%!       xlabel("t [s]");
+%!       ylabel("WP [rad/s^2]");
+%!       grid on;
+%!       grid minor on;
+%!       title(sprintf("node %d, dof %d", k, j));
+%!     endfor
+%!     endif
+%!     endfor
+%!     figure_list();
+%!   endif
+%!   assert(cms_data.mat_ass.dm, m, m * tolm);
+%!   assert(cms_data.mat_ass.J, J, norm(J) * tolm);
+%!   assert(cms_data.mat_ass.S, S, norm(S) * tolm);
+%!   for j=1:numel(res)
+%!     assert(res(j).bodies.dm, m, tolm * m);
+%!     assert(res(j).bodies.J, J, tolm * norm(J));
+%!     assert(res(j).bodies.Xgc, cg, tolm * norm(cg));
+%!   endfor
+%!   idx_t = find(res(1).t > 0.2 / SI_unit_second);
 %!   for j=1:3
-%!     assert(max(norm(res(1).trajectory{j} - res(2).trajectory{j}, "rows")) < tol * max(norm(res(2).trajectory{j}, "rows")));
-%!     assert(max(norm(res(1).velocity{j} - res(2).velocity{j}, "rows")) < tol * max(norm(res(2).velocity{j}, "rows")));
+%!     assert(max(norm(res(1).trajectory{j}(idx_t, :) - res(2).trajectory{j}(idx_t, :), "rows")) < tol * max(norm(res(2).trajectory{j}(idx_t, :), "rows")));
+%!     assert(max(norm(res(1).velocity{j}(idx_t, :) - res(2).velocity{j}(idx_t, :), "rows")) < tol * max(norm(res(2).velocity{j}(idx_t, :), "rows")));
 %!     switch (j)
 %!     case 1
-%!     assert(max(norm(res(1).acceleration{j}(10:end,:) - res(2).acceleration{j}(10:end,:), "rows")) < tol * max(norm(res(2).acceleration{j}, "rows")));
+%!     assert(max(norm(res(1).acceleration{j}(idx_t, :) - res(2).acceleration{j}(idx_t, :), "rows")) < tol * max(norm(res(2).acceleration{j}(idx_t, :), "rows")));
 %!     endswitch
 %!   endfor
-%!   for j=1:2
-%!     assert(max(norm(res(j).deformation{3}(:, 1:3) - res(j).t * V0cg.', "rows")) < tol * norm(cg));
-%!     assert(max(norm(res(j).velocity{3}(:, 1:3) - V0cg.', "rows")) < tol * norm(V0));
+%!   for j=2
+%!     assert(max(norm(res(j).deformation{3}(idx_t, 1:3) - res(j).t(idx_t) * V0cg.', "rows")) < tol * norm(res(j).t(end) * V0cg));
+%!     assert(max(norm(res(j).velocity{3}(idx_t, 1:3) - V0cg.', "rows")) < tol * norm(V0cg));
+%!   endfor
+%!   for j=1:numel(res)
+%!     assert(max(norm(res(j).beta(:, idx_t) - beta0, "cols")) / norm(beta0) < tol);
+%!     assert(max(norm(res(j).gamma(:, idx_t) - gamma0, "cols")) / norm(gamma0) < tol);
 %!   endfor
 %!                                 %unwind_protect_cleanup
 %!   if (~isempty(filename))

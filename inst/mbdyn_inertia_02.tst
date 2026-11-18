@@ -39,10 +39,11 @@
 %!   J = Jcg - skew(cg) * skew(cg) * m;
 %!   beta0 = m * V0 + cross(W0, R0 * S);
 %!   gamma0 = R0 * Jcg * R0.' * W0;
-%!   tol = 1e-3;
+%!   tolrbd = 5e-4;
+%!   tolmom = 5e-7;
 %!   tolm = 1e-12;
 %!   options.interactive = false;
-%!   options.plot = true;
+%!   options.plot = false;
 %!   options.verbose = false;
 %!   options.number_of_threads = mbdyn_solver_num_threads_default();
 %!   if (options.plot)
@@ -184,7 +185,7 @@
 %!     fputs(fd, "        initial time: 0;\n");
 %!     fputs(fd, "        final time: t1;\n");
 %!     fputs(fd, "        time step: t1 / 10000;\n");
-%!     fputs(fd, "        method: ms, 0.6;\n");
+%!     fputs(fd, "        method: ms2, 0.6;\n");
 %!     fputs(fd, "        tolerance: 1e-6, test, norm, 1e-6, test, norm;\n");
 %!     fputs(fd, "        max iterations: 1000;\n");
 %!     fputs(fd, "        derivatives max iterations: 50;\n");
@@ -419,20 +420,20 @@
 %!   endfor
 %!   idx_t = find(res(1).t > 0.3 * t1);
 %!   for j=1:3
-%!     assert(max(norm(res(1).trajectory{j}(idx_t, :) - res(2).trajectory{j}(idx_t, :), "rows")) < tol * max(norm(res(2).trajectory{j}(idx_t, :), "rows")));
-%!     assert(max(norm(res(1).velocity{j}(idx_t, :) - res(2).velocity{j}(idx_t, :), "rows")) < tol * max(norm(res(2).velocity{j}(idx_t, :), "rows")));
+%!     assert(max(norm(res(1).trajectory{j}(idx_t, :) - res(2).trajectory{j}(idx_t, :), "rows")) < tolrbd * max(norm(res(2).trajectory{j}(idx_t, :), "rows")));
+%!     assert(max(norm(res(1).velocity{j}(idx_t, :) - res(2).velocity{j}(idx_t, :), "rows")) < tolrbd * max(norm(res(2).velocity{j}(idx_t, :), "rows")));
 %!     switch (j)
 %!     case 1
-%!     assert(max(norm(res(1).acceleration{j}(idx_t, :) - res(2).acceleration{j}(idx_t, :), "rows")) < tol * max(norm(res(2).acceleration{j}(idx_t, :), "rows")));
+%!     assert(max(norm(res(1).acceleration{j}(idx_t, :) - res(2).acceleration{j}(idx_t, :), "rows")) < tolrbd * max(norm(res(2).acceleration{j}(idx_t, :), "rows")));
 %!     endswitch
 %!   endfor
 %!   for j=2
-%!     assert(max(norm(res(j).deformation{3}(idx_t, 1:3) - res(j).t(idx_t) * V0cg.', "rows")) < tol * norm(res(j).t(end) * V0cg));
-%!     assert(max(norm(res(j).velocity{3}(idx_t, 1:3) - V0cg.', "rows")) < tol * norm(V0cg));
+%!     assert(max(norm(res(j).deformation{3}(idx_t, 1:3) - res(j).t(idx_t) * V0cg.', "rows")) < tolrbd * norm(res(j).t(end) * V0cg));
+%!     assert(max(norm(res(j).velocity{3}(idx_t, 1:3) - V0cg.', "rows")) < tolrbd * norm(V0cg));
 %!   endfor
 %!   for j=1:numel(res)
-%!     assert(max(norm(res(j).beta(:, idx_t) - beta0, "cols")) / norm(beta0) < tol);
-%!     assert(max(norm(res(j).gamma(:, idx_t) - gamma0, "cols")) / norm(gamma0) < tol);
+%!     assert(max(norm(res(j).beta - beta0, "cols")) / norm(beta0) < tolmom);
+%!     assert(max(norm(res(j).gamma - gamma0, "cols")) / norm(gamma0) < tolmom);
 %!   endfor
 %!                                 %unwind_protect_cleanup
 %!   if (~isempty(filename))

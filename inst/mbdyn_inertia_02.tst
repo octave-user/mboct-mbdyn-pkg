@@ -189,7 +189,7 @@
 %!     fputs(fd, "        tolerance: 1e-6, test, norm, 1e-6, test, norm;\n");
 %!     fputs(fd, "        max iterations: 1000;\n");
 %!     fputs(fd, "        derivatives max iterations: 50;\n");
-%!     fputs(fd, "        derivatives coefficient: 1e-8;\n");
+%!     fputs(fd, "        derivatives coefficient: 1e-8, auto;\n");
 %!     fputs(fd, "        derivatives tolerance: 1e-6, 1e-6;\n");
 %!     fputs(fd, "        output: iterations, solver condition number, stat, yes;\n");
 %!     fputs(fd, "        linear solver: umfpack, grad, scale, iterative, always, max iterations, 100;\n");

@@ -79,7 +79,7 @@
 %!           fputs(fd, "         tolerance: 1e-8, test, norm, 1e-8, test, norm;\n");
 %!           fputs(fd, "         derivatives tolerance: 1e-6, 1e-6;\n");
 %!           fputs(fd, "         derivatives max iterations: 20;\n");
-%!           fputs(fd, "         derivatives coefficient: 1e-6;\n");
+%!           fputs(fd, "         derivatives coefficient: 1e-6, auto;\n");
 %!           fprintf(fd, "     method: %s;\n", imethods{idx_method});
 %!           fputs(fd, " end: initial value;\n");
 %!           fputs(fd, " begin: control data;\n");

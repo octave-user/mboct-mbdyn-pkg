@@ -168,8 +168,8 @@
 %!     fputs(fd, "set: integer ref_id_modal = 1002;\n");
 %!     fputs(fd, "set: integer ref_id_interface1 = 1003;\n");
 %!     fputs(fd, "set: integer node_id_modal = 2001;\n");
-%!     fputs(fd, "set: integer node_id_interface1 = 2002;\n");
-%!     fputs(fd, "set: integer node_id_cg = 2003;\n");
+%!     fputs(fd, "set: integer node_id_cg = 2002;\n");
+%!     fputs(fd, "set: integer node_id_interface1 = 2003;\n");
 %!     fputs(fd, "set: integer elem_id_modal = 3001;\n");
 %!     fputs(fd, "set: integer elem_id_inertia = 3002;\n");
 %!     fputs(fd, "set: integer drive_id_beta = 4000;\n");
@@ -423,9 +423,9 @@
 %!     assert(max(norm(res(1).acceleration{j}(idx_t, :) - res(2).acceleration{j}(idx_t, :), "rows")) < tolrbd * max(norm(res(2).acceleration{j}(idx_t, :), "rows")));
 %!     endswitch
 %!   endfor
-%!   for j=2
-%!     assert(max(norm(res(j).deformation{3}(idx_t, 1:3) - res(j).t(idx_t) * V0cg.', "rows")) < tolrbd * norm(res(j).t(end) * V0cg));
-%!     assert(max(norm(res(j).velocity{3}(idx_t, 1:3) - V0cg.', "rows")) < tolrbd * norm(V0cg));
+%!   for j=1:2
+%!     assert(max(norm(res(j).deformation{2}(idx_t, 1:3) - res(j).t(idx_t) * V0cg.', "rows")) < tolrbd * norm(res(j).t(end) * V0cg));
+%!     assert(max(norm(res(j).velocity{2}(idx_t, 1:3) - V0cg.', "rows")) < tolrbd * norm(V0cg));
 %!   endfor
 %!   for j=1:numel(res)
 %!     assert(max(norm(res(j).beta - beta0, "cols")) / norm(beta0) < tolmom);

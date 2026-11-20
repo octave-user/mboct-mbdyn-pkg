@@ -107,6 +107,8 @@
 %!     fputs(fd, "Physical Volume(1) = {v1[1]};\n");
 %!     fputs(fd, "Physical Surface(1) = {v1[2]};\n");
 %!     fputs(fd, "Physical Surface(2) = {v1[4]};\n");
+%!     fputs(fd, "Physical Surface(3) = {7, 8, 9, 6};\n");
+%!     fputs(fd, "Physical Surface(4) = {11, 12, 13, 10};\n");
 %!     fputs(fd, "MeshSize{PointsOf{Volume{v1[1]};}} = h;\n");
 %!     fputs(fd, "Mesh.SecondOrderIncomplete = 1;\n");
 %!     fputs(fd, "Mesh.ElementOrder = 2;\n");
@@ -141,13 +143,17 @@
 %!   mesh.materials.tet10(mesh.groups.tet10(grp_idx_beam).elements) = 1;
 %!   cms_opt.number_of_threads = options.number_of_threads;
 %!   cms_opt.algorithm = "shift-invert";
-%!   cms_opt.nodes.modal.number = rows(mesh.nodes) + 2;
+%!   cms_opt.nodes.modal.number = rows(mesh.nodes) + 3;
 %!   cms_opt.nodes.modal.name = "node_id_modal";
-%!   cms_opt.nodes.interfaces.number = rows(mesh.nodes) + 1;
-%!   cms_opt.nodes.interfaces.name = "node_id_interface1";
+%!   cms_opt.nodes.interfaces(1).number = rows(mesh.nodes) + 1;
+%!   cms_opt.nodes.interfaces(1).name = "node_id_interface1";
+%!   cms_opt.nodes.interfaces(2).number = rows(mesh.nodes) + 2;
+%!   cms_opt.nodes.interfaces(2).name = "node_id_interface2";
 %!   mesh.nodes(cms_opt.nodes.modal.number, 1:3) = [0, 0, 0];
-%!   mesh.nodes(cms_opt.nodes.interfaces.number, 1:3) = [a + d, 0, 0];
-%!   mesh.elements.rbe3 = fem_pre_mesh_rbe3_from_surf(mesh, 2, cms_opt.nodes.interfaces.number, "tria6");
+%!   mesh.nodes(cms_opt.nodes.interfaces(1).number, 1:3) = [ l1 + cgx, cgy, cgz];
+%!   mesh.nodes(cms_opt.nodes.interfaces(2).number, 1:3) = [-l1 + cgx, cgy, cgz];
+%!   mesh.elements.rbe3(1) = fem_pre_mesh_rbe3_from_surf(mesh, 3, cms_opt.nodes.interfaces(1).number, "tria6");
+%!   mesh.elements.rbe3(2) = fem_pre_mesh_rbe3_from_surf(mesh, 4, cms_opt.nodes.interfaces(2).number, "tria6");
 %!   cms_opt.refine_max_iter = 30;
 %!   cms_opt.pre_scaling = false;
 %!   cms_opt.solver = "pardiso";
@@ -161,7 +167,48 @@
 %!   load_case_dof.locked_dof = false(size(mesh.nodes));
 %!   load_case_dof.locked_dof(cms_opt.nodes.modal.number, :) = true;
 %!   load_case_dof.locked_dof(mesh.groups.tria6(grp_idx_clamp).nodes, :) = true;
-%!   [cms_data.mesh, cms_data.mat_ass, cms_data.dof_map, cms_data.sol_eig, cms_data.cms_opt] = fem_cms_create(mesh, load_case_dof, cms_opt);
+%!   bearing_surf(1).group_idx = 3;
+%!   bearing_surf(1).group_id_interface = 103;
+%!   bearing_surf(1).material_id_interface = int32(2);
+%!   bearing_surf(1).name = "bearing1";
+%!   bearing_surf(1).bearing = "elem_id_bearing1";
+%!   bearing_surf(1).options.reference_pressure = 1e6;
+%!   bearing_surf(1).options.number_of_nodes_x = 10;
+%!   bearing_surf(1).options.number_of_nodes_z = 5;
+%!   bearing_surf(1).options.number_of_modes = 5;
+%!   bearing_surf(1).options.bearing_type = "shell";
+%!   bearing_surf(1).options.matrix_type = "modal substruct total";
+%!   bearing_surf(1).options.interpolate_interface = false;
+%!   bearing_surf(1).options.bearing_model = "EHD/FE";
+%!   bearing_surf(1).r = 0.5 * d1;
+%!   bearing_surf(1).w = c;
+%!   bearing_surf(1).X0 = mesh.nodes(cms_opt.nodes.interfaces(1).number, 1:3).';
+%!   bearing_surf(1).R = eye(3);
+%!   bearing_surf(1).relative_tolerance = 0;
+%!   bearing_surf(1).absolute_tolerance = 1e-3 * 0.5 * d1;
+%!   bearing_surf(1).master_node_no = cms_opt.nodes.interfaces(1).number;
+%!   bearing_surf(2).group_idx = 4;
+%!   bearing_surf(2).group_id_interface = 104;
+%!   bearing_surf(2).material_id_interface = int32(2);
+%!   bearing_surf(2).name = "bearing2";
+%!   bearing_surf(2).bearing = "elem_id_bearing2";
+%!   bearing_surf(2).options.reference_pressure = 1e6;
+%!   bearing_surf(2).options.number_of_nodes_x = 10;
+%!   bearing_surf(2).options.number_of_nodes_z = 5;
+%!   bearing_surf(2).options.number_of_modes = 5;
+%!   bearing_surf(2).options.bearing_type = "shell";
+%!   bearing_surf(2).options.matrix_type = "modal substruct total";
+%!   bearing_surf(2).options.interpolate_interface = false;
+%!   bearing_surf(2).options.bearing_model = "EHD/FE";
+%!   bearing_surf(2).r = 0.5 * d1;
+%!   bearing_surf(2).w = c;
+%!   bearing_surf(2).X0 = mesh.nodes(cms_opt.nodes.interfaces(2).number, 1:3).';
+%!   bearing_surf(2).R = eye(3);
+%!   bearing_surf(2).relative_tolerance = 0;
+%!   bearing_surf(2).absolute_tolerance = 1e-3 * 0.5 * d1;
+%!   bearing_surf(2).master_node_no = cms_opt.nodes.interfaces(1).number;
+%!   [cms_data.mesh, cms_data.mat_ass, cms_data.dof_map, cms_data.cms_opt, comp_mat, bearing_surf, cms_data.sol_eig, cms_data.cond_info] = fem_ehd_pre_comp_mat_linear_mesh(mesh, load_case_dof, cms_opt, bearing_surf);
+%!   fem_ehd_pre_comp_mat_linear_mesh_cond_rpt(cms_data.cond_info);
 %!   fem_cms_export(filename, cms_data.mesh, cms_data.dof_map, cms_data.mat_ass, cms_data.cms_opt);
 %!   for j=1:2
 %!   unwind_protect
@@ -175,6 +222,7 @@
 %!     fprintf(fd, "set: real b = %.16e;\n", b);
 %!     fprintf(fd, "set: real c = %.16e;\n", c);
 %!     fprintf(fd, "set: real d = %.16e;\n", d);
+%!     fprintf(fd, "set: real l1 = %.16e;\n", l1);
 %!     for i=1:3
 %!       fprintf(fd, "set: real alpha%d = %.16e;\n", i, alpha(i));
 %!     endfor
@@ -197,9 +245,11 @@
 %!     fputs(fd, "set: integer ref_id_ground = 1001;\n");
 %!     fputs(fd, "set: integer ref_id_modal = 1002;\n");
 %!     fputs(fd, "set: integer ref_id_interface1 = 1003;\n");
+%!     fputs(fd, "set: integer ref_id_interface2 = 1004;\n");
 %!     fputs(fd, "set: integer node_id_modal = 2001;\n");
-%!     fputs(fd, "set: integer node_id_interface1 = 2002;\n");
-%!     fputs(fd, "set: integer node_id_cg = 2003;\n");
+%!     fputs(fd, "set: integer node_id_cg = 2002;\n");
+%!     fputs(fd, "set: integer node_id_interface1 = 2003;\n");
+%!     fputs(fd, "set: integer node_id_interface2 = 2004;\n");
 %!     fputs(fd, "set: integer elem_id_modal = 3001;\n");
 %!     fputs(fd, "set: integer elem_id_inertia = 3002;\n");
 %!     fputs(fd, "set: integer drive_id_beta = 4000;\n");
@@ -246,7 +296,7 @@
 %!     fputs(fd, "       default orientation: euler123;\n");
 %!     fputs(fd, "       output precision: 16;\n");
 %!     fputs(fd, "       max iterations: 0;\n");
-%!     fputs(fd, "        structural nodes: 3;\n");
+%!     fputs(fd, "       structural nodes: 4;\n");
 %!     switch (j)
 %!     case 1
 %!     fputs(fd, "        joints: 1;\n");
@@ -266,7 +316,12 @@
 %!     fputs(fd, "        reference, ref_id_ground, V0x, V0y, V0z,\n");
 %!     fputs(fd, "        reference, ref_id_ground, W0x, W0y, W0z;\n");
 %!     fputs(fd, "reference: ref_id_interface1,\n");
-%!     fputs(fd, "        reference, ref_id_modal, a + d,  0., 0.,\n");
+%!     fputs(fd, "        reference, ref_id_modal, cgx + l1,  cgy, cgz,\n");
+%!     fputs(fd, "        reference, ref_id_modal, eye,\n");
+%!     fputs(fd, "        reference, ref_id_modal, null,\n");
+%!     fputs(fd, "        reference, ref_id_modal, null;\n");
+%!     fputs(fd, "reference: ref_id_interface2,\n");
+%!     fputs(fd, "        reference, ref_id_modal, cgx - l1,  cgy, cgz,\n");
 %!     fputs(fd, "        reference, ref_id_modal, eye,\n");
 %!     fputs(fd, "        reference, ref_id_modal, null,\n");
 %!     fputs(fd, "        reference, ref_id_modal, null;\n");
@@ -291,10 +346,18 @@
 %!     fputs(fd, "                reference, ref_id_interface1, eye,\n");
 %!     fputs(fd, "                reference, ref_id_interface1, null,\n");
 %!     fputs(fd, "                reference, ref_id_interface1, null;\n");
+%!     fputs(fd, "        structural: node_id_interface2, static,\n");
+%!     fputs(fd, "                reference, ref_id_interface2, null,\n");
+%!     fputs(fd, "                reference, ref_id_interface2, eye,\n");
+%!     fputs(fd, "                reference, ref_id_interface2, null,\n");
+%!     fputs(fd, "                reference, ref_id_interface2, null;\n");
 %!     case 2
 %!     fputs(fd, "        structural: node_id_interface1, dummy, node_id_modal, offset,\n");
 %!     fputs(fd, "                reference, ref_id_interface1, null,\n");
 %!     fputs(fd, "                reference, ref_id_interface1, eye;\n");
+%!     fputs(fd, "        structural: node_id_interface2, dummy, node_id_modal, offset,\n");
+%!     fputs(fd, "                reference, ref_id_interface2, null,\n");
+%!     fputs(fd, "                reference, ref_id_interface2, eye;\n");
 %!     endswitch
 %!     fputs(fd, "end: nodes;\n");
 %!     fputs(fd, "begin: elements;\n");
@@ -357,7 +420,7 @@
 %!   endfor
 %!   endfor
 %!   if (options.plot)
-%!     for k=1:3
+%!     for k=1:4
 %!     for j=1:3
 %!       figure("visible", "off");
 %!       hold on;
@@ -368,7 +431,7 @@
 %!       ylabel("X [m]");
 %!       grid on;
 %!       grid minor on;
-%!       title(sprintf("node %d, dof %d", k, j));
+%!       title(sprintf("trajectory node %d, dof %d", k, j));
 %!     endfor
 %!     for j=1:3
 %!       figure("visible", "off");
@@ -380,9 +443,8 @@
 %!       ylabel("alpha [deg]");
 %!       grid on;
 %!       grid minor on;
-%!       title(sprintf("node %d, dof %d", k, j));
+%!       title(sprintf("rotation node %d, dof %d", k, j));
 %!     endfor
-
 %!     for j=1:3
 %!       figure("visible", "off");
 %!       hold on;
@@ -393,7 +455,7 @@
 %!       ylabel("V [m/s]");
 %!       grid on;
 %!       grid minor on;
-%!       title(sprintf("node %d, dof %d", k, j));
+%!       title(sprintf("velocity node %d, dof %d", k, j));
 %!     endfor
 %!     for j=1:3
 %!       figure("visible", "off");
@@ -405,7 +467,7 @@
 %!       ylabel("W [rad/s]");
 %!       grid on;
 %!       grid minor on;
-%!       title(sprintf("node %d, dof %d", k, j));
+%!       title(sprintf("angular velocity node %d, dof %d", k, j));
 %!     endfor
 %!     if (k == 1)
 %!     for j=1:3
@@ -418,7 +480,7 @@
 %!       ylabel("A [m/s^2]");
 %!       grid on;
 %!       grid minor on;
-%!       title(sprintf("node %d, dof %d", k, j));
+%!       title(sprintf("acceleration node %d, dof %d", k, j));
 %!     endfor
 %!     for j=1:3
 %!       figure("visible", "off");
@@ -430,7 +492,7 @@
 %!       ylabel("WP [rad/s^2]");
 %!       grid on;
 %!       grid minor on;
-%!       title(sprintf("node %d, dof %d", k, j));
+%!       title(sprintf("angular acceleration node %d, dof %d", k, j));
 %!     endfor
 %!     endif
 %!     endfor
@@ -445,7 +507,7 @@
 %!     assert(res(j).bodies.Xgc, cg, tolm * norm(cg));
 %!   endfor
 %!   idx_t = find(res(1).t > 0.4 * t1);
-%!   for j=1:3
+%!   for j=1:4
 %!     assert(max(norm(res(1).trajectory{j}(idx_t, :) - res(2).trajectory{j}(idx_t, :), "rows")) < tolrbd * max(norm(res(2).trajectory{j}(idx_t, :), "rows")));
 %!     assert(max(norm(res(1).velocity{j}(idx_t, :) - res(2).velocity{j}(idx_t, :), "rows")) < tolrbd * max(norm(res(2).velocity{j}(idx_t, :), "rows")));
 %!     switch (j)
@@ -453,9 +515,9 @@
 %!     assert(max(norm(res(1).acceleration{j}(idx_t, :) - res(2).acceleration{j}(idx_t, :), "rows")) < tolrbd * max(norm(res(2).acceleration{j}(idx_t, :), "rows")));
 %!     endswitch
 %!   endfor
-%!   for j=2
-%!     assert(max(norm(res(j).deformation{3}(idx_t, 1:3) - res(j).t(idx_t) * V0cg.', "rows")) < tolrbd * norm(res(j).t(end) * V0cg));
-%!     assert(max(norm(res(j).velocity{3}(idx_t, 1:3) - V0cg.', "rows")) < tolrbd * norm(V0cg));
+%!   for j=1:2
+%!     assert(max(norm(res(j).deformation{2}(idx_t, 1:3) - res(j).t(idx_t) * V0cg.', "rows")) < tolrbd * norm(res(j).t(end) * V0cg));
+%!     assert(max(norm(res(j).velocity{2}(idx_t, 1:3) - V0cg.', "rows")) < tolrbd * norm(V0cg));
 %!   endfor
 %!   for j=1:numel(res)
 %!     assert(max(norm(res(j).beta - beta0, "cols")) / norm(beta0) < tolmom);
